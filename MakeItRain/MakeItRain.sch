@@ -350,9 +350,9 @@ Wire Wire Line
 Text Label 8600 4100 0    50   ~ 0
 GND
 Text Label 8600 4200 0    50   ~ 0
-P23
+D23
 Text Label 8600 4300 0    50   ~ 0
-P22
+D22
 Text Label 8600 5900 0    50   ~ 0
 CLK
 $Comp
@@ -371,27 +371,23 @@ SDD
 Text Label 8600 5700 0    50   ~ 0
 SD1
 Text Label 8600 5600 0    50   ~ 0
-P15
+D15
 Text Label 8600 5500 0    50   ~ 0
-P2
+D2
 Text Label 8600 5400 0    50   ~ 0
-P0
-Text Label 8600 5300 0    50   ~ 0
-P4
-Text Label 8600 5200 0    50   ~ 0
-P16
+D0
 Text Label 8600 5100 0    50   ~ 0
-P17
+D17
 Text Label 8600 5000 0    50   ~ 0
-P5
+D5
 Text Label 8600 4900 0    50   ~ 0
-P18
+D18
 Text Label 8600 4800 0    50   ~ 0
-P19
+D19
 Text Label 8600 4700 0    50   ~ 0
 GND
 Text Label 8600 4600 0    50   ~ 0
-P21
+D21
 Text Label 8600 4500 0    50   ~ 0
 RX
 Text Label 8600 4400 0    50   ~ 0
@@ -442,8 +438,6 @@ Wire Wire Line
 	8600 5700 8500 5700
 Wire Wire Line
 	8500 5600 8600 5600
-Wire Wire Line
-	8600 5500 8500 5500
 Wire Wire Line
 	8500 5400 8600 5400
 Wire Wire Line
@@ -1077,14 +1071,6 @@ Wire Wire Line
 	8500 5100 9550 5100
 Wire Wire Line
 	8500 5000 9550 5000
-Entry Wire Line
-	9550 5200 9650 5300
-Wire Wire Line
-	8500 5200 9550 5200
-Wire Wire Line
-	8500 5300 9600 5300
-Wire Wire Line
-	9600 5300 9600 5350
 Wire Wire Line
 	9600 5350 10150 5350
 Wire Wire Line
@@ -1092,33 +1078,17 @@ Wire Wire Line
 Wire Bus Line
 	4650 7400 6850 7400
 Entry Wire Line
-	4550 7200 4650 7300
-Entry Wire Line
-	4550 7300 4650 7400
-Text Label 4350 7200 0    50   ~ 0
-P0
-Text Label 4350 7300 0    50   ~ 0
-P2
-Entry Wire Line
 	4550 6900 4650 7000
-Entry Wire Line
-	4550 7100 4650 7200
-Entry Wire Line
-	4550 7000 4650 7100
 Text Label 4350 6900 0    50   ~ 0
-P5
-Text Label 4350 7000 0    50   ~ 0
-P17
-Text Label 4350 7100 0    50   ~ 0
-P16
+P2
 Text Label 4350 6400 0    50   ~ 0
-P21
+D21
 Text Label 4350 6600 0    50   ~ 0
-P19
+D19
 Text Label 4350 6800 0    50   ~ 0
-P18
+D18
 Text Label 4350 6200 0    50   ~ 0
-P22
+D22
 Text Label 4350 6100 0    50   ~ 0
 D32
 Text Label 4350 6300 0    50   ~ 0
@@ -1127,8 +1097,6 @@ Text Label 4350 6500 0    50   ~ 0
 D25
 Text Label 4350 6700 0    50   ~ 0
 D26
-Entry Wire Line
-	4550 6800 4650 6900
 Entry Wire Line
 	4550 6700 4650 6800
 Entry Wire Line
@@ -1160,17 +1128,6 @@ Wire Wire Line
 Wire Wire Line
 	3900 6100 4550 6100
 $Comp
-L Connector_Generic:Conn_02x16_Odd_Even J1
-U 1 1 615C7BFA
-P 3600 6500
-F 0 "J1" H 3650 7417 50  0000 C CNN
-F 1 "Conn_02x16_Odd_Even" H 3650 7326 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x16_P2.54mm_Vertical" H 3600 6500 50  0001 C CNN
-F 3 "~" H 3600 6500 50  0001 C CNN
-	1    3600 6500
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 615951F5
 P 2300 5050
@@ -1183,8 +1140,6 @@ F 3 "" H 2300 5050 50  0001 C CNN
 	1    2300 5050
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3400 7400 3400 7300
 $Comp
 L power:GND #PWR?
 U 1 1 6163D12D
@@ -1212,15 +1167,7 @@ F 3 "" H 3400 5500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4550 7300 4100 7300
-Wire Wire Line
-	3900 7200 4550 7200
-Wire Wire Line
-	4550 7100 3900 7100
-Wire Wire Line
-	3900 7000 4550 7000
-Wire Wire Line
-	4550 6900 3900 6900
+	4550 6900 4100 6900
 $Comp
 L power:+3.3V #PWR010
 U 1 1 6190DF70
@@ -1232,26 +1179,98 @@ F 3 "" H 3900 5450 50  0001 C CNN
 	1    3900 5450
 	1    0    0    -1  
 $EndComp
+$Comp
+L Device:R R?
+U 1 1 619FD932
+P 4100 7100
+AR Path="/6158F2C4/619FD932" Ref="R?"  Part="1" 
+AR Path="/619FD932" Ref="R2"  Part="1" 
+F 0 "R2" H 4170 7146 50  0000 L CNN
+F 1 "22k" H 4170 7055 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 4030 7100 50  0001 C CNN
+F 3 "~" H 4100 7100 50  0001 C CNN
+	1    4100 7100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 619FD938
+P 4100 7300
+AR Path="/6158F2C4/619FD938" Ref="#PWR?"  Part="1" 
+AR Path="/619FD938" Ref="#PWR011"  Part="1" 
+F 0 "#PWR011" H 4100 7050 50  0001 C CNN
+F 1 "GND" H 4105 7127 50  0000 C CNN
+F 2 "" H 4100 7300 50  0001 C CNN
+F 3 "" H 4100 7300 50  0001 C CNN
+	1    4100 7300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4100 7250 4100 7300
+Wire Wire Line
+	4100 6950 4100 6900
+Connection ~ 4100 6900
+Wire Wire Line
+	4100 6900 3900 6900
+NoConn ~ 8600 5400
+Text Label 4700 6250 0    50   ~ 0
+Z5
+Text Label 4700 6450 0    50   ~ 0
+Z6
+Text Label 4700 6650 0    50   ~ 0
+Z7
+Text Label 4700 6850 0    50   ~ 0
+Z8
+Text Label 4100 7300 0    50   ~ 0
+BoardSense
+Text Label 8600 5200 0    50   ~ 0
+D16
+Text Label 8600 5300 0    50   ~ 0
+D4
+Wire Wire Line
+	8500 5300 9600 5300
+Wire Wire Line
+	9600 5300 9600 5350
+Wire Wire Line
+	8500 5200 8600 5200
+Entry Wire Line
+	9550 5500 9650 5600
+Wire Wire Line
+	8500 5500 9550 5500
+NoConn ~ 8600 5200
+Entry Wire Line
+	4550 6800 4650 6900
+$Comp
+L Connector_Generic:Conn_02x12_Odd_Even J1
+U 1 1 6164B72D
+P 3600 6300
+F 0 "J1" H 3650 7017 50  0000 C CNN
+F 1 "Conn_02x12_Odd_Even" H 3650 6926 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x12_P2.54mm_Vertical" H 3600 6300 50  0001 C CNN
+F 3 "~" H 3600 6300 50  0001 C CNN
+	1    3600 6300
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
 	3900 5450 3900 5800
 Wire Wire Line
-	3900 5900 3900 5800
-Connection ~ 3900 5800
+	3400 5500 3400 5800
 Wire Wire Line
-	3900 6000 3900 5900
-Connection ~ 3900 5900
+	3900 5900 3900 6000
 Wire Wire Line
-	3400 7300 3400 7200
-Connection ~ 3400 7300
+	3400 6900 3400 7400
 Wire Wire Line
-	3400 7200 3400 7100
-Connection ~ 3400 7200
+	3400 5800 3400 5900
+Connection ~ 3400 5800
 Wire Wire Line
-	3400 7100 3400 7000
-Connection ~ 3400 7100
+	3400 5900 3400 6000
+Connection ~ 3400 5900
 Wire Wire Line
-	3400 7000 3400 6900
-Connection ~ 3400 7000
+	3400 6000 3400 6100
+Connection ~ 3400 6000
+Wire Wire Line
+	3400 6100 3400 6200
+Connection ~ 3400 6100
 Wire Wire Line
 	3400 6900 3400 6800
 Connection ~ 3400 6900
@@ -1262,63 +1281,14 @@ Wire Wire Line
 	3400 6700 3400 6600
 Connection ~ 3400 6700
 Wire Wire Line
-	3400 5500 3400 5800
+	3400 6600 3400 6500
+Connection ~ 3400 6600
 Wire Wire Line
-	3400 5800 3400 5900
-Connection ~ 3400 5800
-Wire Wire Line
-	3400 5900 3400 6000
-Connection ~ 3400 5900
-Wire Wire Line
-	3400 6100 3400 6000
-Connection ~ 3400 6000
-Wire Wire Line
-	3400 6200 3400 6100
-Connection ~ 3400 6100
+	3400 6500 3400 6400
+Connection ~ 3400 6500
 Wire Wire Line
 	3400 6300 3400 6200
 Connection ~ 3400 6200
-Wire Wire Line
-	3400 6400 3400 6300
-Connection ~ 3400 6300
-Wire Wire Line
-	3400 6500 3400 6400
-Connection ~ 3400 6400
-$Comp
-L Device:R R?
-U 1 1 619FD932
-P 4100 7500
-AR Path="/6158F2C4/619FD932" Ref="R?"  Part="1" 
-AR Path="/619FD932" Ref="R2"  Part="1" 
-F 0 "R2" H 4170 7546 50  0000 L CNN
-F 1 "22k" H 4170 7455 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 4030 7500 50  0001 C CNN
-F 3 "~" H 4100 7500 50  0001 C CNN
-	1    4100 7500
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 619FD938
-P 4100 7700
-AR Path="/6158F2C4/619FD938" Ref="#PWR?"  Part="1" 
-AR Path="/619FD938" Ref="#PWR011"  Part="1" 
-F 0 "#PWR011" H 4100 7450 50  0001 C CNN
-F 1 "GND" H 4105 7527 50  0000 C CNN
-F 2 "" H 4100 7700 50  0001 C CNN
-F 3 "" H 4100 7700 50  0001 C CNN
-	1    4100 7700
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4100 7650 4100 7700
-Wire Wire Line
-	4100 7350 4100 7300
-Connection ~ 4100 7300
-Wire Wire Line
-	4100 7300 3900 7300
-NoConn ~ 8600 5400
-NoConn ~ 8600 5500
 Wire Bus Line
 	9650 4300 9650 6450
 Wire Bus Line
