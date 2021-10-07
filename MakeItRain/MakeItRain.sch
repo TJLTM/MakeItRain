@@ -747,9 +747,6 @@ Wire Wire Line
 	8000 5600 7500 5600
 Connection ~ 7500 5600
 Wire Wire Line
-	8000 5700 7500 5700
-Connection ~ 7500 5700
-Wire Wire Line
 	8000 5800 7500 5800
 Connection ~ 7500 5800
 Wire Wire Line
@@ -1067,7 +1064,7 @@ Wire Bus Line
 Entry Wire Line
 	4550 7300 4650 7400
 Text Label 4350 7300 0    50   ~ 0
-P2
+D2
 Text Label 4350 6200 0    50   ~ 0
 D21
 Text Label 4350 6400 0    50   ~ 0
@@ -1363,4 +1360,7 @@ Wire Bus Line
 	9650 4300 9650 6450
 Wire Bus Line
 	4650 3200 4650 7400
+Connection ~ 7500 5700
+Wire Wire Line
+	8000 5700 7500 5700
 $EndSCHEMATC
