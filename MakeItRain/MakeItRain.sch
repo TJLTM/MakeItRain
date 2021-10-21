@@ -110,7 +110,7 @@ P 2350 2450
 AR Path="/6158F2C4/614DBB1F" Ref="R?"  Part="1" 
 AR Path="/614DBB1F" Ref="R1"  Part="1" 
 F 0 "R1" H 2420 2496 50  0000 L CNN
-F 1 "R" H 2420 2405 50  0000 L CNN
+F 1 "10k" H 2420 2405 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical" V 2280 2450 50  0001 C CNN
 F 3 "~" H 2350 2450 50  0001 C CNN
 	1    2350 2450
@@ -1352,6 +1352,9 @@ Connection ~ 3400 6900
 Wire Wire Line
 	3400 6800 3400 6700
 Connection ~ 3400 6800
+Connection ~ 7500 5700
+Wire Wire Line
+	8000 5700 7500 5700
 Wire Wire Line
 	8500 5300 10150 5300
 Wire Bus Line
@@ -1360,7 +1363,4 @@ Wire Bus Line
 	9650 4300 9650 6450
 Wire Bus Line
 	4650 3200 4650 7400
-Connection ~ 7500 5700
-Wire Wire Line
-	8000 5700 7500 5700
 $EndSCHEMATC
