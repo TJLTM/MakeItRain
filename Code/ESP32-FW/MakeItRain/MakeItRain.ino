@@ -1,32 +1,41 @@
-#include <PubSubClient.h>
+//#include <PubSubClient.h>
 #include <Wire.h>
 #include <WiFi.h>
 #include <HTTP_Method.h>
 #include <Uri.h>
 #include <WebServer.h>
+#include <Preferences.h>
 
+const char* ssid     = "your-ssid";
+const char* password = "your-password";
 
 bool LocalControlLockOut = false;
 #define DaughterBoardSense 2
+#define BatteryVoltagePin 4
+float LastBatteryVoltage = 0.0;
 
 #define Zone1Input 36 //SVP 
 #define Zone1Output 27
-bool Zone1State = false;
 
 #define Zone2Input 39 //SVN
 #define Zone2Output 14
-bool Zone2State = false;
 
 #define Zone3Input 34
 #define Zone3Output 12
-bool Zone3State = false;
 
 #define Zone4Input 35
 #define Zone4Output 23
-bool Zone4State = false;
+
+#define Zone5Input 36
+#define Zone5Output 27
+
+#define Zone6Input 39
+#define Zone6Output 14
 
 
 void setup() {
+  Serial.begin(115200);
+  
   pinMode(Zone1Input,INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input),LocalInput1,RISING);
   pinMode(Zone1Output,OUTPUT);
@@ -47,8 +56,22 @@ void setup() {
   if (digitalRead(DaughterBoardSense) == HIGH){
     //put the stuff for outputs 5-8 in here when you get around to it.
     //Future Idea if using I2C for something maybe check to see if there is something there  
-  }
-  
+    pinMode(Zone5Input,INPUT);
+    attachInterrupt(digitalPinToInterrupt(Zone5Input),LocalInput5,RISING);
+    pinMode(Zone5Output,OUTPUT);
+    
+    pinMode(Zone6Input,INPUT);
+    attachInterrupt(digitalPinToInterrupt(Zone6Input),LocalInput6,RISING);
+    pinMode(Zone6Output,OUTPUT);
+    }
+
+//Setup Wifi Connection 
+  //Serial.print("Connecting to ");
+  //Serial.println(ssid);
+//  while (WiFi.status() != WL_CONNECTED) {
+//        delay(500);
+//        Serial.print(".");
+//    }
 }
 
 void loop() {
@@ -59,50 +82,63 @@ ReadVoltage();
 }
 
 void ReadVoltage(){
-  
+  int DN = analogRead(BatteryVoltagePin);
+  LastBatteryVoltage = DN;
+  Serial.print("DN for battery:");
+  Serial.println(LastBatteryVoltage);
 }
 
 void LocalInput1(){
-  if (Zone1State == false){
-    Zone1State = true;
+  if (digitalRead(Zone1Output) == LOW){
     SetOutput(1,HIGH);
   }
   else{
-    Zone1State = false;
     SetOutput(1,LOW);
   }
 }
 
 void LocalInput2(){
-  if (Zone2State == false){
-    Zone2State = true;
+  if (digitalRead(Zone2Output) == false){
     SetOutput(2,HIGH);
   }
   else{
-    Zone2State = false;
     SetOutput(2,LOW);
   }
 }
 
 void LocalInput3(){
-  if (Zone3State == false){
-    Zone3State = true;
+  if (digitalRead(Zone3Output) == false){
     SetOutput(3,HIGH);
   }
   else{
-    Zone3State = false;
     SetOutput(3,LOW);
   }
 }
 
 void LocalInput4(){
-  if (Zone4Input == false){
-    Zone4State = true;
+  if (digitalRead(Zone4Output) == false){
     SetOutput(4,HIGH);
   }
   else{
-    Zone4State = false;
     SetOutput(4,LOW);
+  }
+}
+
+void LocalInput5(){
+  if (digitalRead(Zone5Output) == LOW){
+    SetOutput(5,HIGH);
+  }
+  else{
+    SetOutput(5,LOW);
+  }
+}
+
+void LocalInput6(){
+  if (digitalRead(Zone6Output) == false){
+    SetOutput(6,HIGH);
+  }
+  else{
+    SetOutput(6,LOW);
   }
 }
 
@@ -123,18 +159,12 @@ void SetOutput(int Number,bool State){
     case 4:
       digitalWrite(Zone4Output,State);
       break;
-//    case 5:
-//      digitalWrite(Zone1Output,State);
-//      break;
-//    case 6:
-//      digitalWrite(Zone1Output,State);
-//      break;
-//    case 7:
-//      digitalWrite(Zone1Output,State);
-//      break;
-//    case 8:
-//      digitalWrite(Zone1Output,State);
-//      break;
+    case 5:
+      digitalWrite(Zone5Output,State);
+      break;
+    case 6:
+      digitalWrite(Zone6Output,State);
+      break;
   }
    
   
