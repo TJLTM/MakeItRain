@@ -1,10 +1,11 @@
-//#include <PubSubClient.h>
+#include <PubSubClient.h>
 #include <Wire.h>
 #include <WiFi.h>
 #include <HTTP_Method.h>
 #include <Uri.h>
 #include <WebServer.h>
 #include <Preferences.h>
+#include <Math.h>
 
 const char* ssid     = "your-ssid";
 const char* password = "your-password";
@@ -14,10 +15,10 @@ bool LocalControlLockOut = false;
 #define BatteryVoltagePin 4
 float LastBatteryVoltage = 0.0;
 
-#define Zone1Input 36 //SVP 
+#define Zone1Input 36
 #define Zone1Output 27
 
-#define Zone2Input 39 //SVN
+#define Zone2Input 39
 #define Zone2Output 14
 
 #define Zone3Input 34
@@ -54,8 +55,6 @@ void setup() {
   
   pinMode(DaughterBoardSense,INPUT);
   if (digitalRead(DaughterBoardSense) == HIGH){
-    //put the stuff for outputs 5-8 in here when you get around to it.
-    //Future Idea if using I2C for something maybe check to see if there is something there  
     pinMode(Zone5Input,INPUT);
     attachInterrupt(digitalPinToInterrupt(Zone5Input),LocalInput5,RISING);
     pinMode(Zone5Output,OUTPUT);
@@ -65,7 +64,7 @@ void setup() {
     pinMode(Zone6Output,OUTPUT);
     }
 
-//Setup Wifi Connection 
+  //Setup Wifi Connection 
   //Serial.print("Connecting to ");
   //Serial.println(ssid);
 //  while (WiFi.status() != WL_CONNECTED) {
@@ -75,17 +74,14 @@ void setup() {
 }
 
 void loop() {
-if (LocalControlLockOut == false){interrupts();}else {noInterrupts();}
+if (LocalControlLockOut == false){interrupts();}else {noInterrupts();} // Enable/Disable the local input Interrupts
 ReadVoltage();
 
 
 }
 
 void ReadVoltage(){
-  int DN = analogRead(BatteryVoltagePin);
-  LastBatteryVoltage = DN;
-  Serial.print("DN for battery:");
-  Serial.println(LastBatteryVoltage);
+  LastBatteryVoltage = round((30.954/4095)*analogRead(BatteryVoltagePin));
 }
 
 void LocalInput1(){
