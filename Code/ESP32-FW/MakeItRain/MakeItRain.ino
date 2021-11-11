@@ -7,10 +7,14 @@
 #include <Preferences.h>
 #include <Math.h>
 
-const char* ssid     = "your-ssid";
-const char* password = "your-password";
+WiFiClient espClient;
+PubSubClient client(espClient);
+long lastMsg = 0;
+char msg[50];
+int value = 0;
 
 bool LocalControlLockOut = false;
+bool ConnectedToWifi = false;
 #define DaughterBoardSense 2
 #define BatteryVoltagePin 4
 float LastBatteryVoltage = 0.0;
@@ -36,6 +40,11 @@ float LastBatteryVoltage = 0.0;
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("Starting...");
+  Preferences preferences;
+  preferences.begin("credentials", false);
+  //preferences.putString("ssid",""); // If you haven't stored your Wifi creds ples put them in here run once and then remove
+  //preferences.putString("password",""); 
   
   pinMode(Zone1Input,INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input),LocalInput1,RISING);
@@ -64,13 +73,35 @@ void setup() {
     pinMode(Zone6Output,OUTPUT);
     }
 
-  //Setup Wifi Connection 
-  //Serial.print("Connecting to ");
-  //Serial.println(ssid);
-//  while (WiFi.status() != WL_CONNECTED) {
-//        delay(500);
-//        Serial.print(".");
-//    }
+
+//  Setup Wifi Connection 
+  Serial.print("Connecting to ");
+  Serial.println(preferences.getString("ssid"));
+  WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
+  while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+        ConnectedToWifi = true;
+    }
+  preferences.end();
+
+  if (ConnectedToWifi == true){
+    //set up the MQTT 
+    preferences.begin("MQTT", false);
+    client.setServer(preferences.getString("IP").c_str(), preferences.getInt("Port"));
+    //client.setCallback(callback); 
+    preferences.end();
+  
+    // copy over any saved system level settings
+    preferences.begin("SystemSettings", false);
+    LocalControlLockOut = preferences.getBool("LocalLockOut");
+    preferences.end();
+  }
+  else{
+    //Turn on Bluetooth and put Wifi into AP mode 
+  }
+
+    
 }
 
 void loop() {
