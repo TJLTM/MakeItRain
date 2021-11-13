@@ -11,7 +11,7 @@
 // MQTT client
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
-char *mqttServer = "";
+char *mqttServer = "10.10.0.2";
 int mqttPort = 1883;
 
 //System Level
@@ -37,17 +37,11 @@ float LastBatteryVoltage;
 #define Zone4Input 35
 #define Zone4Output 23
 
-#define Zone5Input 36
-#define Zone5Output 27
-
-#define Zone6Input 39
-#define Zone6Output 14
-
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting...");
-  SetupAllStoredInformation();
+  //SetupAllStoredInformation();
  
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, RISING);
@@ -67,13 +61,7 @@ void setup() {
 
   pinMode(DaughterBoardSense, INPUT);
   if (digitalRead(DaughterBoardSense) == HIGH) {
-    pinMode(Zone5Input, INPUT);
-    attachInterrupt(digitalPinToInterrupt(Zone5Input), LocalInput5, RISING);
-    pinMode(Zone5Output, OUTPUT);
-
-    pinMode(Zone6Input, INPUT);
-    attachInterrupt(digitalPinToInterrupt(Zone6Input), LocalInput6, RISING);
-    pinMode(Zone6Output, OUTPUT);
+    //other stuff to put here for daughterboard setup
   }
 
   preferences.begin("credentials", false);
@@ -81,8 +69,8 @@ void setup() {
   Serial.println(preferences.getString("ssid"));
   WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
   preferences.end();
-  long StartTime = millis();
-  while (WiFi.status() != WL_CONNECTED && (abs(millis()-StartTime)<300)) {
+  int StartTime = millis();
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
@@ -97,6 +85,7 @@ void setup() {
     //setup other System Level settings
     LocalControlLockOut = preferences.getBool("LocalLockOut");
     NodeId = preferences.getBool("NodeId");
+    Name = Name + String(NodeId);
     preferences.end();
   }
   else {
@@ -109,16 +98,19 @@ void setup() {
 
 
 void SetupAllStoredInformation() {
-//  preferences.begin("credentials", false);
-//  preferences.putString("ssid", "Your WiFi SSID");
-//  preferences.putString("password", "Your Wifi Password");
-//  preferences.end();
+  /*
+   * Comment out the stuff you don't need to update in perferences. 
+   */
+  preferences.begin("credentials", false);
+  //preferences.putString("ssid", "Your WiFi SSID");
+  //preferences.putString("password", "Your Wifi Password");
+  preferences.end();
 
   preferences.begin("SystemSettings", false);
-  preferences.putBool("LocalLockOut",false);
-  preferences.putInt("NodeId",0);
-  preferences.putString("MQTTIP", "10.10.0.2");
-  preferences.putUShort("MQTTPORT", 1883);
+  //preferences.putBool("LocalLockOut",false);
+  //preferences.putInt("NodeId",0);
+  //preferences.putString("MQTTIP", "");
+  //preferences.putUShort("MQTTPORT", 1883);
   preferences.end();
 }
 
@@ -133,9 +125,17 @@ void loop() {
   } else {
     noInterrupts();
     //Read all the inputs and post to MQTT
+    for (int x = 1; x < 5; x++){
+        String PathName = "/" + Name + "/ZoneInput/" + String(x);
+        Serial.println(PathName);
+        mqttClient.publish(PathName.c_str(),String(ReadInput(x)).c_str());
+      } 
   }
 
-
+//  delay(250);
+//  mqttClient.publish("/MakeItRain0/ZoneOutput/4","1");
+//  delay(250);
+//  mqttClient.publish("/MakeItRain0/ZoneOutput/4","0");
 
   long CurrentTime = millis();
   if (abs(ThirtyMinTimer - CurrentTime) > 180000) {
@@ -145,7 +145,8 @@ void loop() {
 }
 
 void MqttConnectionCheck() {
-  if (!mqttClient.connected()){reconnect();
+  if (!mqttClient.connected()){
+    reconnect();
     mqttClient.loop();
   }
   
@@ -163,6 +164,9 @@ void LocalInput1() {
   else {
     SetOutput(1, LOW);
   }
+  String PathName = "/" + Name + "/ZoneOutput/1";
+  mqttClient.publish(PathName.c_str(),String(ReadOutput(1)).c_str());
+       
 }
 
 void LocalInput2() {
@@ -172,6 +176,8 @@ void LocalInput2() {
   else {
     SetOutput(2, LOW);
   }
+  String PathName = "/" + Name + "/ZoneOutput/2";
+  mqttClient.publish(PathName.c_str(),String(ReadOutput(2)).c_str());
 }
 
 void LocalInput3() {
@@ -181,6 +187,8 @@ void LocalInput3() {
   else {
     SetOutput(3, LOW);
   }
+  String PathName = "/" + Name + "/ZoneOutput/3";
+  mqttClient.publish(PathName.c_str(),String(ReadOutput(3)).c_str());
 }
 
 void LocalInput4() {
@@ -190,24 +198,8 @@ void LocalInput4() {
   else {
     SetOutput(4, LOW);
   }
-}
-
-void LocalInput5() {
-  if (digitalRead(Zone5Output) == LOW) {
-    SetOutput(5, HIGH);
-  }
-  else {
-    SetOutput(5, LOW);
-  }
-}
-
-void LocalInput6() {
-  if (digitalRead(Zone6Output) == false) {
-    SetOutput(6, HIGH);
-  }
-  else {
-    SetOutput(6, LOW);
-  }
+  String PathName = "/" + Name + "/ZoneOutput/4";
+  mqttClient.publish(PathName.c_str(),String(ReadOutput(4)).c_str());
 }
 
 void SetOutput(int Number, bool State) {
@@ -227,31 +219,48 @@ void SetOutput(int Number, bool State) {
     case 4:
       digitalWrite(Zone4Output, State);
       break;
-    case 5:
-      digitalWrite(Zone5Output, State);
-      break;
-    case 6:
-      digitalWrite(Zone6Output, State);
-      break;
   }
 
 
 }
 
+bool ReadOutput(int Number) {
+  /*
 
-void reconnect1() {
-  Serial.println("Connecting to MQTT Broker...");
-  while (!mqttClient.connected()) {
-    Serial.println("Reconnecting to MQTT Broker..");
-    String clientId = "ESP32Client-";
-    clientId += String(random(0xffff), HEX);
+  */
+  switch (Number) {
+    case 1:
+      return digitalRead(Zone1Output);
+      break;
+    case 2:
+      return digitalRead(Zone2Output);
+      break;
+    case 3:
+      return digitalRead(Zone3Output);
+      break;
+    case 4:
+      return digitalRead(Zone4Output);
+      break;
+  }
+}
 
-    if (mqttClient.connect(clientId.c_str())) {
-      Serial.println("Connected.");
-      // subscribe to topic
-      mqttClient.subscribe("/swa/commands");
-    }
+bool ReadInput(int Number) {
+  /*
 
+  */
+  switch (Number) {
+    case 1:
+      return digitalRead(Zone1Input);
+      break;
+    case 2:
+      return digitalRead(Zone2Input);
+      break;
+    case 3:
+      return digitalRead(Zone3Input);
+      break;
+    case 4:
+      return digitalRead(Zone4Input);
+      break;
   }
 }
 
@@ -260,12 +269,14 @@ void reconnect() {
   while (!mqttClient.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (mqttClient.connect(Name)) {
+    if (mqttClient.connect(Name.c_str())) {
       Serial.println("connected");
-      // Once connected, publish an announcement...
-      mqttClient.publish("outTopic","hello world");
-      // ... and resubscribe
-      mqttClient.subscribe("inTopic");
+      for (int x = 1; x < 5; x++){
+        String PathName = "/" + Name + "/ZoneOutput/" + String(x);
+        Serial.println(PathName);
+        mqttClient.subscribe(PathName.c_str());
+        mqttClient.publish(PathName.c_str(),String(ReadOutput(x)).c_str());
+      } 
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -276,10 +287,13 @@ void reconnect() {
   }
 }
 
+
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Callback - ");
-  Serial.print("Message:");
-  for (int i = 0; i < length; i++) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i=0;i<length;i++) {
     Serial.print((char)payload[i]);
   }
+  Serial.println();
 }
