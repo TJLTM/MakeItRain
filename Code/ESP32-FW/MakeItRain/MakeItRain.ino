@@ -22,15 +22,19 @@ float LastBatteryVoltage;
 //Zone 
 #define Zone1Input 36
 #define Zone1Output 27
+String ZO1Topic = "";
 
 #define Zone2Input 39
 #define Zone2Output 14
+String ZO2Topic = "";
 
 #define Zone3Input 34
 #define Zone3Output 12
+String ZO3Topic = "";
 
 #define Zone4Input 35
 #define Zone4Output 23
+String ZO4Topic = "";
 
 
 void setup() {
@@ -65,9 +69,11 @@ void setup() {
   WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
   preferences.end();
   int StartTime = millis();
-  while (WiFi.status() != WL_CONNECTED && (millis() - StartTime) < 300) {
+  int CurrentTime = millis();
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
+    CurrentTime = millis();
   }
 
   
@@ -82,12 +88,13 @@ void setup() {
     NodeId = preferences.getBool("NodeId");
     Name = Name + String(NodeId);
     preferences.end();
+    delay(100);
+    MqttConnectionCheck();
   }
   else {
     //Turn on Bluetooth and put Wifi into AP mode
   }
   
-  MqttConnectionCheck();
   ReadVoltage();
 }
 
@@ -134,7 +141,8 @@ void loop() {
   long CurrentTime = millis();
   ReadVoltage();
   if (abs(ThirtyMinTimer - CurrentTime) > 180000) {
-    mqttClient.publish("Votlage", String(LastBatteryVoltage).c_str());
+    String VTopic = "/" + Name + "Votlage";
+    mqttClient.publish(VTopic.c_str(), String(LastBatteryVoltage).c_str());
   }
 
 }
@@ -142,9 +150,8 @@ void loop() {
 void MqttConnectionCheck() {
   if (!mqttClient.connected()){
     reconnect();
-    mqttClient.loop();
   }
-  
+  mqttClient.loop();
 }
 
 void ReadVoltage() {
@@ -158,8 +165,7 @@ void LocalInput1() {
   else {
     SetOutput(1, LOW);
   }
-  String PathName = "/" + Name + "/ZoneOutput/1";
-  mqttClient.publish(PathName.c_str(),String(ReadOutput(1)).c_str());
+  mqttClient.publish(ZO1Topic.c_str(),String(ReadOutput(1)).c_str());
        
 }
 
@@ -170,8 +176,7 @@ void LocalInput2() {
   else {
     SetOutput(2, LOW);
   }
-  String PathName = "/" + Name + "/ZoneOutput/2";
-  mqttClient.publish(PathName.c_str(),String(ReadOutput(2)).c_str());
+  mqttClient.publish(ZO2Topic.c_str(),String(ReadOutput(2)).c_str());
 }
 
 void LocalInput3() {
@@ -181,8 +186,7 @@ void LocalInput3() {
   else {
     SetOutput(3, LOW);
   }
-  String PathName = "/" + Name + "/ZoneOutput/3";
-  mqttClient.publish(PathName.c_str(),String(ReadOutput(3)).c_str());
+  mqttClient.publish(ZO3Topic.c_str(),String(ReadOutput(3)).c_str());
 }
 
 void LocalInput4() {
@@ -192,8 +196,7 @@ void LocalInput4() {
   else {
     SetOutput(4, LOW);
   }
-  String PathName = "/" + Name + "/ZoneOutput/4";
-  mqttClient.publish(PathName.c_str(),String(ReadOutput(4)).c_str());
+  mqttClient.publish(ZO4Topic.c_str(),String(ReadOutput(4)).c_str());
 }
 
 void SetOutput(int Number, bool State) {
@@ -263,12 +266,20 @@ void reconnect() {
     // Attempt to connect
     if (mqttClient.connect(Name.c_str())) {
       Serial.println("connected");
-      for (int x = 1; x < 5; x++){
-        String PathName = "/" + Name + "/ZoneOutput/" + String(x);
-        Serial.println(PathName);
-        mqttClient.subscribe(PathName.c_str());
-        mqttClient.publish(PathName.c_str(),String(ReadOutput(x)).c_str());
-      } 
+      // sub to the Zone Output topics and pub the currect state 
+      ZO1Topic =  "/" + Name + "/ZoneOutput/1";
+      mqttClient.subscribe(ZO1Topic.c_str());
+      mqttClient.publish(ZO1Topic.c_str(),String(ReadOutput(1)).c_str());
+      ZO2Topic =  "/" + Name + "/ZoneOutput/2";
+      mqttClient.subscribe(ZO2Topic.c_str());
+      mqttClient.publish(ZO2Topic.c_str(),String(ReadOutput(2)).c_str());
+      ZO3Topic =  "/" + Name + "/ZoneOutput/3";
+      mqttClient.subscribe(ZO3Topic.c_str());
+      mqttClient.publish(ZO3Topic.c_str(),String(ReadOutput(3)).c_str());
+      ZO4Topic =  "/" + Name + "/ZoneOutput/4";
+      mqttClient.subscribe(ZO4Topic.c_str());
+      mqttClient.publish(ZO4Topic.c_str(),String(ReadOutput(4)).c_str());
+     
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -286,6 +297,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("] ");
   for (int i=0;i<length;i++) {
     Serial.print((char)payload[i]);
+    
   }
+  String CurrentOutputState;
+  if (String((char*)topic) == ZO1Topic){
+    //Check if the state in topic is different than the current state of the output. If different change to the correct state
+    CurrentOutputState = String(ReadOutput(1)).c_str();
+    //SetOutput(1,State);
+  }
+
+  
   Serial.println();
 }
