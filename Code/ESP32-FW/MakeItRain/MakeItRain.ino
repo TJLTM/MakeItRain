@@ -1,11 +1,6 @@
 #include <PubSubClient.h>
-#include <Wire.h>
 #include <WiFi.h>
-#include <HTTP_Method.h>
-#include <Uri.h>
-#include <WebServer.h>
 #include <Preferences.h>
-#include <Math.h>
 
 
 // MQTT client
@@ -70,7 +65,7 @@ void setup() {
   WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
   preferences.end();
   int StartTime = millis();
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED && (millis() - StartTime) < 300) {
     delay(500);
     Serial.print(".");
   }
@@ -115,6 +110,9 @@ void SetupAllStoredInformation() {
 }
 
 void loop() {
+  if (WiFi.status() != WL_CONNECTED){
+    Serial.println("Wifi Disconnected do something");
+  }
   MqttConnectionCheck();
 
   /* Enable/Disable the local input Interrupts
@@ -132,14 +130,11 @@ void loop() {
       } 
   }
 
-//  delay(250);
-//  mqttClient.publish("/MakeItRain0/ZoneOutput/4","1");
-//  delay(250);
-//  mqttClient.publish("/MakeItRain0/ZoneOutput/4","0");
-
+  
   long CurrentTime = millis();
+  ReadVoltage();
   if (abs(ThirtyMinTimer - CurrentTime) > 180000) {
-    ReadVoltage();
+    mqttClient.publish("Votlage", String(LastBatteryVoltage).c_str());
   }
 
 }
@@ -154,7 +149,6 @@ void MqttConnectionCheck() {
 
 void ReadVoltage() {
   LastBatteryVoltage = round((30.954 / 4095) * analogRead(BatteryVoltagePin));
-  mqttClient.publish("Votlage", String(LastBatteryVoltage).c_str());
 }
 
 void LocalInput1() {
@@ -220,8 +214,6 @@ void SetOutput(int Number, bool State) {
       digitalWrite(Zone4Output, State);
       break;
   }
-
-
 }
 
 bool ReadOutput(int Number) {
