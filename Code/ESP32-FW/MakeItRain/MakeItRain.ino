@@ -40,7 +40,7 @@ String ZO4Topic = "";
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting...");
-  //SetupAllStoredInformation();
+  SetupAllStoredInformation();
  
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, RISING);
@@ -81,6 +81,8 @@ void setup() {
     preferences.begin("SystemSettings", true);
     //set up the MQTT 
     //mqttClient.setServer(preferences.getString("MQTTIP").c_str(), preferences.getUShort("MQTTPORT"));
+    Serial.print("Mqtt port:");
+    Serial.println(preferences.getInt("MQTTPORT"));
     mqttClient.setServer(mqttServer,mqttPort);
     mqttClient.setCallback(callback);
     //setup other System Level settings
@@ -112,7 +114,7 @@ void SetupAllStoredInformation() {
   //preferences.putBool("LocalLockOut",false);
   //preferences.putInt("NodeId",0);
   //preferences.putString("MQTTIP", "");
-  //preferences.putUShort("MQTTPORT", 1883);
+  preferences.putInt("MQTTPORT", 1883);
   preferences.end();
 }
 
@@ -206,57 +208,82 @@ void SetOutput(int Number, bool State) {
   switch (Number) {
     case 1:
       digitalWrite(Zone1Output, State);
+      mqttClient.publish(ZO1Topic.c_str(),String(ReadOutput(1)).c_str());
       break;
     case 2:
       digitalWrite(Zone2Output, State);
+      mqttClient.publish(ZO2Topic.c_str(),String(ReadOutput(2)).c_str());
       break;
     case 3:
       digitalWrite(Zone3Output, State);
+      mqttClient.publish(ZO3Topic.c_str(),String(ReadOutput(3)).c_str());
       break;
     case 4:
       digitalWrite(Zone4Output, State);
+      mqttClient.publish(ZO4Topic.c_str(),String(ReadOutput(4)).c_str()); 
       break;
   }
 }
 
-bool ReadOutput(int Number) {
+String ReadOutput(int Number) {
   /*
 
   */
+  String ValueToReturn = "off";
   switch (Number) {
     case 1:
-      return digitalRead(Zone1Output);
+      if (digitalRead(Zone1Output) == 1){
+        ValueToReturn = "on";
+      }
       break;
     case 2:
-      return digitalRead(Zone2Output);
+      if (digitalRead(Zone2Output) == 1){
+        ValueToReturn = "on";
+      }
       break;
     case 3:
-      return digitalRead(Zone3Output);
+      if (digitalRead(Zone3Output) == 1){
+        ValueToReturn = "on";
+      }
       break;
     case 4:
-      return digitalRead(Zone4Output);
+      if (digitalRead(Zone4Output) == 1){
+        ValueToReturn = "on";
+      }
       break;
   }
+  
+  return ValueToReturn;
 }
 
-bool ReadInput(int Number) {
+String ReadInput(int Number) {
   /*
 
   */
+  String ValueToReturn = "off";
   switch (Number) {
     case 1:
-      return digitalRead(Zone1Input);
+      if (digitalRead(Zone1Input) == 1){
+        ValueToReturn = "on";
+      }
       break;
     case 2:
-      return digitalRead(Zone2Input);
+      if (digitalRead(Zone2Input) == 1){
+        ValueToReturn = "on";
+      }
       break;
     case 3:
-      return digitalRead(Zone3Input);
+      if (digitalRead(Zone3Input) == 1){
+        ValueToReturn = "on";
+      }
       break;
     case 4:
-      return digitalRead(Zone4Input);
+      if (digitalRead(Zone4Input) == 1){
+        ValueToReturn = "on";
+      }
       break;
   }
+  return ValueToReturn;
 }
 
 void reconnect() {
@@ -278,9 +305,9 @@ void reconnect() {
       mqttClient.publish(ZO3Topic.c_str(),String(ReadOutput(3)).c_str());
       ZO4Topic =  "/" + Name + "/ZoneOutput/4";
       mqttClient.subscribe(ZO4Topic.c_str());
-      mqttClient.publish(ZO4Topic.c_str(),String(ReadOutput(4)).c_str());
-     
-    } else {
+      mqttClient.publish(ZO4Topic.c_str(),String(ReadOutput(4)).c_str()); 
+    } 
+    else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
       Serial.println(" try again in 5 seconds");
@@ -295,17 +322,72 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
+  String message;
+  String CurrentOutputState;
   for (int i=0;i<length;i++) {
     Serial.print((char)payload[i]);
-    
+    message += (char)payload[i];
   }
-  String CurrentOutputState;
+  Serial.println();
+  
+  //Zone 1
   if (String((char*)topic) == ZO1Topic){
-    //Check if the state in topic is different than the current state of the output. If different change to the correct state
     CurrentOutputState = String(ReadOutput(1)).c_str();
-    //SetOutput(1,State);
+    if (message != CurrentOutputState){
+      if (message == "on"){
+        SetOutput(1,true);
+        Serial.println("Turning Zone 1: on");
+      }
+      if (message == "off"){
+        SetOutput(1,false);
+        Serial.println("Turning Zone 1: off");
+      } 
+    }
   }
 
-  
-  Serial.println();
+  //Zone 2
+  if (String((char*)topic) == ZO2Topic){
+    CurrentOutputState = String(ReadOutput(2)).c_str();
+    if (message != CurrentOutputState){
+      if (message == "on"){
+        SetOutput(2,true);
+        Serial.println("Turning Zone 2: on");
+      }
+      if (message == "off"){
+        SetOutput(2,false);
+        Serial.println("Turning Zone 2: off");
+      } 
+    }
+  }
+
+  //Zone 3
+  if (String((char*)topic) == ZO3Topic){
+    CurrentOutputState = String(ReadOutput(3)).c_str();
+    if (message != CurrentOutputState){
+      if (message == "on"){
+        SetOutput(3,true);
+        Serial.println("Turning Zone 3: on");
+      }
+      if (message == "off"){
+        SetOutput(3,false);
+        Serial.println("Turning Zone 3: off");
+      } 
+    }
+  }
+
+  //Zone 4
+  if (String((char*)topic) == ZO4Topic){
+    CurrentOutputState = String(ReadOutput(4)).c_str();
+    if (message != CurrentOutputState){
+      if (message == "on"){
+        SetOutput(4,true);
+        Serial.println("Turning Zone 4: on");
+      }
+      if (message == "off"){
+        SetOutput(4,false);
+        Serial.println("Turning Zone 4: off");
+      } 
+    }
+  }
+
 }
