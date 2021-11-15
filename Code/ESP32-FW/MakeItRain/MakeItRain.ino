@@ -7,7 +7,6 @@
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 char *mqttServer = "10.10.0.2";
-int mqttPort = 1883;
 
 //System Level
 String Name = "MakeItRain";
@@ -80,10 +79,8 @@ void setup() {
   if (WiFi.status() == WL_CONNECTED) {
     preferences.begin("SystemSettings", true);
     //set up the MQTT 
-    //mqttClient.setServer(preferences.getString("MQTTIP").c_str(), preferences.getUShort("MQTTPORT"));
-    Serial.print("Mqtt port:");
-    Serial.println(preferences.getInt("MQTTPORT"));
-    mqttClient.setServer(mqttServer,mqttPort);
+    //preferences.getString("MQTTIP").c_str()
+    mqttClient.setServer(mqttServer,preferences.getInt("MQTTPORT"));
     mqttClient.setCallback(callback);
     //setup other System Level settings
     LocalControlLockOut = preferences.getBool("LocalLockOut");
@@ -113,7 +110,7 @@ void SetupAllStoredInformation() {
   preferences.begin("SystemSettings", false);
   //preferences.putBool("LocalLockOut",false);
   //preferences.putInt("NodeId",0);
-  //preferences.putString("MQTTIP", "");
+  preferences.putString("MQTTIP", "10.10.0.2");
   preferences.putInt("MQTTPORT", 1883);
   preferences.end();
 }
