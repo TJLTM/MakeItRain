@@ -41,7 +41,7 @@ String ZO4Topic = "";
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting to... MAKEITRAIN");
-  SetupAllStoredInformation();
+  //SetupAllStoredInformation();
 
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, RISING);
@@ -151,14 +151,14 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
 
 
 void loop() {
-//  if (WiFi.status() != WL_CONNECTED) {
-//    ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
-//  }
-//
-//  if (NumberOfWifiReconntionFailures > MaxAttempts) {
-//    Serial.println("Connection attempts exhausted");
-//    LocalControlLockOut = false; //turn off lockout so control via buttons is restored. 
-//  }
+  if (WiFi.status() != WL_CONNECTED) {
+    ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
+  }
+
+  if (NumberOfWifiReconntionFailures > MaxAttempts) {
+    Serial.println("Connection attempts exhausted");
+    LocalControlLockOut = false; //turn off lockout so control via buttons is restored. 
+  }
 
   MqttConnectionCheck();
 
