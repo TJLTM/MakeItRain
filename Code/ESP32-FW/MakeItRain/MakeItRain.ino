@@ -1,6 +1,7 @@
 #include <PubSubClient.h>
 #include <WiFi.h>
 #include <Preferences.h>
+#include <WiFiClient.h>
 
 // MQTT client
 WiFiClient wifiClient;
@@ -12,9 +13,7 @@ String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 Preferences preferences;
-long ThirtyMinTimer;
-long TenSecondTimer;
-long OneSecondTimer;
+long ThirtyMinTimer,TenSecondTimer, OneSecondTimer;
 bool LocalControlLockOut = false;
 #define DaughterBoardSense 2
 #define BatteryVoltagePin 4
@@ -90,66 +89,6 @@ void setup() {
   ReadVoltage();
 }
 
-
-void SetupAllStoredInformation() {
-  /*
-     Comment out the stuff you don't need to update in perferences.
-  */
-  preferences.begin("credentials", false);
-  //preferences.clear();
-  //preferences.putString("ssid", "Your WiFi SSID");
-  //preferences.putString("password", "Your Wifi Password");
-  preferences.end();
-
-  preferences.begin("SystemSettings", false);
-  //preferences.clear();
-  preferences.putBool("LocalLockOut", true);
-  preferences.putString("MQTTIP", "IP"); //Tested with IP not hostnames
-  preferences.putInt("MQTTPORT", 1883);
-  preferences.end();
-}
-
-void SetupMQTT(){
-    preferences.begin("SystemSettings", true);
-    //set up the MQTT
-    String TargetFromMem = preferences.getString("MQTTIP");
-    char Target[TargetFromMem.length()];
-    TargetFromMem.toCharArray(Target,TargetFromMem.length()+1);
-    char *mqttServer;
-    mqttServer = &Target[0];
-    mqttClient.setServer(mqttServer, preferences.getInt("MQTTPORT"));
-    mqttClient.setCallback(callback);
-    preferences.end();
-}
-
-void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
-  if (NumberOfWifiReconntionFailures < Attempts) {
-    preferences.begin("credentials", false);
-    Serial.print("Connecting to ");
-    Serial.print(preferences.getString("ssid"));
-    Serial.print("  Attempt: ");
-    Serial.println(NumberOfWifiReconntionFailures);
-    WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
-    preferences.end();
-    
-    int StartTime = millis();
-    int CurrentTime = millis();
-    while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
-      delay(500);
-      Serial.print(".");
-      CurrentTime = millis();
-    }
-    Serial.println();
-    if (WiFi.status() == WL_CONNECTED) {
-      NumberOfWifiReconntionFailures = 0;
-    }
-    else {
-      NumberOfWifiReconntionFailures += 1;
-    }
-  }
-}
-
-
 void loop() {
   if (WiFi.status() != WL_CONNECTED) {
     ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
@@ -189,82 +128,59 @@ void loop() {
   }
 }
 
-void MqttConnectionCheck() {
-  if (WiFi.status() == WL_CONNECTED) {
-    if (!mqttClient.connected()) {
-      reconnect();
+void SetupAllStoredInformation() {
+  /*
+     Comment out the stuff you don't need to update in perferences.
+  */
+  preferences.begin("credentials", false);
+  //preferences.clear();
+  //preferences.putString("ssid", "Your WiFi SSID");
+  //preferences.putString("password", "Your Wifi Password");
+  preferences.end();
+
+  preferences.begin("SystemSettings", false);
+  //preferences.clear();
+  preferences.putBool("LocalLockOut", true);
+  preferences.putString("MQTTIP", "IP"); //Tested with IP not hostnames
+  preferences.putInt("MQTTPORT", 1883);
+  preferences.end();
+}
+
+//-----------------------------------------------------------------------------------
+//Wifi, AP and BLE
+//-----------------------------------------------------------------------------------
+void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
+  if (NumberOfWifiReconntionFailures < Attempts) {
+    preferences.begin("credentials", false);
+    Serial.print("Connecting to ");
+    Serial.print(preferences.getString("ssid"));
+    Serial.print("  Attempt: ");
+    Serial.println(NumberOfWifiReconntionFailures);
+    WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
+    preferences.end();
+    
+    int StartTime = millis();
+    int CurrentTime = millis();
+    while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
+      delay(500);
+      Serial.print(".");
+      CurrentTime = millis();
     }
-    mqttClient.loop();
+    Serial.println();
+    if (WiFi.status() == WL_CONNECTED) {
+      NumberOfWifiReconntionFailures = 0;
+    }
+    else {
+      NumberOfWifiReconntionFailures += 1;
+    }
   }
 }
 
+//-----------------------------------------------------------------------------------
+//Reading states
+//-----------------------------------------------------------------------------------
 void ReadVoltage() {
   LastBatteryVoltage = round((30.954 / 4095) * analogRead(BatteryVoltagePin));
-}
-
-void LocalInput1() {
-  if (digitalRead(Zone1Output) == LOW) {
-    SetOutput(1, HIGH);
-  }
-  else {
-    SetOutput(1, LOW);
-  }
-  mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
-
-}
-
-void LocalInput2() {
-  if (digitalRead(Zone2Output) == false) {
-    SetOutput(2, HIGH);
-  }
-  else {
-    SetOutput(2, LOW);
-  }
-  mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
-}
-
-void LocalInput3() {
-  if (digitalRead(Zone3Output) == false) {
-    SetOutput(3, HIGH);
-  }
-  else {
-    SetOutput(3, LOW);
-  }
-  mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
-}
-
-void LocalInput4() {
-  if (digitalRead(Zone4Output) == false) {
-    SetOutput(4, HIGH);
-  }
-  else {
-    SetOutput(4, LOW);
-  }
-  mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
-}
-
-void SetOutput(int Number, bool State) {
-  /*
-
-  */
-  switch (Number) {
-    case 1:
-      digitalWrite(Zone1Output, State);
-      mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
-      break;
-    case 2:
-      digitalWrite(Zone2Output, State);
-      mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
-      break;
-    case 3:
-      digitalWrite(Zone3Output, State);
-      mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
-      break;
-    case 4:
-      digitalWrite(Zone4Output, State);
-      mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
-      break;
-  }
 }
 
 String ReadOutput(int Number) {
@@ -326,6 +242,103 @@ String ReadInput(int Number) {
       break;
   }
   return ValueToReturn;
+}
+
+
+//-----------------------------------------------------------------------------------
+//Local control interrupts
+//-----------------------------------------------------------------------------------
+void LocalInput1() {
+  if (digitalRead(Zone1Output) == LOW) {
+    SetOutput(1, HIGH);
+  }
+  else {
+    SetOutput(1, LOW);
+  }
+  mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+
+}
+
+void LocalInput2() {
+  if (digitalRead(Zone2Output) == false) {
+    SetOutput(2, HIGH);
+  }
+  else {
+    SetOutput(2, LOW);
+  }
+  mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+}
+
+void LocalInput3() {
+  if (digitalRead(Zone3Output) == false) {
+    SetOutput(3, HIGH);
+  }
+  else {
+    SetOutput(3, LOW);
+  }
+  mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+}
+
+void LocalInput4() {
+  if (digitalRead(Zone4Output) == false) {
+    SetOutput(4, HIGH);
+  }
+  else {
+    SetOutput(4, LOW);
+  }
+  mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+}
+
+//-----------------------------------------------------------------------------------
+//Set Functions 
+//-----------------------------------------------------------------------------------
+void SetOutput(int Number, bool State) {
+  /*
+
+  */
+  switch (Number) {
+    case 1:
+      digitalWrite(Zone1Output, State);
+      mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+      break;
+    case 2:
+      digitalWrite(Zone2Output, State);
+      mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+      break;
+    case 3:
+      digitalWrite(Zone3Output, State);
+      mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+      break;
+    case 4:
+      digitalWrite(Zone4Output, State);
+      mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+      break;
+  }
+}
+
+//-----------------------------------------------------------------------------------
+//MQTT Related 
+//-----------------------------------------------------------------------------------
+void SetupMQTT(){
+    preferences.begin("SystemSettings", true);
+    //set up the MQTT
+    String TargetFromMem = preferences.getString("MQTTIP");
+    char Target[TargetFromMem.length()];
+    TargetFromMem.toCharArray(Target,TargetFromMem.length()+1);
+    char *mqttServer;
+    mqttServer = &Target[0];
+    mqttClient.setServer(mqttServer, preferences.getInt("MQTTPORT"));
+    mqttClient.setCallback(callback);
+    preferences.end();
+}
+
+void MqttConnectionCheck() {
+  if (WiFi.status() == WL_CONNECTED) {
+    if (!mqttClient.connected()) {
+      reconnect();
+    }
+    mqttClient.loop();
+  }
 }
 
 void reconnect() {
