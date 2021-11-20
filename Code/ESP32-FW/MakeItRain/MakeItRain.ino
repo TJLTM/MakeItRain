@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <Preferences.h>
 #include <WiFiClient.h>
+#include <WiFiAP.h>
 
 // MQTT client
 WiFiClient wifiClient;
@@ -176,6 +177,10 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
   }
 }
 
+void SetupAP(){
+  //WiFi.softAP(Name);
+}
+
 //-----------------------------------------------------------------------------------
 //Reading states
 //-----------------------------------------------------------------------------------
@@ -255,8 +260,6 @@ void LocalInput1() {
   else {
     SetOutput(1, LOW);
   }
-  mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
-
 }
 
 void LocalInput2() {
@@ -266,7 +269,6 @@ void LocalInput2() {
   else {
     SetOutput(2, LOW);
   }
-  mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
 }
 
 void LocalInput3() {
@@ -276,7 +278,6 @@ void LocalInput3() {
   else {
     SetOutput(3, LOW);
   }
-  mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
 }
 
 void LocalInput4() {
@@ -286,7 +287,6 @@ void LocalInput4() {
   else {
     SetOutput(4, LOW);
   }
-  mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
 }
 
 //-----------------------------------------------------------------------------------
