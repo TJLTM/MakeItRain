@@ -24,18 +24,22 @@ float LastBatteryVoltage;
 #define Zone1Input 36
 #define Zone1Output 27
 String ZO1Topic = "";
+String ZO1State = "off";
 
 #define Zone2Input 39
 #define Zone2Output 14
 String ZO2Topic = "";
+String ZO2State = "off";
 
 #define Zone3Input 34
 #define Zone3Output 12
 String ZO3Topic = "";
+String ZO3State = "off";
 
 #define Zone4Input 35
 #define Zone4Output 23
 String ZO4Topic = "";
+String ZO4State = "off";
 
 
 void setup() {
@@ -141,9 +145,9 @@ void SetupAllStoredInformation() {
 
   preferences.begin("SystemSettings", false);
   //preferences.clear();
-  preferences.putBool("LocalLockOut", true);
-  preferences.putString("MQTTIP", "IP"); //Tested with IP not hostnames
-  preferences.putInt("MQTTPORT", 1883);
+  //preferences.putBool("LocalLockOut", true);
+  //preferences.putString("MQTTIP", "IP"); //Tested with IP not hostnames
+  //preferences.putInt("MQTTPORT", 1883);
   preferences.end();
 }
 
@@ -299,19 +303,19 @@ void SetOutput(int Number, bool State) {
   switch (Number) {
     case 1:
       digitalWrite(Zone1Output, State);
-      mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+      //mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
       break;
     case 2:
       digitalWrite(Zone2Output, State);
-      mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+      //mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
       break;
     case 3:
       digitalWrite(Zone3Output, State);
-      mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+      //mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
       break;
     case 4:
       digitalWrite(Zone4Output, State);
-      mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+      //mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
       break;
   }
 }
