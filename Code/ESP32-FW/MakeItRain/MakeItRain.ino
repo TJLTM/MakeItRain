@@ -25,21 +25,25 @@ float LastBatteryVoltage;
 #define Zone1Output 27
 String ZO1Topic = "";
 String ZO1State = "off";
+String LastMQTTZO1State = "off";
 
 #define Zone2Input 39
 #define Zone2Output 14
 String ZO2Topic = "";
 String ZO2State = "off";
+String LastMQTTZO2State = "off";
 
 #define Zone3Input 34
 #define Zone3Output 12
 String ZO3Topic = "";
 String ZO3State = "off";
+String LastMQTTZO3State = "off";
 
 #define Zone4Input 35
 #define Zone4Output 23
 String ZO4Topic = "";
 String ZO4State = "off";
+String LastMQTTZO4State = "off";
 
 
 void setup() {
@@ -131,6 +135,24 @@ void loop() {
     mqttClient.publish(VTopic.c_str(), String(LastBatteryVoltage).c_str());
     TenSecondTimer = millis();
   }
+
+ 
+  if (LastMQTTZO1State != ReadOutput(1)){
+    mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+  }
+
+if (LastMQTTZO2State != ReadOutput(2)){
+    mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+  }
+
+  if (LastMQTTZO3State != ReadOutput(3)){
+    mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+  }
+
+  if (LastMQTTZO4State != ReadOutput(4)){
+    mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+  }
+  
 }
 
 void SetupAllStoredInformation() {
@@ -300,22 +322,27 @@ void SetOutput(int Number, bool State) {
   /*
 
   */
+  String Translation = "off";
+  if (State == HIGH){
+    Translation = "on";
+  }
+  
   switch (Number) {
     case 1:
       digitalWrite(Zone1Output, State);
-      //mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+      ZO1State = Translation;
       break;
     case 2:
       digitalWrite(Zone2Output, State);
-      //mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+      ZO2State = Translation;
       break;
     case 3:
       digitalWrite(Zone3Output, State);
-      //mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+      ZO3State = Translation;
       break;
     case 4:
       digitalWrite(Zone4Output, State);
-      //mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+      ZO4State = Translation;
       break;
   }
 }
@@ -391,6 +418,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //Zone 1
   if (String((char*)topic) == ZO1Topic) {
     CurrentOutputState = String(ReadOutput(1)).c_str();
+    LastMQTTZO1State = message;
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(1, true);
@@ -406,6 +434,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //Zone 2
   if (String((char*)topic) == ZO2Topic) {
     CurrentOutputState = String(ReadOutput(2)).c_str();
+    LastMQTTZO2State = message;
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(2, true);
@@ -421,6 +450,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //Zone 3
   if (String((char*)topic) == ZO3Topic) {
     CurrentOutputState = String(ReadOutput(3)).c_str();
+    LastMQTTZO3State = message;
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(3, true);
@@ -436,6 +466,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //Zone 4
   if (String((char*)topic) == ZO4Topic) {
     CurrentOutputState = String(ReadOutput(4)).c_str();
+    LastMQTTZO4State = message;
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(4, true);
