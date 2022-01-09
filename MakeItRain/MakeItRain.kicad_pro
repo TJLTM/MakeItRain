@@ -439,6 +439,18 @@
     [
       "00000000-0000-0000-0000-00006158b957",
       "Zone4IO"
+    ],
+    [
+      "99204adf-a081-4da3-8031-dd03bceb7b2a",
+      "Power"
+    ],
+    [
+      "8d40f71f-a20a-4db7-8103-dcb791f86750",
+      "Voltage Sensors"
+    ],
+    [
+      "356c600f-2a68-48a9-b543-d1d039e7c815",
+      "InputIsolation"
     ]
   ],
   "text_variables": {}
