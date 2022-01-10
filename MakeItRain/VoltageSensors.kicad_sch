@@ -280,10 +280,6 @@
     (uuid a0febee8-2292-4db0-b776-221e0c41eb46)
   )
 
-  (no_connect (at 163.83 80.01) (uuid 24ab48c9-52d5-47b0-856c-c231954f1a6b))
-  (no_connect (at 163.83 85.09) (uuid 5280e715-b8fc-4ffb-aba4-25b3f3066ef1))
-  (no_connect (at 163.83 82.55) (uuid 8b51352d-4709-4de7-ac8b-741f99dc903f))
-
   (wire (pts (xy 119.38 81.28) (xy 119.38 82.55))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 00336a4a-db92-4541-9fe4-855d43706a80)
