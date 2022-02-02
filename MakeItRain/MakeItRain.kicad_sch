@@ -1568,9 +1568,6 @@
   (junction (at 36.83 175.26) (diameter 0) (color 0 0 0 0)
     (uuid a0e34625-3e76-4855-865a-c494fe9ba590)
   )
-  (junction (at 161.29 125.73) (diameter 0) (color 0 0 0 0)
-    (uuid a59934fe-d66c-4ed4-bb7f-adcb58a11e21)
-  )
   (junction (at 25.4 167.64) (diameter 0) (color 0 0 0 0)
     (uuid a6544f78-4806-4405-8b12-1bd1a7747ffd)
   )
@@ -1644,6 +1641,10 @@
   (wire (pts (xy 161.29 148.59) (xy 177.8 148.59))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 02538207-54a8-4266-8d51-23871852b2ff)
+  )
+  (wire (pts (xy 161.29 128.27) (xy 177.8 128.27))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 032dfcdc-1f4a-4bac-88e6-f4dd3e65d87b)
   )
   (wire (pts (xy 224.79 38.735) (xy 224.79 43.815))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -2201,10 +2202,6 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid e9bf6673-9320-4c84-9e32-e01246b47489)
   )
-  (wire (pts (xy 161.29 125.73) (xy 161.29 128.27))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid eedc3e66-4557-45e2-88c7-99b41e1553df)
-  )
   (wire (pts (xy 72.39 175.26) (xy 72.39 172.72))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid f1a03d9f-1b91-48a0-80bd-b94e328d5242)
@@ -2448,6 +2445,13 @@
     (uuid 57e5a784-f76d-4139-9381-01cf4838c415)
     (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 183.8132 130.7306 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+  )
+  (global_label "AuxVoltage" (shape input) (at 177.8 128.27 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid 5a2e22df-3dc6-44c3-bc13-82a0c76ab18b)
+    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 190.4052 128.1906 0)
+      (effects (font (size 1.27 1.27)) (justify right) hide)
     )
   )
   (global_label "D17" (shape input) (at 87.63 50.8 0) (fields_autoplaced)
@@ -3729,9 +3733,6 @@
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/951b6f79-86f1-4754-b740-e334b9098494"
       (reference "#PWR046") (unit 1) (value "+3.3V") (footprint "")
     )
-    (path "/356c600f-2a68-48a9-b543-d1d039e7c815/b25a6e7f-ac8f-4fb5-9236-f417632edc9d"
-      (reference "#PWR047") (unit 1) (value "+3.3V") (footprint "")
-    )
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/c6d1a5ed-a9f5-400d-9242-15501f9eaaf7"
       (reference "#PWR047") (unit 1) (value "GND") (footprint "")
     )
@@ -3760,7 +3761,10 @@
       (reference "#PWR055") (unit 1) (value "+3.3V") (footprint "")
     )
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/5c2fd002-181f-47cf-b659-f3e455c0bf84"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0101") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/356c600f-2a68-48a9-b543-d1d039e7c815/b25a6e7f-ac8f-4fb5-9236-f417632edc9d"
+      (reference "#PWR0102") (unit 1) (value "+3.3V") (footprint "")
     )
     (path "/90c4be7f-3410-4327-b602-922129c35c5d"
       (reference "C1") (unit 1) (value "0.1uF") (footprint "Capacitor_THT:C_Rect_L9.0mm_W3.6mm_P7.50mm_MKT")
@@ -3807,13 +3811,13 @@
     (path "/00000000-0000-0000-0000-00006158b83d/4150ba97-926c-4314-8e49-e1bb33b6f7d8"
       (reference "D6") (unit 1) (value "1N4007") (footprint "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal")
     )
-    (path "/00000000-0000-0000-0000-00006158b83d/00000000-0000-0000-0000-0000615dbdb1"
+    (path "/00000000-0000-0000-0000-00006158b957/00000000-0000-0000-0000-0000615dbdb1"
       (reference "D7") (unit 1) (value "STPS3150RL") (footprint "Diode_THT:D_DO-201_P15.24mm_Horizontal")
     )
     (path "/00000000-0000-0000-0000-00006158b957/4150ba97-926c-4314-8e49-e1bb33b6f7d8"
       (reference "D8") (unit 1) (value "1N4007") (footprint "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal")
     )
-    (path "/00000000-0000-0000-0000-00006158b957/00000000-0000-0000-0000-0000615dbdb1"
+    (path "/00000000-0000-0000-0000-00006158b83d/00000000-0000-0000-0000-0000615dbdb1"
       (reference "D9") (unit 1) (value "STPS3150RL") (footprint "Diode_THT:D_DO-201_P15.24mm_Horizontal")
     )
     (path "/99204adf-a081-4da3-8031-dd03bceb7b2a/51ce3c03-31cb-4ec5-8f40-baf05ba75ff9"
@@ -3840,8 +3844,8 @@
     (path "/00000000-0000-0000-0000-0000614eba39"
       (reference "J3") (unit 1) (value "Conn_01x19") (footprint "Connector_PinSocket_2.54mm:PinSocket_1x19_P2.54mm_Vertical")
     )
-    (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/6020cd58-4f88-49ce-8ea8-42dd43bbb15b"
-      (reference "J4") (unit 1) (value "Conn_01x03") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
+    (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/fa1e7186-4f1e-43c0-bd2b-271157226479"
+      (reference "J4") (unit 1) (value "Conn_01x01") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical")
     )
     (path "/99204adf-a081-4da3-8031-dd03bceb7b2a/543ff046-0771-46a7-8845-3f5ebc2980df"
       (reference "L1") (unit 1) (value "150uH") (footprint "Inductor_THT:L_Axial_L6.6mm_D2.7mm_P10.16mm_Horizontal_Vishay_IM-2")
@@ -3988,7 +3992,7 @@
       (reference "R33") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/c2a57e48-486b-4b03-9956-74f9371d1585"
-      (reference "R?") (unit 1) (value "47k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R34") (unit 1) (value "47k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/73b41eb2-3ccf-4143-92fe-caaab34649bf"
       (reference "RV1") (unit 1) (value "500k") (footprint "Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical")

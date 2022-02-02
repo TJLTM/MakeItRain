@@ -1066,7 +1066,7 @@
   (symbol (lib_id "Device:D_Schottky") (at 142.24 101.6 270)
     (in_bom yes) (on_board yes)
     (uuid 00000000-0000-0000-0000-0000615dbdb1)
-    (property "Reference" "D9" (id 0) (at 144.272 100.4316 90)
+    (property "Reference" "D7" (id 0) (at 144.272 100.4316 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "STPS3150RL" (id 1) (at 144.272 102.743 90)
