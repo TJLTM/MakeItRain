@@ -131,7 +131,7 @@ void loop() {
     String VTopic = "/" + Name + "/" + ID + "VS Votlage";
     mqttClient.publish(VTopic.c_str(), String(LastBatteryVoltage).c_str());
 
-    String VTopic = "/" + Name + "/" + ID + "RTC Battery Votlage";
+    VTopic = "/" + Name + "/" + ID + "RTC Battery Votlage";
     mqttClient.publish(VTopic.c_str(), String(LastRTCBatteryVoltage).c_str());
     TenSecondTimer = millis();
   }
