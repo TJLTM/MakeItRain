@@ -1,3 +1,6 @@
+#include <RTClib.h>
+#include <Wire.h>
+
 #define Zone1Input 26
 #define Zone1Output 17
 #define Zone2Input 27
@@ -11,6 +14,8 @@
 #define ResetButton 22
 #define LEDOut 21
 
+RTC_DS3231 rtc;
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void setup() {
   Serial.begin(9600);
@@ -24,6 +29,7 @@ void setup() {
   pinMode(Zone3Output, OUTPUT);
   pinMode(Zone4Output, OUTPUT);
   pinMode(LEDOut, OUTPUT);
+  rtc.begin();
 }
 
 void loop() {
@@ -31,7 +37,57 @@ void loop() {
   //ReadADCs();
   //ReadInputs();
   //OutputWalk();
-  OutputInputcheck();
+  //OutputInputcheck();
+  RTCCheck();
+}
+
+void RTCCheck() {
+  DateTime now = rtc.now();
+
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day(), DEC);
+  Serial.print(" (");
+  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+  Serial.print(") ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
+
+  Serial.print(" since midnight 1/1/1970 = ");
+  Serial.print(now.unixtime());
+  Serial.print("s = ");
+  Serial.print(now.unixtime() / 86400L);
+  Serial.println("d");
+
+  // calculate a date which is 7 days, 12 hours, 30 minutes, 6 seconds into the future
+  DateTime future (now + TimeSpan(7, 12, 30, 6));
+
+  Serial.print(" now + 7d + 12h + 30m + 6s: ");
+  Serial.print(future.year(), DEC);
+  Serial.print('/');
+  Serial.print(future.month(), DEC);
+  Serial.print('/');
+  Serial.print(future.day(), DEC);
+  Serial.print(' ');
+  Serial.print(future.hour(), DEC);
+  Serial.print(':');
+  Serial.print(future.minute(), DEC);
+  Serial.print(':');
+  Serial.print(future.second(), DEC);
+  Serial.println();
+
+  Serial.print("Temperature: ");
+  Serial.print(rtc.getTemperature());
+  Serial.println(" C");
+
+  Serial.println();
+  delay(3000);
 }
 
 void OutputInputcheck() {
@@ -40,15 +96,18 @@ void OutputInputcheck() {
   digitalWrite(Zone3Output, digitalRead(Zone3Input));
   digitalWrite(Zone4Output, digitalRead(Zone4Input));
 }
+
 void ButtonCheck() {
   digitalWrite(LEDOut, digitalRead(ResetButton));
 }
+
 void ReadADCs() {
   Serial.print("RTC Battery Voltage:");
   Serial.println(analogRead(RTCBatteryVoltagePin));
   Serial.print("VS Voltage:");
   Serial.println(analogRead(VSVoltagePin));
 }
+
 void ReadInputs() {
   Serial.print("Zone1Input:");
   Serial.println(digitalRead(Zone1Input));
@@ -66,6 +125,7 @@ void ReadInputs() {
   Serial.println(digitalRead(Zone4Input));
   delay(2000);
 }
+
 void OutputWalk() {
   Serial.println("Zone1Output high");
   digitalWrite(Zone1Output, HIGH);

@@ -16,31 +16,33 @@ int MaxAttempts = 4;
 Preferences preferences;
 long ThirtyMinTimer,TenSecondTimer, OneSecondTimer;
 bool LocalControlLockOut = false;
-#define DaughterBoardSense 2
-#define BatteryVoltagePin 4
-float LastBatteryVoltage;
+#define RTCBatteryVoltagePin 39
+#define VSVoltagePin 36
+#define ResetButton 22
+#define LEDOut 21
+float LastBatteryVoltage, LastRTCBatteryVoltage;
 
 //Zone definitions
-#define Zone1Input 36
-#define Zone1Output 27
+#define Zone1Input 26
+#define Zone1Output 17
 String ZO1Topic = "";
 String ZO1State = "off";
 String LastMQTTZO1State = "off";
 
-#define Zone2Input 39
-#define Zone2Output 14
+#define Zone2Input 27
+#define Zone2Output 16
 String ZO2Topic = "";
 String ZO2State = "off";
 String LastMQTTZO2State = "off";
 
-#define Zone3Input 34
-#define Zone3Output 12
+#define Zone3Input 14
+#define Zone3Output 15
 String ZO3Topic = "";
 String ZO3State = "off";
 String LastMQTTZO3State = "off";
 
-#define Zone4Input 35
-#define Zone4Output 23
+#define Zone4Input 12
+#define Zone4Output 2
 String ZO4Topic = "";
 String ZO4State = "off";
 String LastMQTTZO4State = "off";
@@ -66,11 +68,6 @@ void setup() {
   pinMode(Zone4Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, RISING);
   pinMode(Zone4Output, OUTPUT);
-
-  pinMode(DaughterBoardSense, INPUT);
-  if (digitalRead(DaughterBoardSense) == HIGH) {
-    //other stuff to put here for daughterboard setup
-  }
 
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
@@ -131,8 +128,11 @@ void loop() {
   long CurrentTime = millis();
   ReadVoltage();
   if (abs(TenSecondTimer - CurrentTime) > 180000) {
-    String VTopic = "/" + Name + "/" + ID + "Votlage";
+    String VTopic = "/" + Name + "/" + ID + "VS Votlage";
     mqttClient.publish(VTopic.c_str(), String(LastBatteryVoltage).c_str());
+
+    String VTopic = "/" + Name + "/" + ID + "RTC Battery Votlage";
+    mqttClient.publish(VTopic.c_str(), String(LastRTCBatteryVoltage).c_str());
     TenSecondTimer = millis();
   }
 
@@ -211,7 +211,10 @@ void SetupAP(){
 //Reading states
 //-----------------------------------------------------------------------------------
 void ReadVoltage() {
-  LastBatteryVoltage = round((30.954 / 4095) * analogRead(BatteryVoltagePin));
+  LastBatteryVoltage = round((30.954 / 4095) * analogRead(VSVoltagePin));
+
+  LastRTCBatteryVoltage = round((30.954 / 4095) * analogRead(RTCBatteryVoltagePin));
+  
 }
 
 String ReadOutput(int Number) {
