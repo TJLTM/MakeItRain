@@ -3968,28 +3968,28 @@
       (reference "R25") (unit 1) (value "47k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/0ea35afc-308b-41d4-ae5e-eef93b1aea5b"
-      (reference "R26") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R26") (unit 1) (value "330") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/4ac30e5c-d54e-4c62-90f1-0f26d5c11e7b"
-      (reference "R27") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R27") (unit 1) (value "330") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/7a019cbc-f5de-46dd-a75c-ef7707b0adf5"
-      (reference "R28") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R28") (unit 1) (value "330") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/8701ce1d-c1e3-4901-ac29-6e550bf13cfb"
-      (reference "R29") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R29") (unit 1) (value "330") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/fccc01e5-d61a-43ef-b8e2-3dbb39fe3b65"
-      (reference "R30") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R30") (unit 1) (value "22k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/2de8c8fb-411f-437b-8833-177267802743"
-      (reference "R31") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R31") (unit 1) (value "22k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/1e7b5301-c35a-44cc-ad5a-67ec03ac5db1"
-      (reference "R32") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R32") (unit 1) (value "22k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/356c600f-2a68-48a9-b543-d1d039e7c815/c806eb65-978c-4e91-8aef-0dc7db846b93"
-      (reference "R33") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R33") (unit 1) (value "22k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/c2a57e48-486b-4b03-9956-74f9371d1585"
       (reference "R34") (unit 1) (value "47k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
