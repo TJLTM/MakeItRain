@@ -9,12 +9,13 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
+bool debug = true;
 String Name = "MakeItRain";
 String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 Preferences preferences;
-long ThirtyMinTimer,TenSecondTimer, OneSecondTimer;
+long ThirtyMinTimer, TenSecondTimer, OneSecondTimer;
 bool LocalControlLockOut = false;
 #define RTCBatteryVoltagePin 39
 #define VSVoltagePin 36
@@ -28,24 +29,32 @@ float LastBatteryVoltage, LastRTCBatteryVoltage;
 String ZO1Topic = "";
 String ZO1State = "off";
 String LastMQTTZO1State = "off";
+float ZO1MaxOn;
+long Zone1TurnedOnTime;
 
 #define Zone2Input 27
 #define Zone2Output 16
 String ZO2Topic = "";
 String ZO2State = "off";
 String LastMQTTZO2State = "off";
+float ZO2MaxOn;
+long Zone2TurnedOnTime;
 
 #define Zone3Input 14
 #define Zone3Output 15
 String ZO3Topic = "";
 String ZO3State = "off";
 String LastMQTTZO3State = "off";
+float ZO3MaxOn;
+long Zone3TurnedOnTime;
 
 #define Zone4Input 12
 #define Zone4Output 2
 String ZO4Topic = "";
 String ZO4State = "off";
 String LastMQTTZO4State = "off";
+float ZO4MaxOn;
+long Zone4TurnedOnTime;
 
 
 void setup() {
@@ -72,14 +81,20 @@ void setup() {
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
   LocalControlLockOut = preferences.getBool("LocalLockOut");
+
+  ZO1MaxOn = preferences.getFloat("Z1_Max");
+  ZO2MaxOn = preferences.getFloat("Z2_Max");
+  ZO3MaxOn = preferences.getFloat("Z3_Max");
+  ZO4MaxOn = preferences.getFloat("Z4_Max");
+
   preferences.end();
-  
+
   String MAC = WiFi.macAddress();
-    for (int x = 9; x < 17; x++) {
-      if (MAC.charAt(x) != ':') {
-        ID.concat(MAC.charAt(x));
-      }
+  for (int x = 9; x < 17; x++) {
+    if (MAC.charAt(x) != ':') {
+      ID.concat(MAC.charAt(x));
     }
+  }
 
   ConnectToDaWEEEEFEEEEEEEE(1, 60000);
   SetupMQTT();
@@ -92,6 +107,10 @@ void setup() {
     //Turn on Bluetooth and put Wifi into AP mode
   }
 
+  SetOutput(1, LOW);
+  SetOutput(2, LOW);
+  SetOutput(3, LOW);
+  SetOutput(4, LOW);
   ReadVoltage();
 }
 
@@ -102,7 +121,7 @@ void loop() {
 
   if (NumberOfWifiReconntionFailures > MaxAttempts) {
     Serial.println("Connection attempts exhausted");
-    LocalControlLockOut = false; //turn off lockout so control via buttons is restored. 
+    LocalControlLockOut = false; //turn off lockout so control via buttons is restored.
   }
 
   MqttConnectionCheck();
@@ -116,7 +135,7 @@ void loop() {
     noInterrupts();
     long CurrentTime = millis();
     //Read all the inputs and post to MQTT every 10 seconds
-    if (abs(OneSecondTimer - CurrentTime) > 1000){
+    if (abs(OneSecondTimer - CurrentTime) > 1000) {
       for (int x = 1; x < 5; x++) {
         String PathName = "/" + Name + "/" + ID + "/ZoneInput/" + String(x);
         mqttClient.publish(PathName.c_str(), String(ReadInput(x)).c_str());
@@ -126,33 +145,30 @@ void loop() {
   }
 
   long CurrentTime = millis();
-  ReadVoltage();
   if (abs(TenSecondTimer - CurrentTime) > 180000) {
-    String VTopic = "/" + Name + "/" + ID + "VS Votlage";
-    mqttClient.publish(VTopic.c_str(), String(LastBatteryVoltage).c_str());
-
-    VTopic = "/" + Name + "/" + ID + "RTC Battery Votlage";
-    mqttClient.publish(VTopic.c_str(), String(LastRTCBatteryVoltage).c_str());
+    ReadVoltage();
     TenSecondTimer = millis();
   }
 
- 
-  if (LastMQTTZO1State != ReadOutput(1)){
+
+  if (LastMQTTZO1State != ReadOutput(1)) {
     mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
   }
 
-if (LastMQTTZO2State != ReadOutput(2)){
+  if (LastMQTTZO2State != ReadOutput(2)) {
     mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
   }
 
-  if (LastMQTTZO3State != ReadOutput(3)){
+  if (LastMQTTZO3State != ReadOutput(3)) {
     mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
   }
 
-  if (LastMQTTZO4State != ReadOutput(4)){
+  if (LastMQTTZO4State != ReadOutput(4)) {
     mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
   }
-  
+
+  MaxZoneTimeOnCheck();
+
 }
 
 void SetupAllStoredInformation() {
@@ -170,6 +186,11 @@ void SetupAllStoredInformation() {
   //preferences.putBool("LocalLockOut", true);
   //preferences.putString("MQTTIP", "IP"); //Tested with IP not hostnames
   //preferences.putInt("MQTTPORT", 1883);
+
+  preferences.putFloat("Z1_Max", 7.5);
+  preferences.putFloat("Z2_Max", 7.5);
+  preferences.putFloat("Z3_Max", 7.5);
+  preferences.putFloat("Z4_Max", 7.5);
   preferences.end();
 }
 
@@ -185,7 +206,7 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
     Serial.println(NumberOfWifiReconntionFailures);
     WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
     preferences.end();
-    
+
     int StartTime = millis();
     int CurrentTime = millis();
     while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
@@ -203,7 +224,7 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
   }
 }
 
-void SetupAP(){
+void SetupAP() {
   //WiFi.softAP(Name);
 }
 
@@ -211,10 +232,17 @@ void SetupAP(){
 //Reading states
 //-----------------------------------------------------------------------------------
 void ReadVoltage() {
-  LastBatteryVoltage = round((30.954 / 4095) * analogRead(VSVoltagePin));
+  LastBatteryVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
+  Serial.print("Voltage:");
+  Serial.println(LastBatteryVoltage);
+  String VTopic = "/" + Name + "/" + ID + "/VS Votlage";
+  mqttClient.publish(VTopic.c_str(), String(LastBatteryVoltage).c_str());
 
-  LastRTCBatteryVoltage = round((30.954 / 4095) * analogRead(RTCBatteryVoltagePin));
-  
+  LastRTCBatteryVoltage = (30.954 / 4095) * analogRead(RTCBatteryVoltagePin);
+  Serial.print("RTC Voltage:");
+  Serial.println(LastRTCBatteryVoltage);
+  VTopic = "/" + Name + "/" + ID + "/RTC Battery Votlage";
+  mqttClient.publish(VTopic.c_str(), String(LastRTCBatteryVoltage).c_str());
 }
 
 String ReadOutput(int Number) {
@@ -319,51 +347,86 @@ void LocalInput4() {
 }
 
 //-----------------------------------------------------------------------------------
-//Set Functions 
+//Set Functions
 //-----------------------------------------------------------------------------------
 void SetOutput(int Number, bool State) {
   /*
 
   */
   String Translation = "off";
-  if (State == HIGH){
+  if (State == HIGH) {
     Translation = "on";
   }
-  
+
   switch (Number) {
     case 1:
       digitalWrite(Zone1Output, State);
+      if (State == HIGH) {
+        Zone1TurnedOnTime = millis();
+      }
       ZO1State = Translation;
       break;
     case 2:
       digitalWrite(Zone2Output, State);
+      if (State == HIGH) {
+        Zone2TurnedOnTime = millis();
+      }
       ZO2State = Translation;
       break;
     case 3:
       digitalWrite(Zone3Output, State);
+      if (State == HIGH) {
+        Zone3TurnedOnTime = millis();
+      }
       ZO3State = Translation;
       break;
     case 4:
       digitalWrite(Zone4Output, State);
+      if (State == HIGH) {
+        Zone4TurnedOnTime = millis();
+      }
       ZO4State = Translation;
       break;
   }
 }
 
 //-----------------------------------------------------------------------------------
-//MQTT Related 
+//Timer Related
 //-----------------------------------------------------------------------------------
-void SetupMQTT(){
-    preferences.begin("SystemSettings", true);
-    //set up the MQTT
-    String TargetFromMem = preferences.getString("MQTTIP");
-    char Target[TargetFromMem.length()];
-    TargetFromMem.toCharArray(Target,TargetFromMem.length()+1);
-    char *mqttServer;
-    mqttServer = &Target[0];
-    mqttClient.setServer(mqttServer, preferences.getInt("MQTTPORT"));
-    mqttClient.setCallback(callback);
-    preferences.end();
+
+void MaxZoneTimeOnCheck() {
+  long CurrentTime = millis();
+  if (digitalRead(Zone1Output) == HIGH && abs(CurrentTime - Zone1TurnedOnTime) >= ZO1MaxOn * 60000) {
+    SetOutput(1, LOW);
+  }
+
+  if (digitalRead(Zone2Output) == HIGH && abs(CurrentTime - Zone2TurnedOnTime) >= ZO2MaxOn * 60000) {
+    SetOutput(2, LOW);
+  }
+
+  if (digitalRead(Zone3Output) == HIGH && abs(CurrentTime - Zone3TurnedOnTime) >= ZO3MaxOn * 60000) {
+    SetOutput(3, LOW);
+  }
+
+  if (digitalRead(Zone4Output) == HIGH && abs(CurrentTime - Zone4TurnedOnTime) >= ZO4MaxOn * 60000) {
+    SetOutput(4, LOW);
+  }
+}
+
+//-----------------------------------------------------------------------------------
+//MQTT Related
+//-----------------------------------------------------------------------------------
+void SetupMQTT() {
+  preferences.begin("SystemSettings", true);
+  //set up the MQTT
+  String TargetFromMem = preferences.getString("MQTTIP");
+  char Target[TargetFromMem.length()];
+  TargetFromMem.toCharArray(Target, TargetFromMem.length() + 1);
+  char *mqttServer;
+  mqttServer = &Target[0];
+  mqttClient.setServer(mqttServer, preferences.getInt("MQTTPORT"));
+  mqttClient.setCallback(callback);
+  preferences.end();
 }
 
 void MqttConnectionCheck() {
