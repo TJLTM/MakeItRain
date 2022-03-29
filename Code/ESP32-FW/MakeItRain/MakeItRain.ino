@@ -54,19 +54,19 @@ void setup() {
   //SetupAllStoredInformation();
 
   pinMode(Zone1Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, RISING);
+  attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
   pinMode(Zone1Output, OUTPUT);
 
   pinMode(Zone2Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, RISING);
+  attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, FALLING);
   pinMode(Zone2Output, OUTPUT);
 
   pinMode(Zone3Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, RISING);
+  attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, FALLING);
   pinMode(Zone3Output, OUTPUT);
 
   pinMode(Zone4Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, RISING);
+  attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, FALLING);
   pinMode(Zone4Output, OUTPUT);
 
   preferences.begin("SystemSettings", true);
