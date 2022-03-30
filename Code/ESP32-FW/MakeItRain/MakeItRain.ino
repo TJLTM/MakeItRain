@@ -15,7 +15,7 @@ String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 Preferences preferences;
-long ThirtyMinTimer, TenSecondTimer, OneSecondTimer;
+long ThirtyMinTimer, ThirtySecondTimer, TenSecondTimer, FifthteenSecondTimer;
 bool LocalControlLockOut = false;
 #define RTCBatteryVoltagePin 39
 #define VSVoltagePin 36
@@ -59,7 +59,7 @@ long Zone4TurnedOnTime;
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Starting to... MAKEITRAIN");
+  SerialOutput("Starting to... MAKEITRAIN",true);
   //SetupAllStoredInformation();
 
   pinMode(Zone1Input, INPUT);
@@ -134,13 +134,14 @@ void loop() {
   } else {
     noInterrupts();
     long CurrentTime = millis();
-    //Read all the inputs and post to MQTT every 10 seconds
-    if (abs(OneSecondTimer - CurrentTime) > 1000) {
+    //Read all the inputs and post to MQTT every 15 seconds
+    if (abs(FifthteenSecondTimer - CurrentTime) > 15000) {
       for (int x = 1; x < 5; x++) {
         String PathName = "/" + Name + "/" + ID + "/ZoneInput/" + String(x);
         mqttClient.publish(PathName.c_str(), String(ReadInput(x)).c_str());
+        SerialOutput("Input:" + String(x) + ":" + ReadInput(x),true);
       }
-      TenSecondTimer = millis();
+      FifthteenSecondTimer = millis();
     }
   }
 
@@ -200,10 +201,11 @@ void SetupAllStoredInformation() {
 void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
   if (NumberOfWifiReconntionFailures < Attempts) {
     preferences.begin("credentials", false);
-    Serial.print("Connecting to ");
-    Serial.print(preferences.getString("ssid"));
-    Serial.print("  Attempt: ");
-    Serial.println(NumberOfWifiReconntionFailures);
+    preferences.begin("credentials", false);
+    SerialOutput("Connecting to ",false);
+    SerialOutput(preferences.getString("ssid"),false);
+    SerialOutput("  Attempt: ",false);
+    SerialOutput(String(NumberOfWifiReconntionFailures),true);
     WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
     preferences.end();
 
@@ -211,10 +213,10 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
     int CurrentTime = millis();
     while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
       delay(500);
-      Serial.print(".");
+      SerialOutput(".",false);
       CurrentTime = millis();
     }
-    Serial.println();
+    SerialOutput("",true);
     if (WiFi.status() == WL_CONNECTED) {
       NumberOfWifiReconntionFailures = 0;
     }
@@ -233,14 +235,12 @@ void SetupAP() {
 //-----------------------------------------------------------------------------------
 void ReadVoltage() {
   LastBatteryVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
-  Serial.print("Voltage:");
-  Serial.println(LastBatteryVoltage);
+  SerialOutput("Voltage:" + String(LastBatteryVoltage),true);
   String VTopic = "/" + Name + "/" + ID + "/VS Votlage";
   mqttClient.publish(VTopic.c_str(), String(LastBatteryVoltage).c_str());
 
   LastRTCBatteryVoltage = (30.954 / 4095) * analogRead(RTCBatteryVoltagePin);
-  Serial.print("RTC Voltage:");
-  Serial.println(LastRTCBatteryVoltage);
+  SerialOutput("RTC Voltage:" + String(LastRTCBatteryVoltage),true);
   VTopic = "/" + Name + "/" + ID + "/RTC Battery Votlage";
   mqttClient.publish(VTopic.c_str(), String(LastRTCBatteryVoltage).c_str());
 }
@@ -305,7 +305,6 @@ String ReadInput(int Number) {
   }
   return ValueToReturn;
 }
-
 
 //-----------------------------------------------------------------------------------
 //Local control interrupts
@@ -414,8 +413,17 @@ void MaxZoneTimeOnCheck() {
 }
 
 //-----------------------------------------------------------------------------------
-//MQTT Related
+//Communication (MQTT/Serial/WEB)
 //-----------------------------------------------------------------------------------
+void SerialOutput(String Data, bool CR) {
+  if (CR == true) {
+    Serial.println(Data);
+  }
+  else {
+    Serial.print(Data);
+  }
+}
+
 void SetupMQTT() {
   preferences.begin("SystemSettings", true);
   //set up the MQTT
@@ -441,10 +449,10 @@ void MqttConnectionCheck() {
 void reconnect() {
   // Loop until we're reconnected
   while (!mqttClient.connected()) {
-    Serial.print("Attempting MQTT connection...");
+    SerialOutput("Attempting MQTT connection...",false);
     // Attempt to connect
-    if (mqttClient.connect(Name.c_str())) {
-      Serial.println("connected");
+    if (mqttClient.connect(ID.c_str())) {
+      SerialOutput("connected",true);
       // sub to the Zone Output topics and pub the currect state
       ZO1Topic =  "/" + Name + "/" + ID + "/ZoneOutput/1";
       mqttClient.subscribe(ZO1Topic.c_str());
@@ -460,9 +468,9 @@ void reconnect() {
       mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
     }
     else {
-      Serial.print("failed, rc=");
-      Serial.print(mqttClient.state());
-      Serial.println(" try again in 5 seconds");
+      SerialOutput("failed, rc=",false);
+      SerialOutput(String(mqttClient.state()),false);
+      SerialOutput(" try again in 5 seconds",true);
       // Wait 5 seconds before retrying
       delay(5000);
     }
@@ -470,16 +478,15 @@ void reconnect() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
+  SerialOutput("Message arrived [",false);
+  SerialOutput(topic,false);
+  SerialOutput("] ",false);
   String message;
   String CurrentOutputState;
   for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
     message += (char)payload[i];
   }
-  Serial.println();
+  SerialOutput(String(message),true);
 
   //Zone 1
   if (String((char*)topic) == ZO1Topic) {
@@ -488,11 +495,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(1, true);
-        Serial.println("Turning Zone 1: on");
+        SerialOutput("Turning Zone 1: on",true);
       }
       if (message == "off") {
         SetOutput(1, false);
-        Serial.println("Turning Zone 1: off");
+        SerialOutput("Turning Zone 1: off",true);
       }
     }
   }
@@ -504,11 +511,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(2, true);
-        Serial.println("Turning Zone 2: on");
+        SerialOutput("Turning Zone 2: on",true);
       }
       if (message == "off") {
         SetOutput(2, false);
-        Serial.println("Turning Zone 2: off");
+        SerialOutput("Turning Zone 2: off",true);
       }
     }
   }
@@ -520,11 +527,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(3, true);
-        Serial.println("Turning Zone 3: on");
+        SerialOutput("Turning Zone 3: on",true);
       }
       if (message == "off") {
         SetOutput(3, false);
-        Serial.println("Turning Zone 3: off");
+        SerialOutput("Turning Zone 3: off",true);
       }
     }
   }
@@ -536,11 +543,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (message != CurrentOutputState) {
       if (message == "on") {
         SetOutput(4, true);
-        Serial.println("Turning Zone 4: on");
+        SerialOutput("Turning Zone 4: on",true);
       }
       if (message == "off") {
         SetOutput(4, false);
-        Serial.println("Turning Zone 4: off");
+        SerialOutput("Turning Zone 4: off",true);
       }
     }
   }
