@@ -238,8 +238,8 @@ void SetupAP() {
 //Reading states
 //-----------------------------------------------------------------------------------
 void ReadVoltage() {
-  LastBatteryVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
-  SerialOutput("Voltage:" + String(LastBatteryVoltage), true);
+  LastVSVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
+  SerialOutput("Voltage:" + String(LastVSVoltage), true);
   String VTopic = "/" + Name + "/" + ID + "/Voltage";
   mqttClient.publish(VTopic.c_str(), String(LastVSVoltage).c_str());
 
