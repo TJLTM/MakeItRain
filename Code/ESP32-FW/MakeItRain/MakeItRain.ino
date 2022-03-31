@@ -2,6 +2,9 @@
 #include <WiFi.h>
 #include <Preferences.h>
 #include <WiFiClient.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+#include <Update.h>
 #include <WiFiAP.h>
 
 // MQTT client
@@ -27,32 +30,32 @@ float LastVSVoltage, LastRTCBatteryVoltage;
 #define Zone1Input 26
 #define Zone1Output 17
 String ZO1Topic = "";
-String ZO1State = "off";
 String LastMQTTZO1State = "off";
+String LastZIN1State;
 float ZO1MaxOn;
 long Zone1TurnedOnTime;
 
 #define Zone2Input 27
 #define Zone2Output 16
 String ZO2Topic = "";
-String ZO2State = "off";
 String LastMQTTZO2State = "off";
+String LastZIN2State;
 float ZO2MaxOn;
 long Zone2TurnedOnTime;
 
 #define Zone3Input 14
 #define Zone3Output 15
 String ZO3Topic = "";
-String ZO3State = "off";
 String LastMQTTZO3State = "off";
+String LastZIN3State;
 float ZO3MaxOn;
 long Zone3TurnedOnTime;
 
 #define Zone4Input 12
 #define Zone4Output 2
 String ZO4Topic = "";
-String ZO4State = "off";
 String LastMQTTZO4State = "off";
+String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
@@ -63,19 +66,19 @@ void setup() {
   //SetupAllStoredInformation();
 
   pinMode(Zone1Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, RISING);
   pinMode(Zone1Output, OUTPUT);
 
   pinMode(Zone2Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, RISING);
   pinMode(Zone2Output, OUTPUT);
 
   pinMode(Zone3Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, RISING);
   pinMode(Zone3Output, OUTPUT);
 
   pinMode(Zone4Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, RISING);
   pinMode(Zone4Output, OUTPUT);
 
   preferences.begin("SystemSettings", true);
@@ -126,7 +129,7 @@ void loop() {
     LocalControlLockOut = false; //turn off lockout so control via buttons is restored.
     FiveSecondTimer = millis();
     if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
-      MaxAttempts = 0;
+      NumberOfWifiReconntionFailures = 0;
       WifiTryAgainTimer = millis();
     }
   }
@@ -140,37 +143,18 @@ void loop() {
     interrupts();
   } else {
     noInterrupts();
-    //Read all the inputs and post to MQTT every 15 seconds
-    if (abs(FifthteenSecondTimer - CurrentTime) > 15000) {
-      for (int x = 1; x < 5; x++) {
-        String PathName = "/" + Name + "/" + ID + "/ZoneInput/" + String(x);
-        mqttClient.publish(PathName.c_str(), String(ReadInput(x)).c_str());
-        SerialOutput("Input:" + String(x) + ":" + ReadInput(x), true);
-      }
-      FifthteenSecondTimer = millis();
-    }
+    //Read all the inputs and post if changed from last read.
+    CheckIfInputsHaveChanged();
   }
+
+//  if (abs(FifthteenSecondTimer - CurrentTime) > 15000) {
+//
+//    FifthteenSecondTimer = millis();
+//  }
 
   if (abs(ThirtySecondTimer - CurrentTime) > 30000) {
     ReadVoltage();
     ThirtySecondTimer = millis();
-  }
-
-  //Move these into the Set Zone function so they only update if the state of the zone changes from what came in from MQTT
-  if (LastMQTTZO1State != ReadOutput(1)) {
-    mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
-  }
-
-  if (LastMQTTZO2State != ReadOutput(2)) {
-    mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
-  }
-
-  if (LastMQTTZO3State != ReadOutput(3)) {
-    mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
-  }
-
-  if (LastMQTTZO4State != ReadOutput(4)) {
-    mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
   }
 
   MaxZoneTimeOnCheck();
@@ -183,14 +167,15 @@ void SetupAllStoredInformation() {
   */
   preferences.begin("credentials", false);
   preferences.clear();
-  preferences.putString("ssid", "Your WiFi SSID");
-  preferences.putString("password", "Your Wifi Password");
+  preferences.putString("ssid", "HIOT");
+  preferences.putString("password", "flyingFalcon83!");
+  preferences.putString("Admin_password", "SoOriginalThereBoss");
   preferences.end();
 
   preferences.begin("SystemSettings", false);
   preferences.clear();
   preferences.putBool("LocalLockOut", true);
-  preferences.putString("MQTTIP", "IP"); //Tested with IP not hostnames
+  preferences.putString("MQTTIP", "10.10.0.2"); //Tested with IP not hostnames
   preferences.putInt("MQTTPORT", 1883);
 
   preferences.putFloat("Z1_Max", 7.5);
@@ -310,6 +295,40 @@ String ReadInput(int Number) {
   return ValueToReturn;
 }
 
+void CheckIfInputsHaveChanged() {
+
+  String PathName = "/" + Name + "/" + ID + "/ZoneInput/";
+  if (LastZIN1State != ReadInput(1)) {
+    PathName = PathName + "1";
+    LastZIN1State = String(ReadInput(1));
+    mqttClient.publish(PathName.c_str(), LastZIN1State.c_str());
+    SerialOutput("Input:1:" + ReadInput(1), true);
+
+  }
+
+  if (LastZIN2State != ReadInput(2)) {
+    PathName = PathName + "2";
+    LastZIN2State = String(ReadInput(2));
+    mqttClient.publish(PathName.c_str(), LastZIN2State.c_str());
+    SerialOutput("Input:2:" + ReadInput(2), true);
+  }
+
+  if (LastZIN3State != ReadInput(3)) {
+    PathName = PathName + "3";
+    LastZIN3State = String(ReadInput(3));
+    mqttClient.publish(PathName.c_str(), LastZIN3State.c_str());
+    SerialOutput("Input:3:" + ReadInput(3), true);
+  }
+
+  if (LastZIN4State != ReadInput(4)) {
+    PathName = PathName + "4";
+    LastZIN4State = String(ReadInput(4));
+    mqttClient.publish(PathName.c_str(), LastZIN4State.c_str());
+    SerialOutput("Input:4:" + ReadInput(4), true);
+  }
+
+
+}
 //-----------------------------------------------------------------------------------
 //Local control interrupts
 //-----------------------------------------------------------------------------------
@@ -356,39 +375,44 @@ void SetOutput(int Number, bool State) {
   /*
 
   */
-  String Translation = "off";
-  if (State == HIGH) {
-    Translation = "on";
-  }
-
   switch (Number) {
     case 1:
       digitalWrite(Zone1Output, State);
       if (State == HIGH) {
         Zone1TurnedOnTime = millis();
       }
-      ZO1State = Translation;
+
+      if (LastMQTTZO1State != ReadOutput(1)) {
+        mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+      }
       break;
     case 2:
       digitalWrite(Zone2Output, State);
       if (State == HIGH) {
         Zone2TurnedOnTime = millis();
       }
-      ZO2State = Translation;
+      if (LastMQTTZO2State != ReadOutput(2)) {
+        mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+      }
       break;
     case 3:
       digitalWrite(Zone3Output, State);
       if (State == HIGH) {
         Zone3TurnedOnTime = millis();
       }
-      ZO3State = Translation;
+      if (LastMQTTZO3State != ReadOutput(3)) {
+        mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+      }
       break;
     case 4:
       digitalWrite(Zone4Output, State);
       if (State == HIGH) {
         Zone4TurnedOnTime = millis();
       }
-      ZO4State = Translation;
+
+      if (LastMQTTZO4State != ReadOutput(4)) {
+        mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+      }
       break;
   }
 }
