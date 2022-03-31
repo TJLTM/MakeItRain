@@ -113,7 +113,7 @@ void setup() {
 
   ConnectToDaWEEEEFEEEEEEEE(1, 60000);
   SetupMQTT();
-  webserverAPI()
+  webserverAPI();
 
   if (WiFi.status() == WL_CONNECTED) {
     delay(100);
