@@ -7,6 +7,13 @@
 #include <Update.h>
 #include <WiFiAP.h>
 
+// Needed webserver files
+#include "ESPAsyncWebServer.h"
+#include "SPIFFS.h"
+
+//Create server on port 80
+AsyncWebServer server(80);
+
 // MQTT client
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
@@ -65,6 +72,11 @@ void setup() {
   SerialOutput("Starting to... MAKEITRAIN", true);
   //SetupAllStoredInformation();
 
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occured while mounting SPIFFS");
+    return;
+  }
+
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, RISING);
   pinMode(Zone1Output, OUTPUT);
@@ -101,6 +113,7 @@ void setup() {
 
   ConnectToDaWEEEEFEEEEEEEE(1, 60000);
   SetupMQTT();
+  webserverAPI()
 
   if (WiFi.status() == WL_CONNECTED) {
     delay(100);
@@ -589,5 +602,34 @@ void callback(char* topic, byte* payload, unsigned int length) {
       }
     }
   }
+
+}
+
+void webserverAPI(){
+
+  // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server.on("/styles.a9eaab0b554c8ffd65ab.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/styles.a9eaab0b554c8ffd65ab.css", "text/css");
+  });
+
+  server.on("/main.a2a760ccf52c6daa378e.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/main.a2a760ccf52c6daa378e.js", "text/javascript");
+  });
+
+  server.on("/polyfills.bcb090cd8aa6bf8e709f.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/polyfills.bcb090cd8aa6bf8e709f.js", "text/javascript");
+  });
+
+  server.on("/runtime.31822812db4b09cb93e7.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/runtime.31822812db4b09cb93e7.js", "text/javascript");
+  });
+
+  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/favicon.ico", "image/x-icon");
+  });
 
 }
