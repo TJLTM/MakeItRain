@@ -111,6 +111,12 @@ void setup() {
     }
   }
 
+  String processor(const String& var){
+    // Place holder
+    Serial.println(var);
+    return String();
+  }
+
   ConnectToDaWEEEEFEEEEEEEE(1, 60000);
   SetupMQTT();
   webserverAPI();
