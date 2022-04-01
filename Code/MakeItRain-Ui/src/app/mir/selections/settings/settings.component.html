@@ -1,0 +1,65 @@
+
+<ngx-masonry class="container">
+
+    <mat-card ngxMasonryItem class="masonry-item">
+        <mat-card-title>Device Details</mat-card-title>
+        <mat-card-content>
+            <mat-form-field appearance="fill">
+                <mat-label>Device Name</mat-label>
+                <input matInput>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Node Id</mat-label>
+                <input matInput>
+              </mat-form-field>
+          </mat-card-content>
+
+        <span *ngIf="editDetails; else defaultDetails">
+            <mat-card-actions>
+                <button mat-button (click)="editDetailsFunction('Save')">SAVE</button>
+                <button mat-button (click)="editDetailsFunction('Cancel')">CANCEL</button>
+              </mat-card-actions>
+        </span>
+
+        <ng-template #defaultDetails>
+            <mat-card-actions>
+                <button mat-button (click)="editDetails = !editDetails">EDIT</button>
+              </mat-card-actions>
+        </ng-template>
+      </mat-card>
+
+      <mat-card ngxMasonryItem class="masonry-item">
+        <mat-card-title>Network Settings</mat-card-title>
+        <div *ngIf="editNetwork; else defaultNetwork">
+            <mat-card-actions>
+                <button mat-button>SAVE</button>
+                <button mat-button>CANCEL</button>
+              </mat-card-actions>
+        </div>
+
+        <ng-template #defaultNetwork>
+            <mat-card-actions>
+                <button mat-button>EDIT</button>
+              </mat-card-actions>
+        </ng-template>
+      </mat-card>
+
+      <mat-card ngxMasonryItem class="masonry-item">
+        <mat-card-title>Date/Time Settings</mat-card-title>
+        <div *ngIf="editNetwork; else defaultNetwork">
+            <mat-card-actions>
+                <button mat-button>SAVE</button>
+                <button mat-button>CANCEL</button>
+              </mat-card-actions>
+        </div>
+
+        <ng-template #defaultNetwork>
+            <mat-card-actions>
+                <button mat-button>EDIT</button>
+              </mat-card-actions>
+        </ng-template>
+      </mat-card>
+
+</ngx-masonry>
+

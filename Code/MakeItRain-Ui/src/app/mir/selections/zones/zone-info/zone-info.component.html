@@ -1,0 +1,56 @@
+<div class ="zone-container">
+    <p>Zone {{activeZone}} Status: Inactive</p>
+</div>
+
+<div class="button-container">
+  <button mat-raised-button class="add-button">
+    Add Schedule
+  </button>
+  <button mat-raised-button class="add-button">
+    Run Manual
+  </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="Enable">
+    <th mat-header-cell *matHeaderCellDef> Enable </th>
+    <td mat-cell *matCellDef="let element">
+      <mat-checkbox [checked]="element.enable"></mat-checkbox>
+      </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="Days">
+    <th mat-header-cell *matHeaderCellDef> Days </th>
+    <td mat-cell *matCellDef="let element"> {{element.days}} </td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="Start Time">
+    <th mat-header-cell *matHeaderCellDef> Start Time </th>
+    <td mat-cell *matCellDef="let element"> {{element.startTime}} </td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="Duration">
+    <th mat-header-cell *matHeaderCellDef> Duration(Minutes) </th>
+    <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="Options">
+    <th mat-header-cell *matHeaderCellDef> Options </th>
+    <td mat-cell *matCellDef="let element"> 
+      <button mat-icon-button>
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

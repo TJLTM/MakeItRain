@@ -7,6 +7,13 @@
 #include <Update.h>
 #include <WiFiAP.h>
 
+// Needed webserver files
+#include "ESPAsyncWebServer.h"
+#include "SPIFFS.h"
+
+//Create server on port 80
+AsyncWebServer server(80);
+
 // MQTT client
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
@@ -59,11 +66,21 @@ String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
+String processor(const String& var){
+  // Place holder
+  Serial.println(var);
+  return String();
+}
 
 void setup() {
   Serial.begin(115200);
   SerialOutput("Starting to... MAKEITRAIN", true);
   //SetupAllStoredInformation();
+
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occured while mounting SPIFFS");
+    return;
+  }
 
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, RISING);
@@ -101,6 +118,7 @@ void setup() {
 
   ConnectToDaWEEEEFEEEEEEEE(1, 60000);
   SetupMQTT();
+  webserverAPI();
 
   if (WiFi.status() == WL_CONNECTED) {
     delay(100);
@@ -589,5 +607,36 @@ void callback(char* topic, byte* payload, unsigned int length) {
       }
     }
   }
+
+}
+
+void webserverAPI(){
+
+  // Route for root / web page
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+  });
+
+  server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/styles.css", "text/css");
+  });
+
+  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/main.js", "text/javascript");
+  });
+
+  server.on("/polyfills.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/polyfills.js", "text/javascript");
+  });
+
+  server.on("/runtime.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/runtime.js", "text/javascript");
+  });
+
+  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/favicon.ico", "image/x-icon");
+  });
+
+  server.begin()
 
 }
