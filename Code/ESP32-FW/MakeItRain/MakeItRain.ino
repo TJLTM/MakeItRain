@@ -617,19 +617,19 @@ void webserverAPI(){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  server.on("/styles.a9eaab0b554c8ffd65ab.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/styles.css", "text/css");
   });
 
-  server.on("/main.a2a760ccf52c6daa378e.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/main.js", "text/javascript");
   });
 
-  server.on("/polyfills.bcb090cd8aa6bf8e709f.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/polyfills.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/polyfills.js", "text/javascript");
   });
 
-  server.on("/runtime.31822812db4b09cb93e7.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/runtime.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/runtime.js", "text/javascript");
   });
 
