@@ -133,6 +133,8 @@ void setup() {
   SetOutput(3, false);
   SetOutput(4, false);
   ReadVoltage();
+
+  server.begin();
 }
 
 void loop() {
@@ -636,7 +638,5 @@ void webserverAPI(){
   server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/favicon.ico", "image/x-icon");
   });
-
-  server.begin()
 
 }
