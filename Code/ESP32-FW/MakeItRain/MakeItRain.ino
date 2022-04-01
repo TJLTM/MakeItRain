@@ -66,6 +66,11 @@ String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
+String processor(const String& var){
+  // Place holder
+  Serial.println(var);
+  return String();
+}
 
 void setup() {
   Serial.begin(115200);
@@ -109,12 +114,6 @@ void setup() {
     if (MAC.charAt(x) != ':') {
       ID.concat(MAC.charAt(x));
     }
-  }
-
-  String processor(const String& var){
-    // Place holder
-    Serial.println(var);
-    return String();
   }
 
   ConnectToDaWEEEEFEEEEEEEE(1, 60000);
@@ -637,5 +636,7 @@ void webserverAPI(){
   server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/favicon.ico", "image/x-icon");
   });
+
+  server.begin()
 
 }
