@@ -23,7 +23,7 @@ String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 Preferences preferences;
-long ThirtyMinTimer, ThirtySecondTimer, TenSecondTimer, FifthteenSecondTimer, WifiTryAgainTimer, FiveSecondTimer;
+long ThirtyMinTimer, VoltageTimer, TenSecondTimer, FifthteenSecondTimer, WifiTryAgainTimer, FiveSecondTimer;
 bool LocalControlLockOut = false;
 #define RTCBatteryVoltagePin 39
 #define VSVoltagePin 36
@@ -184,9 +184,9 @@ void loop() {
 //    FifthteenSecondTimer = millis();
 //  }
 
-  if (abs(ThirtySecondTimer - CurrentTime) > 30000) {
+  if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
-    ThirtySecondTimer = millis();
+    VoltageTimer = millis();
   }
 
   MaxZoneTimeOnCheck();
