@@ -17,7 +17,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-bool EnableMQTT,APMode;
+bool EnableMQTT, APMode;
 String Name = "MakeItRain";
 String ID;
 int NumberOfWifiReconntionFailures = 0;
@@ -64,7 +64,7 @@ String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
-String processor(const String& var){
+String processor(const String& var) {
   // Place holder
   Serial.println(var);
   return String();
@@ -73,9 +73,9 @@ String processor(const String& var){
 void setup() {
   Serial.begin(115200);
   SerialOutput("Starting to... MAKEITRAIN", true);
-  //SetupAllStoredInformation();
+  CheckStoredData();
 
-  if(!SPIFFS.begin(true)){
+  if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occured while mounting SPIFFS");
     return;
   }
@@ -132,7 +132,7 @@ void setup() {
     }
   }
 
-  if (APMode == true){
+  if (APMode == true) {
     //Turn on Bluetooth and put Wifi into AP mode
     SetupAP();
   }
@@ -151,17 +151,17 @@ void loop() {
 
   if (WiFi.status() != WL_CONNECTED && APMode == false) {
     ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
-  
 
-  if (NumberOfWifiReconntionFailures > MaxAttempts && abs(FiveSecondTimer - CurrentTime) > 5000) {
-    SerialOutput("Connection attempts exhausted", true);
-    LocalControlLockOut = false; //turn off lockout so control via buttons is restored.
-    FiveSecondTimer = millis();
-    if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
-      NumberOfWifiReconntionFailures = 0;
-      WifiTryAgainTimer = millis();
+
+    if (NumberOfWifiReconntionFailures > MaxAttempts && abs(FiveSecondTimer - CurrentTime) > 5000) {
+      SerialOutput("Connection attempts exhausted", true);
+      LocalControlLockOut = false; //turn off lockout so control via buttons is restored.
+      FiveSecondTimer = millis();
+      if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
+        NumberOfWifiReconntionFailures = 0;
+        WifiTryAgainTimer = millis();
+      }
     }
-  }
   }
 
   if (EnableMQTT == true && APMode == false) {
@@ -179,10 +179,10 @@ void loop() {
     CheckIfInputsHaveChanged();
   }
 
-//  if (abs(FifthteenSecondTimer - CurrentTime) > 15000) {
-//
-//    FifthteenSecondTimer = millis();
-//  }
+  //  if (abs(FifthteenSecondTimer - CurrentTime) > 15000) {
+  //
+  //    FifthteenSecondTimer = millis();
+  //  }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
@@ -240,12 +240,87 @@ void SetupAP() {
 //-----------------------------------------------------------------------------------
 //Storing and Retrieving stuff from memory
 //-----------------------------------------------------------------------------------
-void PutSSIDPassword(){
-  //check if password is longer than 7 characters and less than 64 
+void PutAPSSIDPassword() {
+  //check if password is longer than 7 characters and less than 64
+}
+
+void PutWifiSSIDPassword() {
+  //check if password is longer than 7 characters and less than 64
+}
+
+void PutWifiSSID() {
+
+}
+
+void PutAdminPassword() {
+
 }
 
 
 
+void CheckStoredData() {
+  /*
+     Check if the stored data needed to run is there if bot sets it to default.
+  */
+  preferences.begin("credentials", false);
+  if (preferences.isKey("ssid") == false) {
+    preferences.putString("ssid", "");
+  }
+  
+  if (preferences.isKey("password") == false) {
+    preferences.putString("password", "");
+  }
+  
+  if (preferences.isKey("Admin_password") == false) {
+    preferences.putString("Admin_password", "SoOriginalThereBoss");
+  }
+  
+  preferences.end();
+  preferences.begin("SystemSettings", false);
+  
+  if (preferences.isKey("LocalLockOut") == false) {
+    preferences.putBool("LocalLockOut", true);
+  }
+  
+  if (preferences.isKey("MQTTIP") == false) {
+    preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
+  }
+  
+  if (preferences.isKey("MQTTPORT") == false) {
+    preferences.putInt("MQTTPORT", 1883);
+  }
+
+  if (preferences.isKey("APMode_Password") == false) {
+    preferences.putString("APMode_Password", "MUNAAAYE");
+  }
+
+  if (preferences.isKey("APMode") == false) {
+    EnableMQTT = preferences.putBool("EnableMQTT", false);
+  }
+
+  if (preferences.isKey("APMode") == false) {
+    APMode = preferences.putBool("APMode", true);
+  }
+
+  if (preferences.isKey("Z1_Max") == false) {
+    preferences.putFloat("Z1_Max", 7.5);
+  }
+  
+  if (preferences.isKey("Z2_Max") == false) {
+    preferences.putFloat("Z2_Max", 7.5);
+  }
+  
+  if (preferences.isKey("Z3_Max") == false) {
+    preferences.putFloat("Z3_Max", 7.5);
+  }
+  
+  if (preferences.isKey("Z4_Max") == false) {
+    preferences.putFloat("Z4_Max", 7.5);
+  }
+  preferences.end();
+
+
+}
 //-----------------------------------------------------------------------------------
 //Reading states
 //-----------------------------------------------------------------------------------
@@ -623,30 +698,30 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 }
 
-void webserverAPI(){
+void webserverAPI() {
 
   // Route for root / web page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
 
-  server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/styles.css", "text/css");
   });
 
-  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/main.js", "text/javascript");
   });
 
-  server.on("/polyfills.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/polyfills.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/polyfills.js", "text/javascript");
   });
 
-  server.on("/runtime.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/runtime.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/runtime.js", "text/javascript");
   });
 
-  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/favicon.ico", "image/x-icon");
   });
 
