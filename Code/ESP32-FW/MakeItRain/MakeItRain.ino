@@ -64,11 +64,6 @@ String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
-String processor(const String& var) {
-  // Place holder
-  Serial.println(var);
-  return String();
-}
 
 void setup() {
   Serial.begin(115200);
@@ -197,30 +192,42 @@ void loop() {
 //Wifi, AP and BLE
 //-----------------------------------------------------------------------------------
 void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
-  if (NumberOfWifiReconntionFailures < Attempts) {
-    preferences.begin("credentials", false);
-    SerialOutput("Connecting to ", false);
-    SerialOutput(preferences.getString("ssid"), false);
-    SerialOutput("  Attempt: ", false);
-    SerialOutput(String(NumberOfWifiReconntionFailures), true);
-    WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
-    preferences.end();
+  preferences.begin("credentials", false);
+  if (preferences.getString("ssid") != "") {
+    if (NumberOfWifiReconntionFailures < Attempts) {
+      SerialOutput("Connecting to ", false);
+      SerialOutput(preferences.getString("ssid"), false);
+      SerialOutput("  Attempt: ", false);
+      SerialOutput(String(NumberOfWifiReconntionFailures), true);
+      WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
 
-    int StartTime = millis();
-    int CurrentTime = millis();
-    while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
-      delay(500);
-      SerialOutput(".", false);
-      CurrentTime = millis();
-    }
-    SerialOutput("", true);
-    if (WiFi.status() == WL_CONNECTED) {
-      NumberOfWifiReconntionFailures = 0;
-    }
-    else {
-      NumberOfWifiReconntionFailures += 1;
+
+      int StartTime = millis();
+      int CurrentTime = millis();
+      while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
+        delay(500);
+        SerialOutput(".", false);
+        CurrentTime = millis();
+      }
+      SerialOutput("", true);
+      if (WiFi.status() == WL_CONNECTED) {
+        NumberOfWifiReconntionFailures = 0;
+      }
+      else {
+        NumberOfWifiReconntionFailures += 1;
+      }
     }
   }
+  else {
+    //no ssid turn on AP Mode
+    APMode = true;
+  }
+
+  preferences.end();
+}
+
+void CheckNetworkSettings() {
+  //get live network settings
 }
 
 void SetupAP() {
@@ -236,6 +243,17 @@ void SetupAP() {
   Serial.print("AP IP address: ");
   Serial.println(myIP);
 }
+
+
+//-----------------------------------------------------------------------------------
+//System Level Functions
+//-----------------------------------------------------------------------------------
+void RESETEVERYTHING() {
+  ClearAllStoredData();
+  CheckStoredData();
+  ESP.restart();
+}
+
 
 //-----------------------------------------------------------------------------------
 //Storing and Retrieving stuff from memory
@@ -256,7 +274,28 @@ void PutAdminPassword() {
 
 }
 
+void PutMQTTIP() {
 
+}
+
+void PutMQTTPort() {
+
+}
+
+
+
+void PutZoneMaxTimeOn(int Zone, float Mins) {
+  //check if longer than 7.0 mins and less than 59.99
+}
+
+void ClearAllStoredData() {
+  preferences.begin("credentials", false);
+  preferences.clear();
+  preferences.end();
+  preferences.begin("SystemSettings", false);
+  preferences.clear();
+  preferences.end();
+}
 
 void CheckStoredData() {
   /*
@@ -266,26 +305,26 @@ void CheckStoredData() {
   if (preferences.isKey("ssid") == false) {
     preferences.putString("ssid", "");
   }
-  
+
   if (preferences.isKey("password") == false) {
     preferences.putString("password", "");
   }
-  
+
   if (preferences.isKey("Admin_password") == false) {
     preferences.putString("Admin_password", "SoOriginalThereBoss");
   }
-  
+
   preferences.end();
   preferences.begin("SystemSettings", false);
-  
+
   if (preferences.isKey("LocalLockOut") == false) {
     preferences.putBool("LocalLockOut", true);
   }
-  
+
   if (preferences.isKey("MQTTIP") == false) {
     preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
   }
-  
+
   if (preferences.isKey("MQTTPORT") == false) {
     preferences.putInt("MQTTPORT", 1883);
   }
@@ -295,32 +334,50 @@ void CheckStoredData() {
   }
 
   if (preferences.isKey("APMode") == false) {
-    EnableMQTT = preferences.putBool("EnableMQTT", false);
+    preferences.putBool("EnableMQTT", false);
   }
 
   if (preferences.isKey("APMode") == false) {
-    APMode = preferences.putBool("APMode", true);
+    preferences.putBool("APMode", true);
   }
 
   if (preferences.isKey("Z1_Max") == false) {
     preferences.putFloat("Z1_Max", 7.5);
   }
-  
+
   if (preferences.isKey("Z2_Max") == false) {
     preferences.putFloat("Z2_Max", 7.5);
   }
-  
+
   if (preferences.isKey("Z3_Max") == false) {
     preferences.putFloat("Z3_Max", 7.5);
   }
-  
+
   if (preferences.isKey("Z4_Max") == false) {
     preferences.putFloat("Z4_Max", 7.5);
   }
   preferences.end();
 
+  preferences.begin("Network_Settings", false);
+  if (preferences.isKey("DHCP") == false) {
+    preferences.putBool("DHCP", true);
+  }
+  if (preferences.isKey("GATEWAY") == false) {
+    preferences.putString("GATEWAY", "");
+  }
+  if (preferences.isKey("IP") == false) {
+    preferences.putString("IP", "");
+  }
+  if (preferences.isKey("DNS") == false) {
+    preferences.putString("DNS", "");
+  }
+  if (preferences.isKey("Subnet") == false) {
+    preferences.putString("Subnet", "");
+  }
+  preferences.end();
 
 }
+
 //-----------------------------------------------------------------------------------
 //Reading states
 //-----------------------------------------------------------------------------------
@@ -564,6 +621,12 @@ void SerialOutput(String Data, bool CR) {
   else {
     Serial.print(Data);
   }
+}
+
+String processor(const String& var) {
+  // Place holder
+  Serial.println(var);
+  return String();
 }
 
 void SetupMQTT() {
