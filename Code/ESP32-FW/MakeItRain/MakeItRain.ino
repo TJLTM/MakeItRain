@@ -17,7 +17,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-bool EnableMQTT, APMode;
+bool EnableMQTT, APMode, EnableWifi;
 String Name = "MakeItRain";
 String ID;
 int NumberOfWifiReconntionFailures = 0;
@@ -100,6 +100,7 @@ void setup() {
   ZO3MaxOn = preferences.getFloat("Z3_Max");
   ZO4MaxOn = preferences.getFloat("Z4_Max");
 
+  EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
   APMode = preferences.getBool("APMode");
 
@@ -112,7 +113,7 @@ void setup() {
     }
   }
 
-  if (APMode == false) {
+  if (EnableWifi == false) {
     ConnectToDaWEEEEFEEEEEEEE(1, 60000);
     if (EnableMQTT == true) {
       SetupMQTT();
@@ -120,11 +121,9 @@ void setup() {
   }
   webserverAPI();
 
-  if (WiFi.status() == WL_CONNECTED && APMode == false) {
+  if (WiFi.status() == WL_CONNECTED && EnableWifi == true && EnableMQTT == true) {
     delay(100);
-    if (EnableMQTT == true) {
-      MqttConnectionCheck();
-    }
+    MqttConnectionCheck();
   }
 
   if (APMode == true) {
@@ -144,9 +143,8 @@ void setup() {
 void loop() {
   long CurrentTime = millis();
 
-  if (WiFi.status() != WL_CONNECTED && APMode == false) {
+  if (WiFi.status() != WL_CONNECTED && EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
-
 
     if (NumberOfWifiReconntionFailures > MaxAttempts && abs(FiveSecondTimer - CurrentTime) > 5000) {
       SerialOutput("Connection attempts exhausted", true);
@@ -159,7 +157,7 @@ void loop() {
     }
   }
 
-  if (EnableMQTT == true && APMode == false) {
+  if (EnableMQTT == true && WiFi.status() == WL_CONNECTED) {
     MqttConnectionCheck();
   }
 
@@ -173,11 +171,6 @@ void loop() {
     //Read all the inputs and post if changed from last read.
     CheckIfInputsHaveChanged();
   }
-
-  //  if (abs(FifthteenSecondTimer - CurrentTime) > 15000) {
-  //
-  //    FifthteenSecondTimer = millis();
-  //  }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
@@ -266,6 +259,10 @@ void PutWifiSSIDPassword() {
   //check if password is longer than 7 characters and less than 64
 }
 
+void PutAPPassword() {
+  //check if password is longer than 7 characters and less than 64
+}
+
 void PutWifiSSID() {
 
 }
@@ -281,8 +278,6 @@ void PutMQTTIP() {
 void PutMQTTPort() {
 
 }
-
-
 
 void PutZoneMaxTimeOn(int Zone, float Mins) {
   //check if longer than 7.0 mins and less than 59.99
@@ -337,6 +332,10 @@ void CheckStoredData() {
     preferences.putBool("EnableMQTT", false);
   }
 
+   if (preferences.isKey("EnableWIFI") == false) {
+    preferences.putBool("EnableWIFI",false);
+  }
+  
   if (preferences.isKey("APMode") == false) {
     preferences.putBool("APMode", true);
   }
