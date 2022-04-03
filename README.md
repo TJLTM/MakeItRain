@@ -7,7 +7,7 @@ Some basic documentation. Currently this is beta/dev FW and hardware that after 
 Hardware 
 1. ESP32 - https://www.amazon.com/gp/product/B07QCP2451/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
 2. Valves - https://www.amazon.com/gp/product/B004RUH7A0/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
-3. Battery - any 12Vdc with >=7.5 Ah will work for a few months or depending on how often you water may be less. 
+3. Battery - any 12Vdc with >=7.5 Ah will work for a few months or depending on how often you water may be less. CUrrently testing with a 12v 9Ah battery and months may be extremely optimistic. without a solar charger of some time it will be about a month at most for that battery with 4 zones. I'm going to look into what can be optimized power wise. 
 
 Documentation will be coming once i fix a few more issues. 
 
