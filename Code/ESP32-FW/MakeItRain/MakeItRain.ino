@@ -4,6 +4,8 @@
 #include <WiFiClient.h>
 #include <Update.h>
 #include <WiFiAP.h>
+//NTP
+#include "time.h"
 
 // Needed webserver files
 #include "ESPAsyncWebServer.h"
@@ -70,11 +72,6 @@ void setup() {
   SerialOutput("Starting to... MAKEITRAIN", true);
   CheckStoredData();
 
-  if (!SPIFFS.begin(true)) {
-    Serial.println("An Error has occured while mounting SPIFFS");
-    return;
-  }
-
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
   pinMode(Zone1Output, OUTPUT);
@@ -119,7 +116,6 @@ void setup() {
       SetupMQTT();
     }
   }
-  webserverAPI();
 
   if (WiFi.status() == WL_CONNECTED && EnableWifi == true && EnableMQTT == true) {
     delay(100);
@@ -137,7 +133,14 @@ void setup() {
   SetOutput(4, false);
   ReadVoltage();
 
-  server.begin();
+  if (!SPIFFS.begin(true)) {
+    Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
+  }
+  else {
+    webserverAPI();
+    server.begin();
+  }
+
 }
 
 void loop() {
@@ -332,10 +335,10 @@ void CheckStoredData() {
     preferences.putBool("EnableMQTT", false);
   }
 
-   if (preferences.isKey("EnableWIFI") == false) {
-    preferences.putBool("EnableWIFI",false);
+  if (preferences.isKey("EnableWIFI") == false) {
+    preferences.putBool("EnableWIFI", false);
   }
-  
+
   if (preferences.isKey("APMode") == false) {
     preferences.putBool("APMode", true);
   }
@@ -373,6 +376,10 @@ void CheckStoredData() {
   if (preferences.isKey("Subnet") == false) {
     preferences.putString("Subnet", "");
   }
+  if (preferences.isKey("NTP") == false) {
+    preferences.putString("NTP", "");
+  }
+  
   preferences.end();
 
 }
