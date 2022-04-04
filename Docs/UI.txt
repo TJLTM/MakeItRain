@@ -1,0 +1,37 @@
+- System
+-- Admin Password 
+-- Display Version 
+-- Local Input Lockout (use them as inputs to trigger the zone output state) 
+-- Factory Reset 
+
+-- Status 
+--- Voltage for VS 
+--- Voltage for RTC Battery
+
+-- Network Settings (WIFI)
+--- DHCP Enable Disable
+--- IP
+--- Gateway
+--- SUbnet
+---- DNS
+
+-- NTP 
+--- Enable/Disable 
+--- Server Address
+
+-- MQTT 
+--- Enable/Disable
+--- Port
+--- IP/Hostname
+
+-- AP Mode
+--- Enable/Disable 
+--- SSID Password
+
+
+
+- Zone
+-- Max Time On (range 7 - 59.99 mins decimal min)
+-- Zone Input Status
+-- Zone Status/Trigger
+

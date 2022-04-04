@@ -19,6 +19,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
+String Version = "0.0.1";
 bool EnableMQTT, APMode, EnableWifi;
 String Name = "MakeItRain";
 String ID;
@@ -69,7 +70,7 @@ long Zone4TurnedOnTime;
 
 void setup() {
   Serial.begin(115200);
-  SerialOutput("Starting to... MAKEITRAIN", true);
+  SerialOutput("Starting to... MAKEITRAIN  Version:" + Version, true);
   CheckStoredData();
 
   pinMode(Zone1Input, INPUT);
