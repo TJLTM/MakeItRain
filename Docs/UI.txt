@@ -3,10 +3,10 @@
 -- Display Version 
 -- Local Input Lockout (use them as inputs to trigger the zone output state) 
 -- Factory Reset 
+-- Running on Battery (Yes/No to enable power saving mode) 
 
 -- Status 
 --- Voltage for VS 
---- Voltage for RTC Battery
 
 -- Network Settings (WIFI)
 --- DHCP Enable Disable
@@ -27,7 +27,6 @@
 -- AP Mode
 --- Enable/Disable 
 --- SSID Password
-
 
 
 - Zone
