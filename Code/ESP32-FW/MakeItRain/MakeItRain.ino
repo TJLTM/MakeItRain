@@ -4,8 +4,12 @@
 #include <WiFiClient.h>
 #include <Update.h>
 #include <WiFiAP.h>
+#include <nvs_flash.h>
+
 //NTP
 #include "time.h"
+//Internal RTC 
+#include <ESP32Time.h>
 
 // Needed webserver files
 #include "ESPAsyncWebServer.h"
@@ -22,9 +26,10 @@ PubSubClient mqttClient(wifiClient);
 String Version = "0.0.1";
 bool EnableMQTT, APMode, EnableWifi;
 String Name = "MakeItRain";
-String ID;
+String ID, Battery;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
+int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
 long ThirtyMinTimer, VoltageTimer, TenSecondTimer, FifthteenSecondTimer, WifiTryAgainTimer, FiveSecondTimer;
 bool LocalControlLockOut = false;
@@ -101,6 +106,7 @@ void setup() {
   EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
   APMode = preferences.getBool("APMode");
+  Battery = preferences.getBool("Battery");
 
   preferences.end();
 
@@ -147,18 +153,19 @@ void setup() {
 void loop() {
   long CurrentTime = millis();
 
-  if (WiFi.status() != WL_CONNECTED && EnableWifi == true) {
+  if (WiFi.status() != WL_CONNECTED && EnableWifi == true && WifiReattemptsBeforeAP < 4) {
     ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
 
     if (NumberOfWifiReconntionFailures > MaxAttempts && abs(FiveSecondTimer - CurrentTime) > 5000) {
       SerialOutput("Connection attempts exhausted", true);
-      LocalControlLockOut = false; //turn off lockout so control via buttons is restored.
-      FiveSecondTimer = millis();
-      if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
+      FiveSecondTimer = millis(); 
+    }
+
+    if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
         NumberOfWifiReconntionFailures = 0;
         WifiTryAgainTimer = millis();
+        WifiReattemptsBeforeAP += 1;
       }
-    }
   }
 
   if (EnableMQTT == true && WiFi.status() == WL_CONNECTED) {
@@ -209,6 +216,7 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
       SerialOutput("", true);
       if (WiFi.status() == WL_CONNECTED) {
         NumberOfWifiReconntionFailures = 0;
+        WifiReattemptsBeforeAP = 0;
       }
       else {
         NumberOfWifiReconntionFailures += 1;
@@ -241,6 +249,9 @@ void SetupAP() {
   Serial.println(myIP);
 }
 
+void DisableAP(){
+  WiFi.softAPdisconnect();
+}
 
 //-----------------------------------------------------------------------------------
 //System Level Functions
@@ -249,6 +260,11 @@ void RESETEVERYTHING() {
   ClearAllStoredData();
   CheckStoredData();
   ESP.restart();
+}
+
+void FlushMemoryCompletely(){
+  nvs_flash_erase(); // erase the NVS partition and...
+  nvs_flash_init(); // initialize the NVS partition.
 }
 
 
@@ -311,6 +327,7 @@ void CheckStoredData() {
 
   if (preferences.isKey("Admin_password") == false) {
     preferences.putString("Admin_password", "SoOriginalThereBoss");
+    SerialOutput("No Admin password setting to: " + preferences.getString("Admin_password"), true);
   }
 
   preferences.end();
@@ -318,6 +335,12 @@ void CheckStoredData() {
 
   if (preferences.isKey("LocalLockOut") == false) {
     preferences.putBool("LocalLockOut", true);
+    SerialOutput("LocalLockOut not defined setting to on", true);
+  }
+
+  if (preferences.isKey("Battery") == false) {
+    preferences.putBool("Battery", true);
+    SerialOutput("Battery Mode not defined setting to On", true);
   }
 
   if (preferences.isKey("MQTTIP") == false) {
@@ -330,40 +353,49 @@ void CheckStoredData() {
 
   if (preferences.isKey("APMode_Password") == false) {
     preferences.putString("APMode_Password", "MUNAAAYE");
+    SerialOutput("No AP Password setting to: " + preferences.getString("APMode_Password"), true);
   }
 
   if (preferences.isKey("APMode") == false) {
     preferences.putBool("EnableMQTT", false);
+    SerialOutput("MQTT not defined setting to off", true);
   }
 
   if (preferences.isKey("EnableWIFI") == false) {
     preferences.putBool("EnableWIFI", false);
+    SerialOutput("Wifi Mode not defined set to off", true);
   }
 
   if (preferences.isKey("APMode") == false) {
     preferences.putBool("APMode", true);
+    SerialOutput("AP mode not defined setting to On", true);
   }
 
   if (preferences.isKey("Z1_Max") == false) {
     preferences.putFloat("Z1_Max", 7.5);
+    SerialOutput("Zone 1 Max On time not defined setting to: " + String(preferences.getFloat("Z1_Max")), true);
   }
 
   if (preferences.isKey("Z2_Max") == false) {
     preferences.putFloat("Z2_Max", 7.5);
+    SerialOutput("Zone 2 Max On time not defined setting to: " + String(preferences.getFloat("Z2_Max")), true);
   }
 
   if (preferences.isKey("Z3_Max") == false) {
     preferences.putFloat("Z3_Max", 7.5);
+    SerialOutput("Zone 3 Max On time not defined setting to: " + String(preferences.getFloat("Z3_Max")), true);
   }
 
   if (preferences.isKey("Z4_Max") == false) {
     preferences.putFloat("Z4_Max", 7.5);
+    SerialOutput("Zone 4 Max On time not defined setting to: " + String(preferences.getFloat("Z4_Max")), true);
   }
   preferences.end();
 
   preferences.begin("Network_Settings", false);
   if (preferences.isKey("DHCP") == false) {
     preferences.putBool("DHCP", true);
+    SerialOutput("", true);
   }
   if (preferences.isKey("GATEWAY") == false) {
     preferences.putString("GATEWAY", "");
