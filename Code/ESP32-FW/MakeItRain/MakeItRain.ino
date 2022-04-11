@@ -26,14 +26,15 @@ PubSubClient mqttClient(wifiClient);
 bool OldHW = false;
 String Version = "0.0.1";
 bool EnableMQTT, APMode, EnableWifi, Battery;
+bool LocalControlLockOut, APEnabled = false;
 String Name = "MakeItRain";
 String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
-long ThirtyMinTimer, VoltageTimer, TenSecondTimer, FifthteenSecondTimer, WifiTryAgainTimer, FiveSecondTimer;
-bool LocalControlLockOut = false;
+long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer;
+
 #define RTCBatteryVoltagePin 39
 #define VSVoltagePin 36
 #define ResetButton 22
@@ -182,6 +183,17 @@ void loop() {
     MqttConnectionCheck();
   }
 
+  if (APMode == true) {
+    //Turn on AP mode
+    SetupAP();
+  }
+
+  if (APEnabled == true && APMode == false) {
+    APEnabled = false;
+    DisableAP();
+  }
+
+
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
   */
@@ -199,6 +211,13 @@ void loop() {
   }
 
   MaxZoneTimeOnCheck();
+
+  if (Battery == true){
+    // Check if any of the zones are on. if any are on do not go to sleep 
+    // Check if the Min Time On time has been exhausted true = go to sleep
+    // Do a last min read of Voltage and any other status that needs to get posted 
+    // Set RTC to Sleep for 30 Mins 
+  }
 
 }
 
@@ -258,6 +277,7 @@ void SetupAP() {
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(myIP);
+  APEnabled = true;
 }
 
 void DisableAP() {
