@@ -8,7 +8,7 @@
 
 //NTP
 #include "time.h"
-//Internal RTC 
+//Internal RTC
 #include <ESP32Time.h>
 
 // Needed webserver files
@@ -23,10 +23,11 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
+bool OldHW = false;
 String Version = "0.0.1";
-bool EnableMQTT, APMode, EnableWifi;
+bool EnableMQTT, APMode, EnableWifi, Battery;
 String Name = "MakeItRain";
-String ID, Battery;
+String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 int WifiReattemptsBeforeAP = 0;
@@ -37,7 +38,7 @@ bool LocalControlLockOut = false;
 #define VSVoltagePin 36
 #define ResetButton 22
 #define LEDOut 21
-float LastVSVoltage, LastRTCBatteryVoltage;
+float LastVSVoltage;
 
 //Zone definitions
 #define Zone1Input 26
@@ -77,6 +78,18 @@ void setup() {
   Serial.begin(115200);
   SerialOutput("Starting to... MAKEITRAIN  Version:" + Version, true);
   CheckStoredData();
+
+  if (OldHW == false) {
+#define Zone1Input 26
+#define Zone1Output 17
+#define Zone2Input 27
+#define Zone2Output 16
+#define Zone3Input 14
+#define Zone3Output 15
+#define Zone4Input 12
+#define Zone4Output 2
+#define VSVoltagePin 36
+  }
 
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
@@ -153,19 +166,16 @@ void setup() {
 void loop() {
   long CurrentTime = millis();
 
-  if (WiFi.status() != WL_CONNECTED && EnableWifi == true && WifiReattemptsBeforeAP < 4) {
-    ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
-
-    if (NumberOfWifiReconntionFailures > MaxAttempts && abs(FiveSecondTimer - CurrentTime) > 5000) {
-      SerialOutput("Connection attempts exhausted", true);
-      FiveSecondTimer = millis(); 
+  if (WiFi.status() != WL_CONNECTED && EnableWifi == true) {
+    if (WifiReattemptsBeforeAP < 4) {
+      ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
     }
 
     if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
-        NumberOfWifiReconntionFailures = 0;
-        WifiTryAgainTimer = millis();
-        WifiReattemptsBeforeAP += 1;
-      }
+      NumberOfWifiReconntionFailures = 0;
+      WifiTryAgainTimer = millis();
+      WifiReattemptsBeforeAP += 1;
+    }
   }
 
   if (EnableMQTT == true && WiFi.status() == WL_CONNECTED) {
@@ -191,6 +201,7 @@ void loop() {
   MaxZoneTimeOnCheck();
 
 }
+
 
 //-----------------------------------------------------------------------------------
 //Wifi, AP and BLE
@@ -249,7 +260,7 @@ void SetupAP() {
   Serial.println(myIP);
 }
 
-void DisableAP(){
+void DisableAP() {
   WiFi.softAPdisconnect();
 }
 
@@ -262,7 +273,7 @@ void RESETEVERYTHING() {
   ESP.restart();
 }
 
-void FlushMemoryCompletely(){
+void FlushMemoryCompletely() {
   nvs_flash_erase(); // erase the NVS partition and...
   nvs_flash_init(); // initialize the NVS partition.
 }
@@ -412,7 +423,7 @@ void CheckStoredData() {
   if (preferences.isKey("NTP") == false) {
     preferences.putString("NTP", "");
   }
-  
+
   preferences.end();
 
 }
@@ -424,14 +435,9 @@ void ReadVoltage() {
   LastVSVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
   SerialOutput("Voltage:" + String(LastVSVoltage), true);
 
-  LastRTCBatteryVoltage = (30.954 / 4095) * analogRead(RTCBatteryVoltagePin);
-  SerialOutput("RTC Voltage:" + String(LastRTCBatteryVoltage), true);
-
   if (EnableMQTT == true) {
     String VTopic = "/" + Name + "/" + ID + "/Voltage";
     mqttClient.publish(VTopic.c_str(), String(LastVSVoltage).c_str());
-    VTopic = "/" + Name + "/" + ID + "/RTC Battery Votlage";
-    mqttClient.publish(VTopic.c_str(), String(LastRTCBatteryVoltage).c_str());
   }
 }
 
