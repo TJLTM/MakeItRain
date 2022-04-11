@@ -48,7 +48,13 @@
           "min_clearance": 0.508
         }
       },
-      "diff_pair_dimensions": [],
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.0,
+          "via_gap": 0.0,
+          "width": 0.0
+        }
+      ],
       "drc_exclusions": [],
       "meta": {
         "filename": "board_design_settings.json",
@@ -120,9 +126,16 @@
         0.762,
         0.889,
         1.016,
-        1.524
+        1.524,
+        2.032,
+        2.54
       ],
-      "via_dimensions": [],
+      "via_dimensions": [
+        {
+          "diameter": 0.0,
+          "drill": 0.0
+        }
+      ],
       "zones_allow_external_fillets": false,
       "zones_use_no_outline": true
     },
@@ -375,7 +388,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "specctra_dsn": "C:/Users/tjltm/Desktop/MakeItRain.dsn",
+      "specctra_dsn": "../../MakeItRain.dsn",
       "step": "",
       "vrml": ""
     },
