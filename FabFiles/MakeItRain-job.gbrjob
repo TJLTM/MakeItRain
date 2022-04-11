@@ -5,7 +5,7 @@
       "Application": "Pcbnew",
       "Version": "(6.0.0)"
     },
-    "CreationDate": "2022-02-21T09:00:57-08:00"
+    "CreationDate": "2022-04-11T12:39:09-07:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -61,16 +61,6 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "MakeItRain-F_Adhesive.gbr",
-      "FileFunction": "Glue,Top",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "MakeItRain-B_Adhesive.gbr",
-      "FileFunction": "Glue,Bot",
-      "FilePolarity": "Positive"
-    },
-    {
       "Path": "MakeItRain-F_Paste.gbr",
       "FileFunction": "SolderPaste,Top",
       "FilePolarity": "Positive"
@@ -104,16 +94,6 @@
       "Path": "MakeItRain-Edge_Cuts.gbr",
       "FileFunction": "Profile",
       "FilePolarity": "Positive"
-    },
-    {
-      "Path": "MakeItRain-F_Fab.gbr",
-      "FileFunction": "AssemblyDrawing,Top",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "MakeItRain-B_Fab.gbr",
-      "FileFunction": "AssemblyDrawing,Bot",
-      "FilePolarity": "Positive"
     }
   ],
   "MaterialStackup": [
@@ -127,44 +107,53 @@
     },
     {
       "Type": "SolderMask",
+      "Thickness": 0.01,
       "Name": "Top Solder Mask"
     },
     {
       "Type": "Copper",
+      "Thickness": 0.035,
       "Name": "F.Cu"
     },
     {
       "Type": "Dielectric",
+      "Thickness": 0.48,
       "Material": "FR4",
       "Name": "F.Cu/In1.Cu",
       "Notes": "Type: dielectric layer 1 (from F.Cu to In1.Cu)"
     },
     {
       "Type": "Copper",
+      "Thickness": 0.035,
       "Name": "In1.Cu"
     },
     {
       "Type": "Dielectric",
+      "Thickness": 0.48,
       "Material": "FR4",
       "Name": "In1.Cu/In2.Cu",
       "Notes": "Type: dielectric layer 2 (from In1.Cu to In2.Cu)"
     },
     {
       "Type": "Copper",
+      "Thickness": 0.035,
       "Name": "In2.Cu"
     },
     {
       "Type": "Dielectric",
+      "Thickness": 0.48,
       "Material": "FR4",
       "Name": "In2.Cu/B.Cu",
       "Notes": "Type: dielectric layer 3 (from In2.Cu to B.Cu)"
     },
     {
       "Type": "Copper",
+      "Thickness": 0.035,
       "Name": "B.Cu"
     },
     {
       "Type": "SolderMask",
+      "Thickness": 0.01,
       "Name": "Bottom Solder Mask"
     },
     {
