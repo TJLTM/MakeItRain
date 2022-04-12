@@ -35,7 +35,6 @@ int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
 long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer;
 
-#define RTCBatteryVoltagePin 39
 #define VSVoltagePin 36
 #define ResetButton 22
 #define LEDOut 21
@@ -80,16 +79,16 @@ void setup() {
   SerialOutput("Starting to... MAKEITRAIN  Version:" + Version, true);
   CheckStoredData();
 
-  if (OldHW == false) {
-#define Zone1Input 26
-#define Zone1Output 17
-#define Zone2Input 27
-#define Zone2Output 16
-#define Zone3Input 14
-#define Zone3Output 15
-#define Zone4Input 12
-#define Zone4Output 2
-#define VSVoltagePin 36
+  if (OldHW == true) {
+#define Zone1Input 36 //SVP 
+#define Zone1Output 27
+#define Zone2Input 39 //SVN
+#define Zone2Output 14
+#define Zone3Input 34
+#define Zone3Output 12
+#define Zone4Input 35
+#define Zone4Output 23
+#define VSVoltagePin 4
   }
 
   pinMode(Zone1Input, INPUT);
