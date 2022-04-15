@@ -151,8 +151,8 @@ void setup() {
       Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
     }
     else {
-  //    webserverAPI();
-  //    server.begin();
+      webserverAPI();
+      server.begin();
     }
 
 }
