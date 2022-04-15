@@ -36,13 +36,17 @@ Preferences preferences;
 long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer;
 
 #define VSVoltagePin 36
+//#define VSVoltagePin 4 //Old HW
 #define ResetButton 22
 #define LEDOut 21
 float LastVSVoltage;
 
+
 //Zone definitions
 #define Zone1Input 26
+//#define Zone1Input 36 //SVP //Old HW
 #define Zone1Output 17
+//#define Zone1Output 27 //Old HW
 String ZO1Topic = "";
 String LastMQTTZO1State = "off";
 String LastZIN1State;
@@ -50,7 +54,9 @@ float ZO1MaxOn;
 long Zone1TurnedOnTime;
 
 #define Zone2Input 27
+//#define Zone2Input 39 //SVN //Old HW
 #define Zone2Output 16
+//#define Zone2Output 14 //Old HW
 String ZO2Topic = "";
 String LastMQTTZO2State = "off";
 String LastZIN2State;
@@ -58,7 +64,9 @@ float ZO2MaxOn;
 long Zone2TurnedOnTime;
 
 #define Zone3Input 14
+//#define Zone3Input 34 //Old HW
 #define Zone3Output 15
+//#define Zone3Output 12 //Old HW
 String ZO3Topic = "";
 String LastMQTTZO3State = "off";
 String LastZIN3State;
@@ -66,7 +74,9 @@ float ZO3MaxOn;
 long Zone3TurnedOnTime;
 
 #define Zone4Input 12
+//#define Zone4Input 35 //Old HW
 #define Zone4Output 2
+//#define Zone4Output 23 //Old HW
 String ZO4Topic = "";
 String LastMQTTZO4State = "off";
 String LastZIN4State;
@@ -78,18 +88,6 @@ void setup() {
   Serial.begin(115200);
   SerialOutput("Starting to... MAKEITRAIN  Version:" + Version, true);
   CheckStoredData();
-
-  if (OldHW == true) {
-#define Zone1Input 36 //SVP 
-#define Zone1Output 27
-#define Zone2Input 39 //SVN
-#define Zone2Output 14
-#define Zone3Input 34
-#define Zone3Output 12
-#define Zone4Input 35
-#define Zone4Output 23
-#define VSVoltagePin 4
-  }
 
   pinMode(Zone1Input, INPUT);
   attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
@@ -137,7 +135,7 @@ void setup() {
     }
   }
 
-  if (WiFi.status() == WL_CONNECTED && EnableWifi == true && EnableMQTT == true) {
+  if (WiFi.status() == WL_CONNECTED && EnableWifi == true && EnableMQTT == true && APMode == false) {
     delay(100);
     MqttConnectionCheck();
   }
@@ -147,19 +145,15 @@ void setup() {
     SetupAP();
   }
 
-  SetOutput(1, false);
-  SetOutput(2, false);
-  SetOutput(3, false);
-  SetOutput(4, false);
   ReadVoltage();
 
-  if (!SPIFFS.begin(true)) {
-    Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
-  }
-  else {
-    webserverAPI();
-    server.begin();
-  }
+    if (!SPIFFS.begin(true)) {
+      Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
+    }
+    else {
+  //    webserverAPI();
+  //    server.begin();
+    }
 
 }
 
@@ -182,7 +176,7 @@ void loop() {
     MqttConnectionCheck();
   }
 
-  if (APMode == true) {
+  if (APMode == true && APEnabled == false) {
     //Turn on AP mode
     SetupAP();
   }
@@ -211,11 +205,11 @@ void loop() {
 
   MaxZoneTimeOnCheck();
 
-  if (Battery == true){
-    // Check if any of the zones are on. if any are on do not go to sleep 
+  if (Battery == true) {
+    // Check if any of the zones are on. if any are on do not go to sleep
     // Check if the Min Time On time has been exhausted true = go to sleep
-    // Do a last min read of Voltage and any other status that needs to get posted 
-    // Set RTC to Sleep for 30 Mins 
+    // Do a last min read of Voltage and any other status that needs to get posted
+    // Set RTC to Sleep for 30 Mins
   }
 
 }
