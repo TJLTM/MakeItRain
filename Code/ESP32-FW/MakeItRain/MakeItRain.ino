@@ -726,16 +726,16 @@ void reconnect() {
       // sub to the Zone Output topics and pub the currect state
       ZO1Topic =  "/" + Name + "/" + ID + "/ZoneOutput/1";
       mqttClient.subscribe(ZO1Topic.c_str());
-      mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+      //mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
       ZO2Topic =  "/" + Name + "/" + ID + "/ZoneOutput/2";
       mqttClient.subscribe(ZO2Topic.c_str());
-      mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+      //mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
       ZO3Topic =  "/" + Name + "/" + ID + "/ZoneOutput/3";
       mqttClient.subscribe(ZO3Topic.c_str());
-      mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+      //mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
       ZO4Topic =  "/" + Name + "/" + ID + "/ZoneOutput/4";
       mqttClient.subscribe(ZO4Topic.c_str());
-      mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+      //mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
     }
     else {
       SerialOutput("failed, rc=", false);
