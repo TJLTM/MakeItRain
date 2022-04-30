@@ -23,7 +23,6 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-bool OldHW = false;
 String Version = "0.0.1";
 bool EnableMQTT, APMode, EnableWifi, Battery;
 bool LocalControlLockOut, APEnabled = false;
@@ -135,7 +134,7 @@ void setup() {
     }
   }
 
-  if (WiFi.status() == WL_CONNECTED && EnableWifi == true && EnableMQTT == true && APMode == false) {
+  if (WiFi.status() == WL_CONNECTED && EnableWifi == true && EnableMQTT == true) {
     delay(100);
     MqttConnectionCheck();
   }
