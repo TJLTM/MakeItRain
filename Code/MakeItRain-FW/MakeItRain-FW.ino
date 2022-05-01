@@ -24,15 +24,14 @@ PubSubClient mqttClient(wifiClient);
 
 //System Level
 String Version = "0.0.1";
-bool EnableMQTT, APMode, EnableWifi, Battery;
-bool LocalControlLockOut, APEnabled = false;
+bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled = false;
 String Name = "MakeItRain";
 String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
-long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer;
+long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts;
 
 #define VSVoltagePin 36
 //#define VSVoltagePin 4 //Old HW
@@ -85,7 +84,7 @@ long Zone4TurnedOnTime;
 
 void setup() {
   Serial.begin(115200);
-  SerialOutput("Starting to... MAKEITRAIN  Version:" + Version, true);
+  SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
   CheckStoredData();
 
   pinMode(Zone1Input, INPUT);
@@ -146,13 +145,13 @@ void setup() {
 
   ReadVoltage();
 
-    if (!SPIFFS.begin(true)) {
-      Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
-    }
-    else {
-      webserverAPI();
-      server.begin();
-    }
+  if (!SPIFFS.begin(true)) {
+    Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
+  }
+  else {
+    webserverAPI();
+    server.begin();
+  }
 
 }
 
@@ -160,14 +159,29 @@ void loop() {
   long CurrentTime = millis();
 
   if (WiFi.status() != WL_CONNECTED && EnableWifi == true) {
-    if (WifiReattemptsBeforeAP < 4) {
+    /*
+       basic workflow for wifi connection management
+       if disconnected from wifi it will attempt to connect with 2 min inbetween
+       after MaxAttempts is exhausted it will space trying to connect to 15 min
+       intervals. If APmode is off it will turn on AP mode to allow for debugging
+       and control. If APmode is disabled when the wifi reconnects that will be 
+       turned back off. 
+    */
+    if (WifiReattemptsBeforeAP < MaxAttempts && abs(BetweenWifiAttempts - CurrentTime) > 1200000) {
       ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
+      BetweenWifiAttempts = millis();
     }
 
-    if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
-      NumberOfWifiReconntionFailures = 0;
-      WifiTryAgainTimer = millis();
+    if (WiFi.status() != WL_CONNECTED) {
       WifiReattemptsBeforeAP += 1;
+    }
+
+    if (WifiReattemptsBeforeAP >= MaxAttempts) {
+      APMode = true;
+      if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
+        NumberOfWifiReconntionFailures = 0;
+        WifiTryAgainTimer = millis();
+      }
     }
   }
 
@@ -180,8 +194,7 @@ void loop() {
     SetupAP();
   }
 
-  if (APEnabled == true && APMode == false) {
-    APEnabled = false;
+  if (APMode == false && APEnabled == true) {
     DisableAP();
   }
 
@@ -273,6 +286,7 @@ void SetupAP() {
 }
 
 void DisableAP() {
+  APEnabled = false;
   WiFi.softAPdisconnect();
 }
 
