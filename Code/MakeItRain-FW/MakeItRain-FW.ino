@@ -164,8 +164,8 @@ void loop() {
        if disconnected from wifi it will attempt to connect with 2 min inbetween
        after MaxAttempts is exhausted it will space trying to connect to 15 min
        intervals. If APmode is off it will turn on AP mode to allow for debugging
-       and control. If APmode is disabled when the wifi reconnects that will be 
-       turned back off. 
+       and control. If APmode is disabled when the wifi reconnects that will be
+       turned back off.
     */
     if (WifiReattemptsBeforeAP < MaxAttempts && abs(BetweenWifiAttempts - CurrentTime) > 1200000) {
       ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
@@ -195,9 +195,14 @@ void loop() {
   }
 
   if (APMode == false && APEnabled == true) {
+    // if AP is enabled and it's suppose to be off turn it off 
     DisableAP();
   }
 
+  if (WiFi.status() == WL_CONNECTED && APMode == false &&  APEnabled == true) {
+    // if wifi is connected and AP is on and it's suppose to be off turn it off 
+    DisableAP();
+  }
 
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
