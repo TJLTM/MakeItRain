@@ -23,7 +23,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version = "0.0.1";
+String Version = "0.0.2";
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled = false;
 String Name = "MakeItRain";
 String ID;
@@ -88,19 +88,19 @@ void setup() {
   CheckStoredData();
 
   pinMode(Zone1Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
   pinMode(Zone1Output, OUTPUT);
 
   pinMode(Zone2Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, FALLING);
   pinMode(Zone2Output, OUTPUT);
 
   pinMode(Zone3Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, FALLING);
   pinMode(Zone3Output, OUTPUT);
 
   pinMode(Zone4Input, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, FALLING);
   pinMode(Zone4Output, OUTPUT);
 
   preferences.begin("SystemSettings", true);
@@ -112,12 +112,28 @@ void setup() {
   ZO3MaxOn = preferences.getFloat("Z3_Max");
   ZO4MaxOn = preferences.getFloat("Z4_Max");
 
+  preferences.putBool("EnableWIFI", true);
+  preferences.putBool("EnableMQTT", true);
+  preferences.putBool("APMode", false);
+  preferences.putBool("Battery", false);
+
+
   EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
   APMode = preferences.getBool("APMode");
   Battery = preferences.getBool("Battery");
 
   preferences.end();
+
+  Serial.print("EnableWifi:");
+  Serial.println(EnableWifi);
+
+  Serial.print("EnableMQTT:");
+  Serial.println(EnableMQTT);
+
+  Serial.print("APMode:");
+  Serial.println(APMode);
+
 
   String MAC = WiFi.macAddress();
   for (int x = 9; x < 17; x++) {
@@ -126,24 +142,23 @@ void setup() {
     }
   }
 
-  if (EnableWifi == false) {
+  if (EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(1, 60000);
-    if (EnableMQTT == true) {
-      SetupMQTT();
-    }
   }
 
-  if (WiFi.status() == WL_CONNECTED && EnableWifi == true && EnableMQTT == true) {
-    delay(100);
-    MqttConnectionCheck();
+  delay(250);
+  if (EnableMQTT == true) {
+    SetupMQTT();
+    //    delay(100);
+    //    MqttConnectionCheck();
   }
 
-  if (APMode == true) {
+  if (APMode == true || EnableWifi == false) {
     //Turn on Bluetooth and put Wifi into AP mode
     SetupAP();
   }
 
-  ReadVoltage();
+  //ReadVoltage();
 
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
@@ -195,25 +210,20 @@ void loop() {
   }
 
   if (APMode == false && APEnabled == true) {
-    // if AP is enabled and it's suppose to be off turn it off 
-    DisableAP();
-  }
-
-  if (WiFi.status() == WL_CONNECTED && APMode == false &&  APEnabled == true) {
-    // if wifi is connected and AP is on and it's suppose to be off turn it off 
+    // if AP is enabled and it's suppose to be off turn it off
     DisableAP();
   }
 
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
   */
-  if (LocalControlLockOut == false) {
-    interrupts();
-  } else {
-    noInterrupts();
-    //Read all the inputs and post if changed from last read.
-    CheckIfInputsHaveChanged();
-  }
+  //  if (LocalControlLockOut == false) {
+  //    interrupts();
+  //  } else {
+  //    noInterrupts();
+  //    //Read all the inputs and post if changed from last read.
+  //    CheckIfInputsHaveChanged();
+  //  }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
@@ -222,6 +232,7 @@ void loop() {
 
   MaxZoneTimeOnCheck();
 
+  //Serial.println("1234");
   if (Battery == true) {
     // Check if any of the zones are on. if any are on do not go to sleep
     // Check if the Min Time On time has been exhausted true = go to sleep
@@ -354,6 +365,39 @@ void ClearAllStoredData() {
   preferences.end();
 }
 
+void WriteSomeDataForMeUntilIGetWEbWorking() {
+  preferences.begin("credentials", false);
+  preferences.putString("ssid", "");
+  preferences.putString("password", "");
+  preferences.putString("Admin_password", "SoOriginalThereBoss");
+  preferences.end();
+
+
+  preferences.begin("SystemSettings", false);
+  preferences.putBool("LocalLockOut", true);
+  preferences.putBool("Battery", true);
+  preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
+  preferences.putInt("MQTTPORT", 1883);
+  preferences.putString("APMode_Password", "MUNAAAYE");
+  preferences.putBool("EnableMQTT", false);
+  preferences.putBool("EnableWIFI", false);
+  preferences.putBool("APMode", true);
+  preferences.putFloat("Z1_Max", 7.5);
+  preferences.putFloat("Z2_Max", 7.5);
+  preferences.putFloat("Z3_Max", 7.5);
+  preferences.putFloat("Z4_Max", 7.5);
+  preferences.end();
+
+  preferences.begin("Network_Settings", false);
+  preferences.putBool("DHCP", true);
+  preferences.putString("GATEWAY", "");
+  preferences.putString("IP", "");
+  preferences.putString("DNS", "");
+  preferences.putString("Subnet", "");
+  preferences.putString("NTP", "");
+  preferences.end();
+}
+
 void CheckStoredData() {
   /*
      Check if the stored data needed to run is there if bot sets it to default.
@@ -398,7 +442,7 @@ void CheckStoredData() {
     SerialOutput("No AP Password setting to: " + preferences.getString("APMode_Password"), true);
   }
 
-  if (preferences.isKey("APMode") == false) {
+  if (preferences.isKey("EnableMQTT") == false) {
     preferences.putBool("EnableMQTT", false);
     SerialOutput("MQTT not defined setting to off", true);
   }
@@ -709,6 +753,10 @@ void SetupMQTT() {
   preferences.begin("SystemSettings", true);
   //set up the MQTT
   String TargetFromMem = preferences.getString("MQTTIP");
+  //  SerialOutput("Connecting to MQTT at: ", true);
+  //  SerialOutput(TargetFromMem, false);
+  //  SerialOutput(" : ", false);
+  //  SerialOutput(String(preferences.getInt("MQTTPORT")),true);
   char Target[TargetFromMem.length()];
   TargetFromMem.toCharArray(Target, TargetFromMem.length() + 1);
   char *mqttServer;
@@ -719,15 +767,10 @@ void SetupMQTT() {
 }
 
 void MqttConnectionCheck() {
-  if (WiFi.status() == WL_CONNECTED) {
-    if (!mqttClient.connected()) {
-      reconnect();
-    }
-    mqttClient.loop();
+  if (!mqttClient.connected()) {
+    reconnect();
   }
-  else {
-    SerialOutput("Wifi not connected", true);
-  }
+  mqttClient.loop();
 }
 
 void reconnect() {
@@ -765,6 +808,8 @@ void reconnect() {
     }
     MQttReconnect += 1;
   }
+  Serial.print("mqttClient.connected()  ");
+  Serial.println(mqttClient.connected());
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
