@@ -24,14 +24,14 @@ PubSubClient mqttClient(wifiClient);
 
 //System Level
 String Version = "0.0.2";
-bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled = false;
+bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut = false;
 String Name = "MakeItRain";
 String ID;
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
-long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts;
+long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, DebugTimer;
 
 #define VSVoltagePin 36
 //#define VSVoltagePin 4 //Old HW
@@ -85,22 +85,19 @@ long Zone4TurnedOnTime;
 void setup() {
   Serial.begin(115200);
   SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
+  //WriteSomeDataForMeUntilIGetWEbWorking();
   CheckStoredData();
 
   pinMode(Zone1Input, INPUT);
-  //attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
   pinMode(Zone1Output, OUTPUT);
 
   pinMode(Zone2Input, INPUT);
-  //attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, FALLING);
   pinMode(Zone2Output, OUTPUT);
 
   pinMode(Zone3Input, INPUT);
-  //attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, FALLING);
   pinMode(Zone3Output, OUTPUT);
 
   pinMode(Zone4Input, INPUT);
-  //attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, FALLING);
   pinMode(Zone4Output, OUTPUT);
 
   preferences.begin("SystemSettings", true);
@@ -125,16 +122,6 @@ void setup() {
 
   preferences.end();
 
-  Serial.print("EnableWifi:");
-  Serial.println(EnableWifi);
-
-  Serial.print("EnableMQTT:");
-  Serial.println(EnableMQTT);
-
-  Serial.print("APMode:");
-  Serial.println(APMode);
-
-
   String MAC = WiFi.macAddress();
   for (int x = 9; x < 17; x++) {
     if (MAC.charAt(x) != ':') {
@@ -146,11 +133,8 @@ void setup() {
     ConnectToDaWEEEEFEEEEEEEE(1, 60000);
   }
 
-  delay(250);
   if (EnableMQTT == true) {
     SetupMQTT();
-    //    delay(100);
-    //    MqttConnectionCheck();
   }
 
   if (APMode == true || EnableWifi == false) {
@@ -158,7 +142,7 @@ void setup() {
     SetupAP();
   }
 
-  //ReadVoltage();
+  ReadVoltage();
 
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
@@ -217,13 +201,10 @@ void loop() {
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
   */
-  //  if (LocalControlLockOut == false) {
-  //    interrupts();
-  //  } else {
-  //    noInterrupts();
-  //    //Read all the inputs and post if changed from last read.
-  //    CheckIfInputsHaveChanged();
-  //  }
+  if (LocalControlLockOut != LastLocalControlLockOut) {
+    LocalInputs(LocalControlLockOut);
+    LastLocalControlLockOut = LocalControlLockOut;
+  }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
@@ -232,12 +213,16 @@ void loop() {
 
   MaxZoneTimeOnCheck();
 
-  //Serial.println("1234");
   if (Battery == true) {
     // Check if any of the zones are on. if any are on do not go to sleep
     // Check if the Min Time On time has been exhausted true = go to sleep
     // Do a last min read of Voltage and any other status that needs to get posted
     // Set RTC to Sleep for 30 Mins
+  }
+
+  if (abs(DebugTimer - CurrentTime) > 5000) {
+    Serial.println("Mic Check");
+    DebugTimer = millis();
   }
 
 }
@@ -306,6 +291,14 @@ void DisableAP() {
   WiFi.softAPdisconnect();
 }
 
+void SetupBT() {
+
+}
+
+void DisableBT() {
+
+}
+
 //-----------------------------------------------------------------------------------
 //System Level Functions
 //-----------------------------------------------------------------------------------
@@ -367,34 +360,34 @@ void ClearAllStoredData() {
 
 void WriteSomeDataForMeUntilIGetWEbWorking() {
   preferences.begin("credentials", false);
-  preferences.putString("ssid", "");
-  preferences.putString("password", "");
-  preferences.putString("Admin_password", "SoOriginalThereBoss");
+  //  preferences.putString("ssid", "");
+  //  preferences.putString("password", "");
+  //  preferences.putString("Admin_password", "SoOriginalThereBoss");
   preferences.end();
 
 
   preferences.begin("SystemSettings", false);
-  preferences.putBool("LocalLockOut", true);
-  preferences.putBool("Battery", true);
-  preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
-  preferences.putInt("MQTTPORT", 1883);
-  preferences.putString("APMode_Password", "MUNAAAYE");
-  preferences.putBool("EnableMQTT", false);
-  preferences.putBool("EnableWIFI", false);
-  preferences.putBool("APMode", true);
-  preferences.putFloat("Z1_Max", 7.5);
-  preferences.putFloat("Z2_Max", 7.5);
-  preferences.putFloat("Z3_Max", 7.5);
-  preferences.putFloat("Z4_Max", 7.5);
+  //preferences.putBool("LocalLockOut", true);
+  //preferences.putBool("Battery", true);
+  //preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
+  //preferences.putInt("MQTTPORT", 1883);
+  //preferences.putString("APMode_Password", "MUNAAAYE");
+  //  preferences.putBool("EnableMQTT", true);
+  //  preferences.putBool("EnableWIFI", true);
+  //  preferences.putBool("APMode", true);
+  //  preferences.putFloat("Z1_Max", 7.5);
+  //  preferences.putFloat("Z2_Max", 7.5);
+  //  preferences.putFloat("Z3_Max", 7.5);
+  //  preferences.putFloat("Z4_Max", 7.5);
   preferences.end();
 
   preferences.begin("Network_Settings", false);
-  preferences.putBool("DHCP", true);
-  preferences.putString("GATEWAY", "");
-  preferences.putString("IP", "");
-  preferences.putString("DNS", "");
-  preferences.putString("Subnet", "");
-  preferences.putString("NTP", "");
+  //  preferences.putBool("DHCP", true);
+  //  preferences.putString("GATEWAY", "");
+  //  preferences.putString("IP", "");
+  //  preferences.putString("DNS", "");
+  //  preferences.putString("Subnet", "");
+  //  preferences.putString("NTP", "");
   preferences.end();
 }
 
@@ -510,10 +503,8 @@ void ReadVoltage() {
   LastVSVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
   SerialOutput("Voltage:" + String(LastVSVoltage), true);
 
-  if (EnableMQTT == true) {
-    String VTopic = "/" + Name + "/" + ID + "/Voltage";
-    mqttClient.publish(VTopic.c_str(), String(LastVSVoltage).c_str());
-  }
+  String VTopic = "/" + Name + "/" + ID + "/Voltage";
+  MQTTSend(VTopic, String(LastVSVoltage));
 }
 
 String ReadOutput(int Number) {
@@ -583,9 +574,7 @@ void CheckIfInputsHaveChanged() {
   if (LastZIN1State != ReadInput(1)) {
     PathName = PathName + "1";
     LastZIN1State = String(ReadInput(1));
-    if (EnableMQTT == true) {
-      mqttClient.publish(PathName.c_str(), LastZIN1State.c_str());
-    }
+    MQTTSend(PathName, LastZIN1State);
     SerialOutput("Input:1:" + ReadInput(1), true);
 
   }
@@ -593,27 +582,21 @@ void CheckIfInputsHaveChanged() {
   if (LastZIN2State != ReadInput(2)) {
     PathName = PathName + "2";
     LastZIN2State = String(ReadInput(2));
-    if (EnableMQTT == true) {
-      mqttClient.publish(PathName.c_str(), LastZIN2State.c_str());
-    }
+    MQTTSend(PathName, LastZIN2State);
     SerialOutput("Input:2:" + ReadInput(2), true);
   }
 
   if (LastZIN3State != ReadInput(3)) {
     PathName = PathName + "3";
     LastZIN3State = String(ReadInput(3));
-    if (EnableMQTT == true) {
-      mqttClient.publish(PathName.c_str(), LastZIN3State.c_str());
-    }
+    MQTTSend(PathName, LastZIN3State);
     SerialOutput("Input:3:" + ReadInput(3), true);
   }
 
   if (LastZIN4State != ReadInput(4)) {
     PathName = PathName + "4";
     LastZIN4State = String(ReadInput(4));
-    if (EnableMQTT == true) {
-      mqttClient.publish(PathName.c_str(), LastZIN4State.c_str());
-    }
+    MQTTSend(PathName, LastZIN4State);
     SerialOutput("Input:4:" + ReadInput(4), true);
   }
 
@@ -622,6 +605,23 @@ void CheckIfInputsHaveChanged() {
 //-----------------------------------------------------------------------------------
 //Local control interrupts
 //-----------------------------------------------------------------------------------
+void LocalInputs(bool State) {
+  if (State == true) {
+    attachInterrupt(digitalPinToInterrupt(Zone1Input), LocalInput1, FALLING);
+    attachInterrupt(digitalPinToInterrupt(Zone2Input), LocalInput2, FALLING);
+    attachInterrupt(digitalPinToInterrupt(Zone3Input), LocalInput3, FALLING);
+    attachInterrupt(digitalPinToInterrupt(Zone4Input), LocalInput4, FALLING);
+    interrupts();
+  }
+  else {
+    detachInterrupt(digitalPinToInterrupt(Zone1Input));
+    detachInterrupt(digitalPinToInterrupt(Zone2Input));
+    detachInterrupt(digitalPinToInterrupt(Zone3Input));
+    detachInterrupt(digitalPinToInterrupt(Zone4Input));
+    noInterrupts();
+  }
+}
+
 void LocalInput1() {
   if (digitalRead(Zone1Output) == LOW) {
     SetOutput(1, HIGH);
@@ -671,8 +671,8 @@ void SetOutput(int Number, bool State) {
       if (State == HIGH) {
         Zone1TurnedOnTime = millis();
       }
-      if (LastMQTTZO1State != ReadOutput(1) && EnableMQTT == true) {
-        mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
+      if (LastMQTTZO1State != ReadOutput(1)) {
+        MQTTSend(ZO1Topic, String(ReadOutput(1)));
       }
       break;
     case 2:
@@ -680,8 +680,8 @@ void SetOutput(int Number, bool State) {
       if (State == HIGH) {
         Zone2TurnedOnTime = millis();
       }
-      if (LastMQTTZO2State != ReadOutput(2) && EnableMQTT == true) {
-        mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
+      if (LastMQTTZO2State != ReadOutput(2)) {
+        MQTTSend(ZO2Topic, String(ReadOutput(2)));
       }
       break;
     case 3:
@@ -689,8 +689,8 @@ void SetOutput(int Number, bool State) {
       if (State == HIGH) {
         Zone3TurnedOnTime = millis();
       }
-      if (LastMQTTZO3State != ReadOutput(3) && EnableMQTT == true) {
-        mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
+      if (LastMQTTZO3State != ReadOutput(3)) {
+        MQTTSend(ZO3Topic, String(ReadOutput(3)));
       }
       break;
     case 4:
@@ -699,8 +699,8 @@ void SetOutput(int Number, bool State) {
         Zone4TurnedOnTime = millis();
       }
 
-      if (LastMQTTZO4State != ReadOutput(4) && EnableMQTT == true) {
-        mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+      if (LastMQTTZO4State != ReadOutput(4)) {
+        MQTTSend(ZO4Topic, String(ReadOutput(4)));
       }
       break;
   }
@@ -773,6 +773,20 @@ void MqttConnectionCheck() {
   mqttClient.loop();
 }
 
+void MQTTSend(String Topic, String Payload) {
+  if (EnableMQTT == true) {
+    if (mqttClient.connected()) {
+      mqttClient.publish(Topic.c_str(), Payload.c_str());
+    }
+    else {
+      MqttConnectionCheck();
+      if (mqttClient.connected()) {
+        mqttClient.publish(Topic.c_str(), Payload.c_str());
+      }
+    }
+  }
+}
+
 void reconnect() {
   // Loop until we're reconnected
   int MQttReconnect = 0;
@@ -808,8 +822,8 @@ void reconnect() {
     }
     MQttReconnect += 1;
   }
-  Serial.print("mqttClient.connected()  ");
-  Serial.println(mqttClient.connected());
+//  Serial.print("mqttClient.connected()  ");
+//  Serial.println(mqttClient.connected());
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
