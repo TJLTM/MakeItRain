@@ -23,7 +23,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version = "0.0.2";
+String Version = "0.0.3";
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut = false;
 String Name = "MakeItRain";
 String ID;
@@ -120,14 +120,18 @@ void setup() {
   APMode = preferences.getBool("APMode");
   Battery = preferences.getBool("Battery");
 
-  preferences.end();
-
-  String MAC = WiFi.macAddress();
-  for (int x = 9; x < 17; x++) {
-    if (MAC.charAt(x) != ':') {
-      ID.concat(MAC.charAt(x));
+  if (preferences.getBool("IDOverride") == false) {
+    String MAC = WiFi.macAddress();
+    for (int x = 9; x < 17; x++) {
+      if (MAC.charAt(x) != ':') {
+        ID.concat(MAC.charAt(x));
+      }
     }
   }
+  else {
+    ID = preferences.getString("ID");
+  }
+  preferences.end();
 
   if (EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(1, 60000);
@@ -253,6 +257,8 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
       if (WiFi.status() == WL_CONNECTED) {
         NumberOfWifiReconntionFailures = 0;
         WifiReattemptsBeforeAP = 0;
+        Serial.print("WIFI IP: ");
+        Serial.println(WiFi.localIP());
       }
       else {
         NumberOfWifiReconntionFailures += 1;
@@ -379,6 +385,8 @@ void WriteSomeDataForMeUntilIGetWEbWorking() {
   //  preferences.putFloat("Z2_Max", 7.5);
   //  preferences.putFloat("Z3_Max", 7.5);
   //  preferences.putFloat("Z4_Max", 7.5);
+  //preferences.putString("ID", "");
+  //preferences.putBool("IDOverride", true);
   preferences.end();
 
   preferences.begin("Network_Settings", false);
@@ -469,6 +477,11 @@ void CheckStoredData() {
     preferences.putFloat("Z4_Max", 7.5);
     SerialOutput("Zone 4 Max On time not defined setting to: " + String(preferences.getFloat("Z4_Max")), true);
   }
+
+  if (preferences.isKey("IDOverride") == false) {
+    preferences.putBool("IDOverride", false);
+  }
+
   preferences.end();
 
   preferences.begin("Network_Settings", false);
@@ -778,12 +791,12 @@ void MQTTSend(String Topic, String Payload) {
     if (mqttClient.connected()) {
       mqttClient.publish(Topic.c_str(), Payload.c_str());
     }
-    else {
-      MqttConnectionCheck();
-      if (mqttClient.connected()) {
-        mqttClient.publish(Topic.c_str(), Payload.c_str());
-      }
-    }
+    //    else {
+    //      MqttConnectionCheck();
+    //      if (mqttClient.connected()) {
+    //        mqttClient.publish(Topic.c_str(), Payload.c_str());
+    //      }
+    //    }
   }
 }
 
@@ -822,8 +835,8 @@ void reconnect() {
     }
     MQttReconnect += 1;
   }
-//  Serial.print("mqttClient.connected()  ");
-//  Serial.println(mqttClient.connected());
+  //  Serial.print("mqttClient.connected()  ");
+  //  Serial.println(mqttClient.connected());
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
