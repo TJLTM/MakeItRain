@@ -192,6 +192,10 @@ void loop() {
     MqttConnectionCheck();
   }
 
+  if (EnableWifi == false && APMode == false){
+    APMode = true;
+  }
+
   if (APMode == true && APEnabled == false) {
     //Turn on AP mode
     SetupAP();
@@ -310,7 +314,6 @@ void DisableBT() {
 //-----------------------------------------------------------------------------------
 void RESETEVERYTHING() {
   ClearAllStoredData();
-  CheckStoredData();
   ESP.restart();
 }
 
@@ -318,7 +321,6 @@ void FlushMemoryCompletely() {
   nvs_flash_erase(); // erase the NVS partition and...
   nvs_flash_init(); // initialize the NVS partition.
 }
-
 
 //-----------------------------------------------------------------------------------
 //Storing and Retrieving stuff from memory
@@ -766,10 +768,6 @@ void SetupMQTT() {
   preferences.begin("SystemSettings", true);
   //set up the MQTT
   String TargetFromMem = preferences.getString("MQTTIP");
-  //  SerialOutput("Connecting to MQTT at: ", true);
-  //  SerialOutput(TargetFromMem, false);
-  //  SerialOutput(" : ", false);
-  //  SerialOutput(String(preferences.getInt("MQTTPORT")),true);
   char Target[TargetFromMem.length()];
   TargetFromMem.toCharArray(Target, TargetFromMem.length() + 1);
   char *mqttServer;
@@ -787,16 +785,8 @@ void MqttConnectionCheck() {
 }
 
 void MQTTSend(String Topic, String Payload) {
-  if (EnableMQTT == true) {
-    if (mqttClient.connected()) {
-      mqttClient.publish(Topic.c_str(), Payload.c_str());
-    }
-    //    else {
-    //      MqttConnectionCheck();
-    //      if (mqttClient.connected()) {
-    //        mqttClient.publish(Topic.c_str(), Payload.c_str());
-    //      }
-    //    }
+  if (EnableMQTT == true && mqttClient.connected()) {
+    mqttClient.publish(Topic.c_str(), Payload.c_str());
   }
 }
 
@@ -835,8 +825,6 @@ void reconnect() {
     }
     MQttReconnect += 1;
   }
-  //  Serial.print("mqttClient.connected()  ");
-  //  Serial.println(mqttClient.connected());
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
