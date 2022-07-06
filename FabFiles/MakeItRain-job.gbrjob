@@ -5,7 +5,7 @@
       "Application": "Pcbnew",
       "Version": "(6.0.0)"
     },
-    "CreationDate": "2022-04-11T12:39:09-07:00"
+    "CreationDate": "2022-07-05T18:27:05-07:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -58,6 +58,16 @@
     {
       "Path": "MakeItRain-B_Cu.gbr",
       "FileFunction": "Copper,L4,Bot",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "MakeItRain-F_Adhesive.gbr",
+      "FileFunction": "Glue,Top",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "MakeItRain-B_Adhesive.gbr",
+      "FileFunction": "Glue,Bot",
       "FilePolarity": "Positive"
     },
     {
