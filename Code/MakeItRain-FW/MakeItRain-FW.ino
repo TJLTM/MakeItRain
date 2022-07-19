@@ -7,7 +7,7 @@
 #include <nvs_flash.h>
 
 //NTP
-#include "time.h"
+#include "time.h" 
 //Internal RTC
 #include <ESP32Time.h>
 
@@ -81,6 +81,29 @@ String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
+#define Zone5Output 5
+String ZO5Topic = "";
+String LastMQTTZO5State = "off";
+float ZO4MaxOn;
+long Zone4TurnedOnTime;
+
+#define Zone6Output 18
+String ZO6Topic = "";
+String LastMQTTZO6State = "off";
+float ZO6MaxOn;
+long Zone6TurnedOnTime;
+
+#define Zone7Output 19
+String ZO7Topic = "";
+String LastMQTTZO7State = "off";
+float ZO7MaxOn;
+long Zone7TurnedOnTime;
+
+#define Zone8Output 23
+String ZO8Topic = "";
+String LastMQTTZO8State = "off";
+float ZO8MaxOn;
+long Zone8TurnedOnTime;
 
 void setup() {
   Serial.begin(115200);
@@ -100,6 +123,12 @@ void setup() {
   pinMode(Zone4Input, INPUT);
   pinMode(Zone4Output, OUTPUT);
 
+  //Zone Expansion 
+  pinMode(Zone5Output, OUTPUT);
+  pinMode(Zone6Output, OUTPUT);
+  pinMode(Zone7Output, OUTPUT);
+  pinMode(Zone8Output, OUTPUT);
+
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
   LocalControlLockOut = preferences.getBool("LocalLockOut");
@@ -108,6 +137,9 @@ void setup() {
   ZO2MaxOn = preferences.getFloat("Z2_Max");
   ZO3MaxOn = preferences.getFloat("Z3_Max");
   ZO4MaxOn = preferences.getFloat("Z4_Max");
+
+  //Zone Expansion 
+  
 
   preferences.putBool("EnableWIFI", true);
   preferences.putBool("EnableMQTT", true);
@@ -192,7 +224,7 @@ void loop() {
     MqttConnectionCheck();
   }
 
-  if (EnableWifi == false && APMode == false){
+  if (EnableWifi == false && APMode == false) {
     APMode = true;
   }
 

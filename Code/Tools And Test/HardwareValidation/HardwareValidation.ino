@@ -8,7 +8,11 @@
 #define Zone3Input 14
 #define Zone3Output 15
 #define Zone4Input 12
-#define Zone4Output 2
+#define Zone4Output 2 
+#define Zone5Output 5
+#define Zone6Output 18
+#define Zone7Output 19
+#define Zone8Output 23
 #define RTCBatteryVoltagePin 39
 #define VSVoltagePin 36
 #define ResetButton 22
@@ -28,6 +32,10 @@ void setup() {
   pinMode(Zone2Output, OUTPUT);
   pinMode(Zone3Output, OUTPUT);
   pinMode(Zone4Output, OUTPUT);
+  pinMode(Zone5Output, OUTPUT);
+  pinMode(Zone6Output, OUTPUT);
+  pinMode(Zone7Output, OUTPUT);
+  pinMode(Zone8Output, OUTPUT);
   pinMode(LEDOut, OUTPUT);
   rtc.begin();
 }
@@ -38,6 +46,7 @@ void loop() {
   //ReadInputs();
   //OutputWalk();
   //OutputInputcheck();
+  //EXTOutputWalk();
   RTCCheck();
 }
 
@@ -153,5 +162,35 @@ void OutputWalk() {
   delay(2000);
   Serial.println("Zone4Output low");
   digitalWrite(Zone4Output, LOW);
+  delay(2000);
+}
+
+void EXTOutputWalk() {
+  Serial.println("Zone5Output high");
+  digitalWrite(Zone5Output, HIGH);
+  delay(2000);
+  Serial.println("Zone5Output low");
+  digitalWrite(Zone5Output, LOW);
+  delay(2000);
+
+  Serial.println("Zone6Output high");
+  digitalWrite(Zone6Output, HIGH);
+  delay(2000);
+  Serial.println("Zone6Output low");
+  digitalWrite(Zone6Output, LOW);
+  delay(2000);
+
+  Serial.println("Zone7Output high");
+  digitalWrite(Zone7Output, HIGH);
+  delay(2000);
+  Serial.println("Zone7Output low");
+  digitalWrite(Zone7Output, LOW);
+  delay(2000);
+
+  Serial.println("Zone8Output high");
+  digitalWrite(Zone8Output, HIGH);
+  delay(2000);
+  Serial.println("Zone8Output low");
+  digitalWrite(Zone8Output, LOW);
   delay(2000);
 }
