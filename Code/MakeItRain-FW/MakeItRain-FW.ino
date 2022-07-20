@@ -24,7 +24,7 @@ PubSubClient mqttClient(wifiClient);
 
 //System Level
 String Version = "0.0.3";
-bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut = false;
+bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
 String Name = "MakeItRain";
 String ID;
 int NumberOfWifiReconntionFailures = 0;
@@ -34,7 +34,6 @@ Preferences preferences;
 long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, DebugTimer;
 
 #define VSVoltagePin 36
-//#define VSVoltagePin 4 //Old HW
 #define ResetButton 22
 #define LEDOut 21
 float LastVSVoltage;
@@ -42,9 +41,7 @@ float LastVSVoltage;
 
 //Zone definitions
 #define Zone1Input 26
-//#define Zone1Input 36 //SVP //Old HW
 #define Zone1Output 17
-//#define Zone1Output 27 //Old HW
 String ZO1Topic = "";
 String LastMQTTZO1State = "off";
 String LastZIN1State;
@@ -52,9 +49,7 @@ float ZO1MaxOn;
 long Zone1TurnedOnTime;
 
 #define Zone2Input 27
-//#define Zone2Input 39 //SVN //Old HW
 #define Zone2Output 16
-//#define Zone2Output 14 //Old HW
 String ZO2Topic = "";
 String LastMQTTZO2State = "off";
 String LastZIN2State;
@@ -62,9 +57,7 @@ float ZO2MaxOn;
 long Zone2TurnedOnTime;
 
 #define Zone3Input 14
-//#define Zone3Input 34 //Old HW
 #define Zone3Output 15
-//#define Zone3Output 12 //Old HW
 String ZO3Topic = "";
 String LastMQTTZO3State = "off";
 String LastZIN3State;
@@ -72,9 +65,7 @@ float ZO3MaxOn;
 long Zone3TurnedOnTime;
 
 #define Zone4Input 12
-//#define Zone4Input 35 //Old HW
 #define Zone4Output 2
-//#define Zone4Output 23 //Old HW
 String ZO4Topic = "";
 String LastMQTTZO4State = "off";
 String LastZIN4State;
@@ -84,8 +75,8 @@ long Zone4TurnedOnTime;
 #define Zone5Output 5
 String ZO5Topic = "";
 String LastMQTTZO5State = "off";
-float ZO4MaxOn;
-long Zone4TurnedOnTime;
+float ZO5MaxOn;
+long Zone5TurnedOnTime;
 
 #define Zone6Output 18
 String ZO6Topic = "";
