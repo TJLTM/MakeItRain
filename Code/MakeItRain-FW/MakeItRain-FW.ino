@@ -33,64 +33,64 @@ int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
 long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, DebugTimer;
 
-#define VSVoltagePin 36
-#define ResetButton 22
-#define LEDOut 21
+#define VSVoltagePin 4
+#define ResetButton 1
+#define LEDOut 14
 float LastVSVoltage;
 
 
 //Zone definitions
-#define Zone1Input 26
-#define Zone1Output 17
+#define Zone1Input 34
+#define Zone1Output 23
 String ZO1Topic = "";
 String LastMQTTZO1State = "off";
 String LastZIN1State;
 float ZO1MaxOn;
 long Zone1TurnedOnTime;
 
-#define Zone2Input 27
-#define Zone2Output 16
+#define Zone2Input 35
+#define Zone2Output 22
 String ZO2Topic = "";
 String LastMQTTZO2State = "off";
 String LastZIN2State;
 float ZO2MaxOn;
 long Zone2TurnedOnTime;
 
-#define Zone3Input 14
-#define Zone3Output 15
+#define Zone3Input 36
+#define Zone3Output 21
 String ZO3Topic = "";
 String LastMQTTZO3State = "off";
 String LastZIN3State;
 float ZO3MaxOn;
 long Zone3TurnedOnTime;
 
-#define Zone4Input 12
-#define Zone4Output 2
+#define Zone4Input 37
+#define Zone4Output 19
 String ZO4Topic = "";
 String LastMQTTZO4State = "off";
 String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
-#define Zone5Output 5
+#define Zone5Output 18
 String ZO5Topic = "";
 String LastMQTTZO5State = "off";
 float ZO5MaxOn;
 long Zone5TurnedOnTime;
 
-#define Zone6Output 18
+#define Zone6Output 17
 String ZO6Topic = "";
 String LastMQTTZO6State = "off";
 float ZO6MaxOn;
 long Zone6TurnedOnTime;
 
-#define Zone7Output 19
+#define Zone7Output 16
 String ZO7Topic = "";
 String LastMQTTZO7State = "off";
 float ZO7MaxOn;
 long Zone7TurnedOnTime;
 
-#define Zone8Output 23
+#define Zone8Output 13
 String ZO8Topic = "";
 String LastMQTTZO8State = "off";
 float ZO8MaxOn;
