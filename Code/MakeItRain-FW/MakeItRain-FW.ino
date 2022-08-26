@@ -23,7 +23,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version = "0.0.3";
+String Version = "0.0.4";
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
 String Name = "MakeItRain";
 String ID;
