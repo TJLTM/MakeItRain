@@ -3182,6 +3182,12 @@
     (path "/99204adf-a081-4da3-8031-dd03bceb7b2a/899eba56-f64c-46a0-b678-d1180a1ff3aa"
       (reference "Q13") (unit 1) (value "IRF9Z34NPBF") (footprint "SamacSys_Parts:TO254P469X1042X1967-3P")
     )
+    (path "/00000000-0000-0000-0000-000061506093/da910119-10d1-47ed-968a-e7e36cdf1162"
+      (reference "R1") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+    )
+    (path "/00000000-0000-0000-0000-00006158b349/da910119-10d1-47ed-968a-e7e36cdf1162"
+      (reference "R2") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+    )
     (path "/e2630af0-2b11-468b-985e-a057bed78114"
       (reference "R3") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
@@ -3239,6 +3245,9 @@
     (path "/99204adf-a081-4da3-8031-dd03bceb7b2a/479076e3-67e2-4251-ae67-d730ba5e28bf"
       (reference "R21") (unit 1) (value "10k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
+    (path "/00000000-0000-0000-0000-00006158b83d/da910119-10d1-47ed-968a-e7e36cdf1162"
+      (reference "R22") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+    )
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/04071050-e240-4c7d-896e-949006a87ac5"
       (reference "R23") (unit 1) (value "120k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
@@ -3275,17 +3284,8 @@
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/c2a57e48-486b-4b03-9956-74f9371d1585"
       (reference "R34") (unit 1) (value "47k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
-    (path "/00000000-0000-0000-0000-00006158b349/da910119-10d1-47ed-968a-e7e36cdf1162"
-      (reference "R?") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
-    )
-    (path "/00000000-0000-0000-0000-000061506093/da910119-10d1-47ed-968a-e7e36cdf1162"
-      (reference "R?") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
-    )
-    (path "/00000000-0000-0000-0000-00006158b83d/da910119-10d1-47ed-968a-e7e36cdf1162"
-      (reference "R?") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
-    )
     (path "/00000000-0000-0000-0000-00006158b957/da910119-10d1-47ed-968a-e7e36cdf1162"
-      (reference "R?") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
+      (reference "R35") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical")
     )
     (path "/8d40f71f-a20a-4db7-8103-dcb791f86750/73b41eb2-3ccf-4143-92fe-caaab34649bf"
       (reference "RV1") (unit 1) (value "500k") (footprint "Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical")
