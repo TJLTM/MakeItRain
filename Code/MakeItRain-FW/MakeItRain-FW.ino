@@ -1,3 +1,7 @@
+#include <Adafruit_MCP23X08.h>
+#include <Adafruit_MCP23X17.h>
+#include <Adafruit_MCP23XXX.h>
+
 #include <PubSubClient.h>
 #include <WiFi.h>
 #include <Preferences.h>
@@ -5,6 +9,7 @@
 #include <Update.h>
 #include <WiFiAP.h>
 #include <nvs_flash.h>
+
 
 //NTP
 #include "time.h" 
@@ -23,7 +28,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version = "0.0.4";
+String Version = "0.0.5";
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
 String Name = "MakeItRain";
 String ID;
@@ -33,15 +38,16 @@ int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
 long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, DebugTimer;
 
-#define VSVoltagePin 4
-#define ResetButton 1
-#define LEDOut 14
+#define VSVoltagePin 25
+#define AUXVoltagePin 34
+#define ResetButton 33
+#define LEDOut 27
 float LastVSVoltage;
 
 
 //Zone definitions
+Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
 #define Zone1Input 34
-#define Zone1Output 23
 String ZO1Topic = "";
 String LastMQTTZO1State = "off";
 String LastZIN1State;
@@ -49,7 +55,6 @@ float ZO1MaxOn;
 long Zone1TurnedOnTime;
 
 #define Zone2Input 35
-#define Zone2Output 22
 String ZO2Topic = "";
 String LastMQTTZO2State = "off";
 String LastZIN2State;
@@ -57,7 +62,6 @@ float ZO2MaxOn;
 long Zone2TurnedOnTime;
 
 #define Zone3Input 36
-#define Zone3Output 21
 String ZO3Topic = "";
 String LastMQTTZO3State = "off";
 String LastZIN3State;
@@ -65,32 +69,27 @@ float ZO3MaxOn;
 long Zone3TurnedOnTime;
 
 #define Zone4Input 37
-#define Zone4Output 19
 String ZO4Topic = "";
 String LastMQTTZO4State = "off";
 String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
 
-#define Zone5Output 18
 String ZO5Topic = "";
 String LastMQTTZO5State = "off";
 float ZO5MaxOn;
 long Zone5TurnedOnTime;
 
-#define Zone6Output 17
 String ZO6Topic = "";
 String LastMQTTZO6State = "off";
 float ZO6MaxOn;
 long Zone6TurnedOnTime;
 
-#define Zone7Output 16
 String ZO7Topic = "";
 String LastMQTTZO7State = "off";
 float ZO7MaxOn;
 long Zone7TurnedOnTime;
 
-#define Zone8Output 13
 String ZO8Topic = "";
 String LastMQTTZO8State = "off";
 float ZO8MaxOn;
@@ -101,25 +100,7 @@ void setup() {
   SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
   //WriteSomeDataForMeUntilIGetWEbWorking();
   CheckStoredData();
-
-  pinMode(Zone1Input, INPUT);
-  pinMode(Zone1Output, OUTPUT);
-
-  pinMode(Zone2Input, INPUT);
-  pinMode(Zone2Output, OUTPUT);
-
-  pinMode(Zone3Input, INPUT);
-  pinMode(Zone3Output, OUTPUT);
-
-  pinMode(Zone4Input, INPUT);
-  pinMode(Zone4Output, OUTPUT);
-
-  //Zone Expansion 
-  pinMode(Zone5Output, OUTPUT);
-  pinMode(Zone6Output, OUTPUT);
-  pinMode(Zone7Output, OUTPUT);
-  pinMode(Zone8Output, OUTPUT);
-
+  
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
   LocalControlLockOut = preferences.getBool("LocalLockOut");
@@ -129,9 +110,18 @@ void setup() {
   ZO3MaxOn = preferences.getFloat("Z3_Max");
   ZO4MaxOn = preferences.getFloat("Z4_Max");
 
-  //Zone Expansion 
-  
+  //Zones
+  pinMode(Zone1Input, INPUT);
+  pinMode(Zone2Input, INPUT);
+  pinMode(Zone3Input, INPUT);
+  pinMode(Zone4Input, INPUT);
+  GPIOCHIPITYCHIPCHIP.begin_I2C();
 
+  GPIOCHIPITYCHIPCHIP.pinMode(0,OUTPUT); //Zone 1
+  GPIOCHIPITYCHIPCHIP.pinMode(1,OUTPUT); //Zone 2
+  GPIOCHIPITYCHIPCHIP.pinMode(2,OUTPUT); //Zone 3
+  GPIOCHIPITYCHIPCHIP.pinMode(3,OUTPUT); //Zone 4
+  
   preferences.putBool("EnableWIFI", true);
   preferences.putBool("EnableMQTT", true);
   preferences.putBool("APMode", false);
@@ -552,22 +542,22 @@ String ReadOutput(int Number) {
   String ValueToReturn = "off";
   switch (Number) {
     case 1:
-      if (digitalRead(Zone1Output) == 1) {
+      if (GPIOCHIPITYCHIPCHIP.digitalRead(0) == 1) {
         ValueToReturn = "on";
       }
       break;
     case 2:
-      if (digitalRead(Zone2Output) == 1) {
+      if (GPIOCHIPITYCHIPCHIP.digitalRead(1) == 1) {
         ValueToReturn = "on";
       }
       break;
     case 3:
-      if (digitalRead(Zone3Output) == 1) {
+      if (GPIOCHIPITYCHIPCHIP.digitalRead(2) == 1) {
         ValueToReturn = "on";
       }
       break;
     case 4:
-      if (digitalRead(Zone4Output) == 1) {
+      if (GPIOCHIPITYCHIPCHIP.digitalRead(3) == 1) {
         ValueToReturn = "on";
       }
       break;
@@ -661,7 +651,7 @@ void LocalInputs(bool State) {
 }
 
 void LocalInput1() {
-  if (digitalRead(Zone1Output) == LOW) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(0) == LOW) {
     SetOutput(1, HIGH);
   }
   else {
@@ -670,7 +660,7 @@ void LocalInput1() {
 }
 
 void LocalInput2() {
-  if (digitalRead(Zone2Output) == LOW) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(1) == LOW) {
     SetOutput(2, HIGH);
   }
   else {
@@ -679,7 +669,7 @@ void LocalInput2() {
 }
 
 void LocalInput3() {
-  if (digitalRead(Zone3Output) == LOW) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(2) == LOW) {
     SetOutput(3, HIGH);
   }
   else {
@@ -688,7 +678,7 @@ void LocalInput3() {
 }
 
 void LocalInput4() {
-  if (digitalRead(Zone4Output) == LOW) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(3) == LOW) {
     SetOutput(4, HIGH);
   }
   else {
@@ -705,7 +695,7 @@ void SetOutput(int Number, bool State) {
   */
   switch (Number) {
     case 1:
-      digitalWrite(Zone1Output, State);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(0,HIGH);
       if (State == HIGH) {
         Zone1TurnedOnTime = millis();
       }
@@ -714,7 +704,7 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 2:
-      digitalWrite(Zone2Output, State);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(1,HIGH);
       if (State == HIGH) {
         Zone2TurnedOnTime = millis();
       }
@@ -723,7 +713,7 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 3:
-      digitalWrite(Zone3Output, State);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(3,HIGH);
       if (State == HIGH) {
         Zone3TurnedOnTime = millis();
       }
@@ -732,7 +722,7 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 4:
-      digitalWrite(Zone4Output, State);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(4,HIGH);
       if (State == HIGH) {
         Zone4TurnedOnTime = millis();
       }
@@ -752,19 +742,19 @@ void SetOutput(int Number, bool State) {
 
 void MaxZoneTimeOnCheck() {
   long CurrentTime = millis();
-  if (digitalRead(Zone1Output) == HIGH && abs(CurrentTime - Zone1TurnedOnTime) >= ZO1MaxOn * 60000) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(0) == HIGH && abs(CurrentTime - Zone1TurnedOnTime) >= ZO1MaxOn * 60000) {
     SetOutput(1, LOW);
   }
 
-  if (digitalRead(Zone2Output) == HIGH && abs(CurrentTime - Zone2TurnedOnTime) >= ZO2MaxOn * 60000) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(1) == HIGH && abs(CurrentTime - Zone2TurnedOnTime) >= ZO2MaxOn * 60000) {
     SetOutput(2, LOW);
   }
 
-  if (digitalRead(Zone3Output) == HIGH && abs(CurrentTime - Zone3TurnedOnTime) >= ZO3MaxOn * 60000) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(2) == HIGH && abs(CurrentTime - Zone3TurnedOnTime) >= ZO3MaxOn * 60000) {
     SetOutput(3, LOW);
   }
 
-  if (digitalRead(Zone4Output) == HIGH && abs(CurrentTime - Zone4TurnedOnTime) >= ZO4MaxOn * 60000) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(3) == HIGH && abs(CurrentTime - Zone4TurnedOnTime) >= ZO4MaxOn * 60000) {
     SetOutput(4, LOW);
   }
 }
