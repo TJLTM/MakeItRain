@@ -26,7 +26,8 @@ void setup() {
   preferences.putFloat("Z2_Max", 7.5);
   preferences.putFloat("Z3_Max", 7.5);
   preferences.putFloat("Z4_Max", 7.5);
-
+  //preferences.putString("ID", "");
+  //preferences.putBool("IDOverride", true);
   preferences.end();
 
   preferences.begin("Network_Settings", false);
@@ -44,4 +45,15 @@ void setup() {
 
 
 void loop() {
+}
+
+
+
+void ClearAllStoredData() {
+  preferences.begin("credentials", false);
+  preferences.clear();
+  preferences.end();
+  preferences.begin("SystemSettings", false);
+  preferences.clear();
+  preferences.end();
 }
