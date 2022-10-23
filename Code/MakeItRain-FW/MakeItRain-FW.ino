@@ -38,9 +38,9 @@ int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
 long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, DebugTimer;
 
-#define VSVoltagePin 25
-#define AUXVoltagePin 34
-#define ResetButton 33
+#define VSVoltagePin 33
+#define AUXVoltagePin 32
+#define ResetButton 25
 #define LEDOut 27
 float LastVSVoltage;
 
@@ -68,32 +68,12 @@ String LastZIN3State;
 float ZO3MaxOn;
 long Zone3TurnedOnTime;
 
-#define Zone4Input 37
+#define Zone4Input 39
 String ZO4Topic = "";
 String LastMQTTZO4State = "off";
 String LastZIN4State;
 float ZO4MaxOn;
 long Zone4TurnedOnTime;
-
-String ZO5Topic = "";
-String LastMQTTZO5State = "off";
-float ZO5MaxOn;
-long Zone5TurnedOnTime;
-
-String ZO6Topic = "";
-String LastMQTTZO6State = "off";
-float ZO6MaxOn;
-long Zone6TurnedOnTime;
-
-String ZO7Topic = "";
-String LastMQTTZO7State = "off";
-float ZO7MaxOn;
-long Zone7TurnedOnTime;
-
-String ZO8Topic = "";
-String LastMQTTZO8State = "off";
-float ZO8MaxOn;
-long Zone8TurnedOnTime;
 
 void setup() {
   Serial.begin(115200);
