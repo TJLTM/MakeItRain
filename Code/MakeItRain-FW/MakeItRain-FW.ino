@@ -78,7 +78,7 @@ long Zone4TurnedOnTime;
 void setup() {
   Serial.begin(115200);
   SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
-  //WriteSomeDataForMeUntilIGetWEbWorking();
+  WriteSomeDataForMeUntilIGetWEbWorking();
   CheckStoredData();
   
   preferences.begin("SystemSettings", true);
@@ -101,12 +101,11 @@ void setup() {
   GPIOCHIPITYCHIPCHIP.pinMode(1,OUTPUT); //Zone 2
   GPIOCHIPITYCHIPCHIP.pinMode(2,OUTPUT); //Zone 3
   GPIOCHIPITYCHIPCHIP.pinMode(3,OUTPUT); //Zone 4
-  
-  preferences.putBool("EnableWIFI", true);
-  preferences.putBool("EnableMQTT", true);
-  preferences.putBool("APMode", false);
-  preferences.putBool("Battery", false);
 
+  GPIOCHIPITYCHIPCHIP.digitalWrite(0,0); //Zone 1
+  GPIOCHIPITYCHIPCHIP.digitalWrite(1,0); //Zone 2
+  GPIOCHIPITYCHIPCHIP.digitalWrite(2,0); //Zone 3
+  GPIOCHIPITYCHIPCHIP.digitalWrite(3,0); //Zone 4
 
   EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
@@ -373,7 +372,7 @@ void WriteSomeDataForMeUntilIGetWEbWorking() {
   //preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
   //preferences.putInt("MQTTPORT", 1883);
   //preferences.putString("APMode_Password", "MUNAAAYE");
-  //  preferences.putBool("EnableMQTT", true);
+  //preferences.putBool("EnableMQTT", true);
   //  preferences.putBool("EnableWIFI", true);
   //  preferences.putBool("APMode", true);
   //  preferences.putFloat("Z1_Max", 7.5);
@@ -675,7 +674,7 @@ void SetOutput(int Number, bool State) {
   */
   switch (Number) {
     case 1:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(0,HIGH);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(0,State);
       if (State == HIGH) {
         Zone1TurnedOnTime = millis();
       }
@@ -684,7 +683,7 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 2:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(1,HIGH);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(1,State);
       if (State == HIGH) {
         Zone2TurnedOnTime = millis();
       }
@@ -693,7 +692,7 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 3:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(3,HIGH);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(3,State);
       if (State == HIGH) {
         Zone3TurnedOnTime = millis();
       }
@@ -702,11 +701,10 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 4:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(4,HIGH);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(4,State);
       if (State == HIGH) {
         Zone4TurnedOnTime = millis();
       }
-
       if (LastMQTTZO4State != ReadOutput(4)) {
         MQTTSend(ZO4Topic, String(ReadOutput(4)));
       }
@@ -791,7 +789,7 @@ void reconnect() {
     // Attempt to connect
     mqttClient.disconnect();
     SetupMQTT();
-
+  
     if (mqttClient.connect(ID.c_str())) {
       SerialOutput("connected", true);
       // sub to the Zone Output topics and pub the currect state
