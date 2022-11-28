@@ -17,12 +17,22 @@ Adafruit_MCP23X08 GPIOEX;
 
 void setup() {
   Serial.begin(9600);
+  GPIOEX.begin_I2C();
   pinMode(LEDOut, OUTPUT);
   pinMode(ResetButton, INPUT);
   pinMode(Zone1Input, INPUT);
   pinMode(Zone2Input, INPUT);
   pinMode(Zone3Input, INPUT);
   pinMode(Zone4Input, INPUT);
+
+  GPIOEX.pinMode(0,OUTPUT); //Zone 1
+  GPIOEX.pinMode(1,OUTPUT); //Zone 2
+  GPIOEX.pinMode(2,OUTPUT); //Zone 3
+  GPIOEX.pinMode(3,OUTPUT); //Zone 4
+  GPIOEX.pinMode(4,OUTPUT); //Zone 5
+  GPIOEX.pinMode(5,OUTPUT); //Zone 6
+  GPIOEX.pinMode(6,OUTPUT); //Zone 7
+  GPIOEX.pinMode(7,OUTPUT); //Zone 8
 }
 
 void loop() {
@@ -41,6 +51,9 @@ void OutputInputcheck() {
 }
 
 void ButtonCheck() {
+  int ButtonRead = digitalRead(ResetButton);
+  Serial.print("Reset Button State:");
+  Serial.println(ButtonRead);
   digitalWrite(LEDOut, digitalRead(ResetButton));
 }
 
@@ -49,6 +62,7 @@ void ReadADCs() {
   Serial.println(analogRead(AUXVoltagePin));
   Serial.print("VS Voltage:");
   Serial.println(analogRead(VSVoltagePin));
+  delay(2500);
 }
 
 void ReadInputs() {
@@ -74,9 +88,10 @@ void OutputWalk() {
     String Message = "Zone " + String(x+1) + " Output ";
     Serial.println(Message + "High");
     GPIOEX.digitalWrite(x,HIGH);
-    delay(2000);
+    delay(5000);
     Serial.println(Message + "LOW");
     GPIOEX.digitalWrite(x,LOW);
+    delay(5000);
     
   }
 }
