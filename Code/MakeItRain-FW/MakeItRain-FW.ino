@@ -692,7 +692,7 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 3:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(3,State);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(2,State);
       if (State == HIGH) {
         Zone3TurnedOnTime = millis();
       }
@@ -701,7 +701,7 @@ void SetOutput(int Number, bool State) {
       }
       break;
     case 4:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(4,State);
+      GPIOCHIPITYCHIPCHIP.digitalWrite(3,State);
       if (State == HIGH) {
         Zone4TurnedOnTime = millis();
       }
