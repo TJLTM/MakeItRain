@@ -80,6 +80,18 @@ void setup() {
   SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
   WriteSomeDataForMeUntilIGetWEbWorking();
   CheckStoredData();
+
+  GPIOCHIPITYCHIPCHIP.begin_I2C();
+
+  GPIOCHIPITYCHIPCHIP.pinMode(0,OUTPUT); //Zone 1
+  GPIOCHIPITYCHIPCHIP.pinMode(1,OUTPUT); //Zone 2
+  GPIOCHIPITYCHIPCHIP.pinMode(2,OUTPUT); //Zone 3
+  GPIOCHIPITYCHIPCHIP.pinMode(3,OUTPUT); //Zone 4
+
+  GPIOCHIPITYCHIPCHIP.digitalWrite(0,0); //Zone 1 Turnning off
+  GPIOCHIPITYCHIPCHIP.digitalWrite(1,0); //Zone 2 Turnning off
+  GPIOCHIPITYCHIPCHIP.digitalWrite(2,0); //Zone 3 Turnning off
+  GPIOCHIPITYCHIPCHIP.digitalWrite(3,0); //Zone 4 Turnning off
   
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
@@ -95,17 +107,6 @@ void setup() {
   pinMode(Zone2Input, INPUT);
   pinMode(Zone3Input, INPUT);
   pinMode(Zone4Input, INPUT);
-  GPIOCHIPITYCHIPCHIP.begin_I2C();
-
-  GPIOCHIPITYCHIPCHIP.pinMode(0,OUTPUT); //Zone 1
-  GPIOCHIPITYCHIPCHIP.pinMode(1,OUTPUT); //Zone 2
-  GPIOCHIPITYCHIPCHIP.pinMode(2,OUTPUT); //Zone 3
-  GPIOCHIPITYCHIPCHIP.pinMode(3,OUTPUT); //Zone 4
-
-  GPIOCHIPITYCHIPCHIP.digitalWrite(0,0); //Zone 1
-  GPIOCHIPITYCHIPCHIP.digitalWrite(1,0); //Zone 2
-  GPIOCHIPITYCHIPCHIP.digitalWrite(2,0); //Zone 3
-  GPIOCHIPITYCHIPCHIP.digitalWrite(3,0); //Zone 4
 
   EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
