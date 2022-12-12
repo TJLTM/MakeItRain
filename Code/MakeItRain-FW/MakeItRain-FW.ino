@@ -78,7 +78,7 @@ long Zone4TurnedOnTime;
 void setup() {
   Serial.begin(115200);
   SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
-  WriteSomeDataForMeUntilIGetWEbWorking();
+  //WriteSomeDataForMeUntilIGetWEbWorking();
   CheckStoredData();
 
   GPIOCHIPITYCHIPCHIP.begin_I2C();
