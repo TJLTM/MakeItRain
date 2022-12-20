@@ -80,6 +80,12 @@ void setup() {
   SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
   //WriteSomeDataForMeUntilIGetWEbWorking();
   CheckStoredData();
+  
+  //Zones
+  pinMode(Zone1Input, INPUT);
+  pinMode(Zone2Input, INPUT);
+  pinMode(Zone3Input, INPUT);
+  pinMode(Zone4Input, INPUT);
 
   GPIOCHIPITYCHIPCHIP.begin_I2C();
 
@@ -101,12 +107,6 @@ void setup() {
   ZO2MaxOn = preferences.getFloat("Z2_Max");
   ZO3MaxOn = preferences.getFloat("Z3_Max");
   ZO4MaxOn = preferences.getFloat("Z4_Max");
-
-  //Zones
-  pinMode(Zone1Input, INPUT);
-  pinMode(Zone2Input, INPUT);
-  pinMode(Zone3Input, INPUT);
-  pinMode(Zone4Input, INPUT);
 
   EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
@@ -240,7 +240,7 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
       SerialOutput(preferences.getString("ssid"), false);
       SerialOutput("  Attempt: ", false);
       SerialOutput(String(NumberOfWifiReconntionFailures), true);
-      WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("password").c_str());
+      WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("ssid_password").c_str());
 
 
       int StartTime = millis();
@@ -403,8 +403,8 @@ void CheckStoredData() {
     preferences.putString("ssid", "");
   }
 
-  if (preferences.isKey("password") == false) {
-    preferences.putString("password", "");
+  if (preferences.isKey("ssid_password") == false) {
+    preferences.putString("ssid_password", "");
   }
 
   if (preferences.isKey("Admin_password") == false) {

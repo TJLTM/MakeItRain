@@ -8,8 +8,8 @@ void setup() {
 
   preferences.begin("credentials", false);
   preferences.clear();
-  preferences.putString("ssid", "...");
-  preferences.putString("password", "...!");
+  preferences.putString("ssid", "");
+  preferences.putString("ssid_password", "");
   preferences.putString("Admin_password", "SoOriginalThereBoss");
   preferences.end();
 
