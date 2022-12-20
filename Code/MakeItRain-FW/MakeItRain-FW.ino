@@ -1,6 +1,4 @@
 #include <Adafruit_MCP23X08.h>
-#include <Adafruit_MCP23X17.h>
-#include <Adafruit_MCP23XXX.h>
 
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -9,7 +7,6 @@
 #include <Update.h>
 #include <WiFiAP.h>
 #include <nvs_flash.h>
-
 
 //NTP
 #include "time.h" 
@@ -43,7 +40,6 @@ long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, Debug
 #define ResetButton 25
 #define LEDOut 27
 float LastVSVoltage;
-
 
 //Zone definitions
 Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
