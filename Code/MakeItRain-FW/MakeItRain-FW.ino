@@ -94,6 +94,16 @@ void setup() {
   GPIOCHIPITYCHIPCHIP.digitalWrite(1,0); //Zone 2 Turnning off
   GPIOCHIPITYCHIPCHIP.digitalWrite(2,0); //Zone 3 Turnning off
   GPIOCHIPITYCHIPCHIP.digitalWrite(3,0); //Zone 4 Turnning off
+
+  //turning off the remaining IO on the MCP chip after setting them to output mode 
+  GPIOCHIPITYCHIPCHIP.pinMode(4,OUTPUT); //Z5
+  GPIOCHIPITYCHIPCHIP.digitalWrite(4,0); //Z5 Turnning off
+  GPIOCHIPITYCHIPCHIP.pinMode(5,OUTPUT); //Z6
+  GPIOCHIPITYCHIPCHIP.digitalWrite(5,0); //Z6 Turnning off
+  GPIOCHIPITYCHIPCHIP.pinMode(6,OUTPUT); //Z7
+  GPIOCHIPITYCHIPCHIP.digitalWrite(6,0); //Z7 Turnning off
+  GPIOCHIPITYCHIPCHIP.pinMode(7,OUTPUT); //Z8
+  GPIOCHIPITYCHIPCHIP.digitalWrite(7,0); //Z8 Turnning off
   
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
