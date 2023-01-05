@@ -1,7 +1,5 @@
 #include <Wire.h>
 #include <Adafruit_MCP23X08.h>
-#include <Adafruit_MCP23X17.h>
-#include <Adafruit_MCP23XXX.h>
 
 #define VSVoltagePin 33
 #define AUXVoltagePin 32
@@ -36,11 +34,11 @@ void setup() {
 }
 
 void loop() {
-  ButtonCheck();
-  ReadADCs();
-  ReadInputs();
+  //ButtonCheck();
+  //ReadADCs();
+  //ReadInputs();
   OutputWalk();
-  OutputInputcheck();
+  //OutputInputcheck();
 }
 
 void OutputInputcheck() {
