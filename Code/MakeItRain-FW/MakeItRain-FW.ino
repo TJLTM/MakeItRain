@@ -9,7 +9,7 @@
 #include <nvs_flash.h>
 
 //NTP
-#include "time.h" 
+#include "time.h"
 //Internal RTC
 #include <ESP32Time.h>
 
@@ -43,6 +43,8 @@ float LastVSVoltage;
 
 //Zone definitions
 Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
+bool GrootToGo = true;
+
 #define Zone1Input 34
 String ZO1Topic = "";
 String LastMQTTZO1State = "off";
@@ -76,35 +78,38 @@ void setup() {
   SerialOutput("Starting to... MAKEITRAIN  Version: " + Version, true);
   //WriteSomeDataForMeUntilIGetWEbWorking();
   CheckStoredData();
-  
+
   //Zones
   pinMode(Zone1Input, INPUT);
   pinMode(Zone2Input, INPUT);
   pinMode(Zone3Input, INPUT);
   pinMode(Zone4Input, INPUT);
 
-  GPIOCHIPITYCHIPCHIP.begin_I2C();
+  if (!GPIOCHIPITYCHIPCHIP.begin_I2C()) {
+    GrootToGo = false;
+  }
+  else {
+    GPIOCHIPITYCHIPCHIP.pinMode(0, OUTPUT); //Zone 1
+    GPIOCHIPITYCHIPCHIP.pinMode(1, OUTPUT); //Zone 2
+    GPIOCHIPITYCHIPCHIP.pinMode(2, OUTPUT); //Zone 3
+    GPIOCHIPITYCHIPCHIP.pinMode(3, OUTPUT); //Zone 4
 
-  GPIOCHIPITYCHIPCHIP.pinMode(0,OUTPUT); //Zone 1
-  GPIOCHIPITYCHIPCHIP.pinMode(1,OUTPUT); //Zone 2
-  GPIOCHIPITYCHIPCHIP.pinMode(2,OUTPUT); //Zone 3
-  GPIOCHIPITYCHIPCHIP.pinMode(3,OUTPUT); //Zone 4
+    GPIOCHIPITYCHIPCHIP.digitalWrite(0, 0); //Zone 1 Turnning off
+    GPIOCHIPITYCHIPCHIP.digitalWrite(1, 0); //Zone 2 Turnning off
+    GPIOCHIPITYCHIPCHIP.digitalWrite(2, 0); //Zone 3 Turnning off
+    GPIOCHIPITYCHIPCHIP.digitalWrite(3, 0); //Zone 4 Turnning off
 
-  GPIOCHIPITYCHIPCHIP.digitalWrite(0,0); //Zone 1 Turnning off
-  GPIOCHIPITYCHIPCHIP.digitalWrite(1,0); //Zone 2 Turnning off
-  GPIOCHIPITYCHIPCHIP.digitalWrite(2,0); //Zone 3 Turnning off
-  GPIOCHIPITYCHIPCHIP.digitalWrite(3,0); //Zone 4 Turnning off
+    //turning off the remaining IO on the MCP chip after setting them to output mode
+    GPIOCHIPITYCHIPCHIP.pinMode(4, OUTPUT); //Z5
+    GPIOCHIPITYCHIPCHIP.digitalWrite(4, 0); //Z5 Turnning off
+    GPIOCHIPITYCHIPCHIP.pinMode(5, OUTPUT); //Z6
+    GPIOCHIPITYCHIPCHIP.digitalWrite(5, 0); //Z6 Turnning off
+    GPIOCHIPITYCHIPCHIP.pinMode(6, OUTPUT); //Z7
+    GPIOCHIPITYCHIPCHIP.digitalWrite(6, 0); //Z7 Turnning off
+    GPIOCHIPITYCHIPCHIP.pinMode(7, OUTPUT); //Z8
+    GPIOCHIPITYCHIPCHIP.digitalWrite(7, 0); //Z8 Turnning off
+  }
 
-  //turning off the remaining IO on the MCP chip after setting them to output mode 
-  GPIOCHIPITYCHIPCHIP.pinMode(4,OUTPUT); //Z5
-  GPIOCHIPITYCHIPCHIP.digitalWrite(4,0); //Z5 Turnning off
-  GPIOCHIPITYCHIPCHIP.pinMode(5,OUTPUT); //Z6
-  GPIOCHIPITYCHIPCHIP.digitalWrite(5,0); //Z6 Turnning off
-  GPIOCHIPITYCHIPCHIP.pinMode(6,OUTPUT); //Z7
-  GPIOCHIPITYCHIPCHIP.digitalWrite(6,0); //Z7 Turnning off
-  GPIOCHIPITYCHIPCHIP.pinMode(7,OUTPUT); //Z8
-  GPIOCHIPITYCHIPCHIP.digitalWrite(7,0); //Z8 Turnning off
-  
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
   LocalControlLockOut = preferences.getBool("LocalLockOut");
@@ -636,40 +641,39 @@ void LocalInputs(bool State) {
   }
 }
 
-void LocalInput1() {
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(0) == LOW) {
-    SetOutput(1, HIGH);
+bool ReadMCP23008(int PortNumber) {
+  bool PortState = GPIOCHIPITYCHIPCHIP.digitalRead(PortNumber);
+  return PortState;
+}
+
+void TogglePort(int PortNumber) {
+  if (GrootToGo == true) {
+    if (GPIOCHIPITYCHIPCHIP.digitalRead(PortNumber) == LOW) {
+      SetOutput(PortNumber, HIGH);
+    }
+    else {
+      SetOutput(PortNumber, LOW);
+    }
   }
   else {
-    SetOutput(1, LOW);
+    //put message for can't talk to mcp23008
   }
+}
+
+void LocalInput1() {
+  TogglePort(1);
 }
 
 void LocalInput2() {
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(1) == LOW) {
-    SetOutput(2, HIGH);
-  }
-  else {
-    SetOutput(2, LOW);
-  }
+  TogglePort(2);
 }
 
 void LocalInput3() {
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(2) == LOW) {
-    SetOutput(3, HIGH);
-  }
-  else {
-    SetOutput(3, LOW);
-  }
+  TogglePort(3);
 }
 
 void LocalInput4() {
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(3) == LOW) {
-    SetOutput(4, HIGH);
-  }
-  else {
-    SetOutput(4, LOW);
-  }
+  TogglePort(4);
 }
 
 //-----------------------------------------------------------------------------------
@@ -679,46 +683,51 @@ void SetOutput(int Number, bool State) {
   /*
 
   */
-  switch (Number) {
-    case 1:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(0,State);
-      if (State == HIGH) {
-        Zone1TurnedOnTime = millis();
-      }
-      if (LastMQTTZO1State != ReadOutput(1)) {
-        MQTTSend(ZO1Topic, String(ReadOutput(1)));
-      }
-      break;
-    case 2:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(1,State);
-      if (State == HIGH) {
-        Zone2TurnedOnTime = millis();
-      }
-      if (LastMQTTZO2State != ReadOutput(2)) {
-        MQTTSend(ZO2Topic, String(ReadOutput(2)));
-      }
-      break;
-    case 3:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(2,State);
-      if (State == HIGH) {
-        Zone3TurnedOnTime = millis();
-      }
-      if (LastMQTTZO3State != ReadOutput(3)) {
-        MQTTSend(ZO3Topic, String(ReadOutput(3)));
-      }
-      break;
-    case 4:
-      GPIOCHIPITYCHIPCHIP.digitalWrite(3,State);
-      if (State == HIGH) {
-        Zone4TurnedOnTime = millis();
-      }
-      if (LastMQTTZO4State != ReadOutput(4)) {
-        MQTTSend(ZO4Topic, String(ReadOutput(4)));
-      }
-      break;
-  }
+  if (GrootToGo == true) {
+    switch (Number) {
+      case 1:
+        GPIOCHIPITYCHIPCHIP.digitalWrite(0, State);
+        if (State == HIGH) {
+          Zone1TurnedOnTime = millis();
+        }
+        if (LastMQTTZO1State != ReadOutput(1)) {
+          MQTTSend(ZO1Topic, String(ReadOutput(1)));
+        }
+        break;
+      case 2:
+        GPIOCHIPITYCHIPCHIP.digitalWrite(1, State);
+        if (State == HIGH) {
+          Zone2TurnedOnTime = millis();
+        }
+        if (LastMQTTZO2State != ReadOutput(2)) {
+          MQTTSend(ZO2Topic, String(ReadOutput(2)));
+        }
+        break;
+      case 3:
+        GPIOCHIPITYCHIPCHIP.digitalWrite(2, State);
+        if (State == HIGH) {
+          Zone3TurnedOnTime = millis();
+        }
+        if (LastMQTTZO3State != ReadOutput(3)) {
+          MQTTSend(ZO3Topic, String(ReadOutput(3)));
+        }
+        break;
+      case 4:
+        GPIOCHIPITYCHIPCHIP.digitalWrite(3, State);
+        if (State == HIGH) {
+          Zone4TurnedOnTime = millis();
+        }
+        if (LastMQTTZO4State != ReadOutput(4)) {
+          MQTTSend(ZO4Topic, String(ReadOutput(4)));
+        }
+        break;
+    }
 
-  SerialOutput("Zone:" + String(Number) + ":" + ReadOutput(Number), true);
+    SerialOutput("Zone:" + String(Number) + ":" + ReadOutput(Number), true);
+  }
+  else {
+    SerialOutput("Can Not Communicate with MCP23008", true);
+  }
 }
 
 //-----------------------------------------------------------------------------------
@@ -796,7 +805,7 @@ void reconnect() {
     // Attempt to connect
     mqttClient.disconnect();
     SetupMQTT();
-  
+
     if (mqttClient.connect(ID.c_str())) {
       SerialOutput("connected", true);
       // sub to the Zone Output topics and pub the currect state
