@@ -46,18 +46,19 @@ void setup() {
 void loop() {
   //ButtonCheck();
   //ReadADCs();
-  //ReadInputs();
-  OutputWalk();
-  //OutputInputcheck();
-  //OutputBlink(0,2000);
-  //OutputBlink(7, 2000);
-}
+  //ReadAllInputs();
+  //OutputWalk();
 
-void OutputInputcheck() {
-  SetOutput(0, digitalRead(Zone1Input));
-  SetOutput(1, digitalRead(Zone2Input));
-  SetOutput(2, digitalRead(Zone3Input));
-  SetOutput(3, digitalRead(Zone4Input));
+  /*
+    OutputBlink(0,2000);
+    OutputBlink(1,2000);
+    OutputBlink(2,2000);
+    OutputBlink(3,2000);
+    OutputBlink(4,2000);
+    OutputBlink(5,2000);
+    OutputBlink(6,2000);
+    OutputBlink(7,2000);
+  */
 }
 
 void ButtonCheck() {
@@ -75,22 +76,17 @@ void ReadADCs() {
   delay(2500);
 }
 
-void ReadInputs() {
-  Serial.print("Zone1Input:");
-  Serial.println(digitalRead(Zone1Input));
-  delay(2000);
+void ReadAllInputs() {
+  byte Inputs;
 
-  Serial.print("Zone2Input:");
-  Serial.println(digitalRead(Zone2Input));
-  delay(2000);
+  bitWrite(Inputs, 0, digitalRead(Zone1Input));
+  bitWrite(Inputs, 1, digitalRead(Zone2Input));
+  bitWrite(Inputs, 2, digitalRead(Zone3Input));
+  bitWrite(Inputs, 3, digitalRead(Zone4Input));
 
-  Serial.print("Zone3Input:");
-  Serial.println(digitalRead(Zone3Input));
-  delay(2000);
-
-  Serial.print("Zone4Input:");
-  Serial.println(digitalRead(Zone4Input));
-  delay(2000);
+  Serial.print("Inputs:");
+  Serial.println(Inputs);
+  delay(1000);
 }
 
 void OutputWalk() {
@@ -100,7 +96,6 @@ void OutputWalk() {
 }
 
 void OutputBlink(int PortNumber, float Time) {
-
   String Message = "Zone " + String(PortNumber) + " Output ";
   Serial.println(Message + "High");
   SetOutput(PortNumber, HIGH);
