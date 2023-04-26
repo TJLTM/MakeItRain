@@ -1,4 +1,4 @@
-22425064588558327
+22344373310985162
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -86065,96 +86065,12 @@ rotary encoder
 7
 6
 SamacSys_Parts
-651305142821
-651305142821 (MINI USB 2.0 SMT TYPE AB)
-Connector
-0
-9
-9
-SamacSys_Parts
-6E17C009SAJ220
-6E17C009SAJ220-1
-Connector
-0
-11
-11
-SamacSys_Parts
-24PCDFA6D
-24PCDFA6D-4
-Integrated Circuit
-0
-4
-4
-SamacSys_Parts
-3296W-1
-3296W-1
-Variable Resistor
-0
-3
-3
-SamacSys_Parts
 1723014
 1723014-1
 Connector
 0
 6
 6
-SamacSys_Parts
-1727748
-1727748-3
-Connector
-0
-9
-9
-SamacSys_Parts
-1727751
-1727751-1
-Connector
-0
-12
-12
-SamacSys_Parts
-1988998
-1988998-1
-Connector
-0
-6
-6
-SamacSys_Parts
-22017781
-2201778-1-4
-Connector
-0
-16
-16
-SamacSys_Parts
-676433911
-67643-3911-1
-Connector
-0
-6
-6
-SamacSys_Parts
-17861650001
-178.6165.0001-2
-Undefined or Miscellaneous
-0
-8
-8
-SamacSys_Parts
-BK_HTC-15M
-BK/HTC-15M
-Undefined or Miscellaneous
-0
-2
-2
-SamacSys_Parts
-CAPC1608X87N
-0603+
-Capacitor
-0
-2
-2
 SamacSys_Parts
 DIOAD1068W53L380D172
 DO-35-ren2
@@ -86163,15 +86079,8 @@ Zener Diode
 2
 2
 SamacSys_Parts
-DIOAD1084W56L378D176
-DO-35
-Diode
-0
-2
-2
-SamacSys_Parts
-DIOAD1414W86L464D238
-DO-41
+DIOAD1408W86L464D236
+2-Pin DO-41
 Diode
 0
 2
@@ -86184,124 +86093,12 @@ Schottky Diode
 2
 2
 SamacSys_Parts
-DIP051A7212L
-DIP05-1A72-12L-3
-Relay or Contactor
-0
-8
-8
-SamacSys_Parts
-DIP762W53P254L1980H508Q16N
-NE Package (R-PDIP-T16)
-Integrated Circuit
-0
-16
-16
-SamacSys_Parts
-DIP762W56P254L938H457Q8N
-8 PDIP (Height=4.572mm)-
+LM2670SX33NOPB
+LM2670SX-3.3/NOPB-2
 Integrated Circuit
 0
 8
 8
-SamacSys_Parts
-DIP762W56P254L1918H457Q16N
-16 PDIP
-Integrated Circuit
-0
-16
-16
-SamacSys_Parts
-DIP762W60P254L460H450Q4N
-dip4
-Integrated Circuit
-0
-4
-4
-SamacSys_Parts
-DIP762W60P254L1984H450Q16N
-dip
-Transistor
-0
-16
-16
-SamacSys_Parts
-DIP794W53P254L959H508Q8N
-PDIP-8
-Integrated Circuit
-0
-8
-8
-SamacSys_Parts
-DIP794W53P254L1930H508Q14N
-N (R-PDIP-T)
-Integrated Circuit
-0
-14
-14
-SamacSys_Parts
-DIP794W53P254L2540H508Q20N
-N (R-PDIP-T20)
-Integrated Circuit
-0
-20
-20
-SamacSys_Parts
-DIP794W53P254L3467H457Q28N
-28P3 7.62 row pitch
-Integrated Circuit
-0
-28
-28
-SamacSys_Parts
-DIP794W56P254L938H457Q8N
-21-0043
-Integrated Circuit
-0
-8
-8
-SamacSys_Parts
-DIP825W58P510L828H330Q4N
-4-Pin DF-M
-Bridge Rectifier
-0
-4
-4
-SamacSys_Parts
-F24045C2
-F24-045-C2-1
-Transformer
-0
-6
-6
-SamacSys_Parts
-GSD090012SEU
-GSD090012SEU-2
-Connector
-0
-15
-15
-SamacSys_Parts
-INDAD2550W90L950D400
-idk
-Inductor
-0
-2
-2
-SamacSys_Parts
-IRM3048
-IRM-30 Series
-Power Supply
-0
-4
-4
-SamacSys_Parts
-KMMXBSMT35SB30TR
-KMMX-BSMT35S-B30TR-1
-Connector
-0
-9
-9
 SamacSys_Parts
 LM2670SX50NOPB
 LM2670SX-5.0/NOPB-4
@@ -86310,13 +86107,6 @@ Integrated Circuit
 8
 8
 SamacSys_Parts
-MPSA06
-TO-92 CASE_1
-Transistor BJT NPN
-0
-3
-3
-SamacSys_Parts
 NE555DR
 D (R-PDSO-G8)
 Integrated Circuit
@@ -86324,184 +86114,44 @@ Integrated Circuit
 8
 8
 SamacSys_Parts
-PMEG3050EP115
-SOD128
+SODFL5226X100N
+SlimSMA (DO-221AC)-1
 Schottky Diode
 0
 2
 2
 SamacSys_Parts
-PSMP03360YEX
-PSMP033-60YEX-1
-MOSFET (P-Channel)
-0
-6
-6
-SamacSys_Parts
-QFP50P900X900X160-48N
-W5500(1.6mm)
-Integrated Circuit
-0
-48
-48
-SamacSys_Parts
-RESAD1550W60L630D230
-YR1 _1
-Resistor
-0
-2
-2
-SamacSys_Parts
-S8411-45R_1
-S8411-45R_1
-Undefined or Miscellaneous
-0
-2
-2
-SamacSys_Parts
 SOIC127P600X175-8N
-TEH100M5R00FE
+D0008A-1
 Integrated Circuit
 0
 8
 8
 SamacSys_Parts
-SOIC127P600X175-14N
-D(R-DPSO-G14)
-Integrated Circuit
-0
-14
-14
-SamacSys_Parts
-SOIC127P600X175-16N
-D (R-PDSO-G16)
-Integrated Circuit
-0
-16
-16
-SamacSys_Parts
-SOIC127P1032X265-16N
-so 16
-Integrated Circuit
-0
-16
-16
-SamacSys_Parts
-SOP65P490X110-8N
-DGK(S-PDOS-G8)
-Integrated Circuit
-0
-8
-8
-SamacSys_Parts
-SOP65P640X120-16N
-16 PIN TSSOP
-Integrated Circuit
-0
-16
-16
-SamacSys_Parts
-SOP65P778X199-16N
-SSOP-16
-Integrated Circuit
-0
-16
-16
-SamacSys_Parts
-SOP65P778X199-20N
-MAX 20 SSOP 
+SOP65P780X200-20N
+(SS)20-lead(SSOP)
 Integrated Circuit
 0
 20
 20
 SamacSys_Parts
-SOP65P778X200-28N
-SSOP-28 1
+TO170P1435X465-6N
+KTT0005B
 Integrated Circuit
 0
-28
-28
-SamacSys_Parts
-SOP65P780X200-28N
-SSOP-28 _2
-Integrated Circuit
-0
-28
-28
-SamacSys_Parts
-SOP254P1016X460-16N
-LTV-846S
-Integrated Circuit
-0
-16
-16
-SamacSys_Parts
-SOT65P280X100-8N
-TS8(TSOT-23)
-Integrated Circuit
-0
-8
-8
-SamacSys_Parts
-SOT95P251X112-3N
-SUPERSOT-3
-MOSFET (P-Channel)
-0
-3
-3
-SamacSys_Parts
-SOT230P700X180-4N
-PG-SOT223-4
-Integrated Circuit
-0
-4
-4
-SamacSys_Parts
-TE-5747840-6
-5747840-6
-Connector
-0
-11
-11
-SamacSys_Parts
-THRMC1005X55N
-1005
-Thermistor
-0
-2
-2
-SamacSys_Parts
-TO127P254X533-3
-TO127P254X533-3
-Integrated Circuit
-0
-3
-3
+6
+6
 SamacSys_Parts
 TO254P465X1024X2050-3P
-IRF510
-MOSFET (N-Channel)
+TO-220-1-
+MOSFET (P-Channel)
 0
 3
 3
 SamacSys_Parts
 TO254P469X1042X1967-3P
-3-pin to-220ab
-MOSFET (P-Channel)
-0
-3
-3
-SamacSys_Parts
-TO254P478X1016X1955-3P
-BTA12-600CW3G
-Integrated Circuit
-0
-3
-3
-SamacSys_Parts
-TO255P460X1020X2008-3P
-3-Pin TO-220
-Integrated Circuit
+TO220AB 2
+MOSFET (N-Channel)
 0
 3
 3
