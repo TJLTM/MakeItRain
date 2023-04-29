@@ -4,6 +4,12 @@ This is a project for a DIY multinode watering system like rainbird or whatever 
 
 Some basic documentation. Currently this is beta/dev FW and hardware that after I get working enough and integrated into my own systems, I will get some broader system integration going. Some Goals are to have this integrate with Homeassistant ~~via a custom integration~~ via MQTT and i will be adding support for self contained schedules and timers. Limited as they will be it is on my roadmap that this does not have to be connected to the internet or any Wifi to function. Those are optional extras if you want. Other things will be to have OTA FW updates, Web page control and possibly Telnet/SSL control if i get around to it. 
 
+
+Build Documentation
+1. Look in the BOM folder for the list of recommended parts 
+2. Case that was designed for was a SERPAC - RB63 
+3. Power can be supplied by any 3.3v regulator as long as it can take your selected input voltage and can supply at least 3 amps of power. I have a Design that can be used and will fit at https://github.com/TJLTM/LM2670SX-3.3-Carrier
+
 Hardware 
 1. ESP32 - https://www.amazon.com/gp/product/B07QCP2451/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
 2. Valves - https://www.amazon.com/gp/product/B004RUH7A0/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
