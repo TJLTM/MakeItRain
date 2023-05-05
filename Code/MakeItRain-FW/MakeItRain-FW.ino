@@ -25,10 +25,12 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version = "0.0.5";
+String Version PROGMEM = "0.0.6";
+//Target HW Version for this code is v1.3.2
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
-String Name = "MakeItRain";
+String Name PROGMEM = "MakeItRain";
 String ID;
+String BaseMQTTTopicString = "";
 int NumberOfWifiReconntionFailures = 0;
 int MaxAttempts = 4;
 int WifiReattemptsBeforeAP = 0;
@@ -39,39 +41,17 @@ long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, Debug
 #define AUXVoltagePin 32
 #define ResetButton 25
 #define LEDOut 27
-float LastVSVoltage;
+
+const int InputPins[] PROGMEM = {34,35,36,39};
+bool LastZoneStates[8] = {0,0,0,0,0,0,0,0};
+long LastZoneStartTime[8] = {0,0,0,0,0,0,0,0};
+float MaxZoneOnTime[8] = {0,0,0,0,0,0,0,0};
+bool LastInputStates[4] = {0,0,0,0};
 
 //Zone definitions
 Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
 bool GrootToGo = true;
 
-#define Zone1Input 34
-String ZO1Topic = "";
-String LastMQTTZO1State = "off";
-String LastZIN1State;
-float ZO1MaxOn;
-long Zone1TurnedOnTime;
-
-#define Zone2Input 35
-String ZO2Topic = "";
-String LastMQTTZO2State = "off";
-String LastZIN2State;
-float ZO2MaxOn;
-long Zone2TurnedOnTime;
-
-#define Zone3Input 36
-String ZO3Topic = "";
-String LastMQTTZO3State = "off";
-String LastZIN3State;
-float ZO3MaxOn;
-long Zone3TurnedOnTime;
-
-#define Zone4Input 39
-String ZO4Topic = "";
-String LastMQTTZO4State = "off";
-String LastZIN4State;
-float ZO4MaxOn;
-long Zone4TurnedOnTime;
 
 void setup() {
   Serial.begin(115200);
@@ -80,10 +60,10 @@ void setup() {
   CheckStoredData();
 
   //Zones
-  pinMode(Zone1Input, INPUT);
-  pinMode(Zone2Input, INPUT);
-  pinMode(Zone3Input, INPUT);
-  pinMode(Zone4Input, INPUT);
+  pinMode(InputPins[0], INPUT);
+  pinMode(InputPins[1], INPUT);
+  pinMode(InputPins[2], INPUT);
+  pinMode(InputPins[3], INPUT);
 
   if (!GPIOCHIPITYCHIPCHIP.begin_I2C()) {
     GrootToGo = false;
@@ -114,10 +94,10 @@ void setup() {
   //setup other System Level settings
   LocalControlLockOut = preferences.getBool("LocalLockOut");
 
-  ZO1MaxOn = preferences.getFloat("Z1_Max");
-  ZO2MaxOn = preferences.getFloat("Z2_Max");
-  ZO3MaxOn = preferences.getFloat("Z3_Max");
-  ZO4MaxOn = preferences.getFloat("Z4_Max");
+  MaxZoneOnTime[0] = preferences.getFloat("Z1_Max");
+  MaxZoneOnTime[1] = preferences.getFloat("Z2_Max");
+  MaxZoneOnTime[2] = preferences.getFloat("Z3_Max");
+  MaxZoneOnTime[3] = preferences.getFloat("Z4_Max");
 
   EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
@@ -519,107 +499,46 @@ void CheckStoredData() {
 //Reading states
 //-----------------------------------------------------------------------------------
 void ReadVoltage() {
-  LastVSVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
+  float LastVSVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
   SerialOutput("Voltage:" + String(LastVSVoltage), true);
 
   String VTopic = "/" + Name + "/" + ID + "/Voltage";
   MQTTSend(VTopic, String(LastVSVoltage));
 }
 
-String ReadOutput(int Number) {
+bool ReadOutput(int Number) {
   /*
 
   */
-  String ValueToReturn = "off";
-  switch (Number) {
-    case 1:
-      if (GPIOCHIPITYCHIPCHIP.digitalRead(0) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
-    case 2:
-      if (GPIOCHIPITYCHIPCHIP.digitalRead(1) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
-    case 3:
-      if (GPIOCHIPITYCHIPCHIP.digitalRead(2) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
-    case 4:
-      if (GPIOCHIPITYCHIPCHIP.digitalRead(3) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
+  bool ValueToReturn = false;
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(Number - 1) == 1) {
+    ValueToReturn = true;
   }
-
   return ValueToReturn;
 }
 
-String ReadInput(int Number) {
+bool ReadInput(int Number) {
   /*
 
   */
-  String ValueToReturn = "off";
-  switch (Number) {
-    case 1:
-      if (digitalRead(Zone1Input) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
-    case 2:
-      if (digitalRead(Zone2Input) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
-    case 3:
-      if (digitalRead(Zone3Input) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
-    case 4:
-      if (digitalRead(Zone4Input) == 1) {
-        ValueToReturn = "on";
-      }
-      break;
+  bool ValueToReturn = false;
+  if (digitalRead(Number-1) == 1) {
+    ValueToReturn = true;
   }
+
   return ValueToReturn;
 }
 
 void CheckIfInputsHaveChanged() {
-
   String PathName = "/" + Name + "/" + ID + "/ZoneInput/";
-  if (LastZIN1State != ReadInput(1)) {
-    PathName = PathName + "1";
-    LastZIN1State = String(ReadInput(1));
-    MQTTSend(PathName, LastZIN1State);
-    SerialOutput("Input:1:" + ReadInput(1), true);
-
+  for (int x = 0; x<=4; x++;){
+  if (LastInputStates[x] != ReadInput(x+1)) {
+    String CurrentInput = PathName + String(x+1);
+    LastInputStates[x] = ReadInput(x+1);
+    MQTTSend(CurrentInput, LastInputStates[x]);
+    SerialOutput("Input:" + String(x+1) + ":" + ReadInput(x+1), true);
   }
-
-  if (LastZIN2State != ReadInput(2)) {
-    PathName = PathName + "2";
-    LastZIN2State = String(ReadInput(2));
-    MQTTSend(PathName, LastZIN2State);
-    SerialOutput("Input:2:" + ReadInput(2), true);
   }
-
-  if (LastZIN3State != ReadInput(3)) {
-    PathName = PathName + "3";
-    LastZIN3State = String(ReadInput(3));
-    MQTTSend(PathName, LastZIN3State);
-    SerialOutput("Input:3:" + ReadInput(3), true);
-  }
-
-  if (LastZIN4State != ReadInput(4)) {
-    PathName = PathName + "4";
-    LastZIN4State = String(ReadInput(4));
-    MQTTSend(PathName, LastZIN4State);
-    SerialOutput("Input:4:" + ReadInput(4), true);
-  }
-
-
 }
 //-----------------------------------------------------------------------------------
 //Local control interrupts
@@ -661,19 +580,19 @@ void TogglePort(int PortNumber) {
 }
 
 void LocalInput1() {
-  TogglePort(1);
+  TogglePort(0);
 }
 
 void LocalInput2() {
-  TogglePort(2);
+  TogglePort(1);
 }
 
 void LocalInput3() {
-  TogglePort(3);
+  TogglePort(2);
 }
 
 void LocalInput4() {
-  TogglePort(4);
+  TogglePort(3);
 }
 
 //-----------------------------------------------------------------------------------
@@ -684,44 +603,15 @@ void SetOutput(int Number, bool State) {
 
   */
   if (GrootToGo == true) {
-    switch (Number) {
-      case 1:
-        GPIOCHIPITYCHIPCHIP.digitalWrite(0, State);
-        if (State == HIGH) {
-          Zone1TurnedOnTime = millis();
-        }
-        if (LastMQTTZO1State != ReadOutput(1)) {
-          MQTTSend(ZO1Topic, String(ReadOutput(1)));
-        }
-        break;
-      case 2:
-        GPIOCHIPITYCHIPCHIP.digitalWrite(1, State);
-        if (State == HIGH) {
-          Zone2TurnedOnTime = millis();
-        }
-        if (LastMQTTZO2State != ReadOutput(2)) {
-          MQTTSend(ZO2Topic, String(ReadOutput(2)));
-        }
-        break;
-      case 3:
-        GPIOCHIPITYCHIPCHIP.digitalWrite(2, State);
-        if (State == HIGH) {
-          Zone3TurnedOnTime = millis();
-        }
-        if (LastMQTTZO3State != ReadOutput(3)) {
-          MQTTSend(ZO3Topic, String(ReadOutput(3)));
-        }
-        break;
-      case 4:
-        GPIOCHIPITYCHIPCHIP.digitalWrite(3, State);
-        if (State == HIGH) {
-          Zone4TurnedOnTime = millis();
-        }
-        if (LastMQTTZO4State != ReadOutput(4)) {
-          MQTTSend(ZO4Topic, String(ReadOutput(4)));
-        }
-        break;
-    }
+    String OutputTopic = "";
+     GPIOCHIPITYCHIPCHIP.digitalWrite(Number-1, State);
+      if (State == HIGH) {
+        LastZoneStartTime[Number-1] = millis();
+      }
+      if (LastMQTTZO1State != ReadOutput(1)) {
+
+        MQTTSend(OutputTopic, String(ReadOutput(Number-1)));
+      }
 
     SerialOutput("Zone:" + String(Number) + ":" + ReadOutput(Number), true);
   }
@@ -736,26 +626,24 @@ void SetOutput(int Number, bool State) {
 
 void MaxZoneTimeOnCheck() {
   long CurrentTime = millis();
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(0) == HIGH && abs(CurrentTime - Zone1TurnedOnTime) >= ZO1MaxOn * 60000) {
-    SetOutput(1, LOW);
-  }
-
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(1) == HIGH && abs(CurrentTime - Zone2TurnedOnTime) >= ZO2MaxOn * 60000) {
-    SetOutput(2, LOW);
-  }
-
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(2) == HIGH && abs(CurrentTime - Zone3TurnedOnTime) >= ZO3MaxOn * 60000) {
-    SetOutput(3, LOW);
-  }
-
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(3) == HIGH && abs(CurrentTime - Zone4TurnedOnTime) >= ZO4MaxOn * 60000) {
-    SetOutput(4, LOW);
+  for (x = 0; x <=4; x++){
+    if (GPIOCHIPITYCHIPCHIP.digitalRead(x) == HIGH && abs(CurrentTime - LastZoneStartTime[x]) >= MaxZoneOnTime[x] * 60000){
+      SetOutput(x,LOW)
+    }
   }
 }
 
 //-----------------------------------------------------------------------------------
 //Communication (MQTT/Serial/WEB)
 //-----------------------------------------------------------------------------------
+String BoolToString(bool State) {
+  String StringState = "off"; 
+  if (State == true){
+    StringState = "on"
+  }
+  return StringState;
+}
+
 void SerialOutput(String Data, bool CR) {
   if (CR == true) {
     Serial.println(Data);
