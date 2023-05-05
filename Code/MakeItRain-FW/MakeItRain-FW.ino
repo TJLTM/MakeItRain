@@ -42,6 +42,7 @@ long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts, Debug
 #define ResetButton 25
 #define LEDOut 27
 
+const int MAXOutputZones PROGMEM = 4;
 const int InputPins[] PROGMEM = {34,35,36,39};
 bool LastZoneStates[8] = {0,0,0,0,0,0,0,0};
 long LastZoneStartTime[8] = {0,0,0,0,0,0,0,0};
@@ -98,6 +99,10 @@ void setup() {
   MaxZoneOnTime[1] = preferences.getFloat("Z2_Max");
   MaxZoneOnTime[2] = preferences.getFloat("Z3_Max");
   MaxZoneOnTime[3] = preferences.getFloat("Z4_Max");
+  //MaxZoneOnTime[0] = preferences.getFloat("Z5_Max");
+  //MaxZoneOnTime[1] = preferences.getFloat("Z6_Max");
+  //MaxZoneOnTime[2] = preferences.getFloat("Z7_Max");
+  //MaxZoneOnTime[3] = preferences.getFloat("Z8_Max");
 
   EnableWifi = preferences.getBool("EnableWIFI");
   EnableMQTT = preferences.getBool("EnableMQTT");
@@ -116,6 +121,8 @@ void setup() {
     ID = preferences.getString("ID");
   }
   preferences.end();
+
+  BaseMQTTTopicString = "/" + Name + "/" + ID + "/"; 
 
   if (EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(1, 60000);
@@ -502,7 +509,7 @@ void ReadVoltage() {
   float LastVSVoltage = (30.954 / 4095) * analogRead(VSVoltagePin);
   SerialOutput("Voltage:" + String(LastVSVoltage), true);
 
-  String VTopic = "/" + Name + "/" + ID + "/Voltage";
+  String VTopic = BaseMQTTTopicString + "Voltage";
   MQTTSend(VTopic, String(LastVSVoltage));
 }
 
@@ -522,7 +529,7 @@ bool ReadInput(int Number) {
 
   */
   bool ValueToReturn = false;
-  if (digitalRead(Number-1) == 1) {
+  if (digitalRead(InputPins[Number]) == 1) {
     ValueToReturn = true;
   }
 
@@ -530,7 +537,7 @@ bool ReadInput(int Number) {
 }
 
 void CheckIfInputsHaveChanged() {
-  String PathName = "/" + Name + "/" + ID + "/ZoneInput/";
+  String PathName = BaseMQTTTopicString + "ZoneInput/";
   for (int x = 0; x<=4; x++;){
   if (LastInputStates[x] != ReadInput(x+1)) {
     String CurrentInput = PathName + String(x+1);
@@ -603,15 +610,14 @@ void SetOutput(int Number, bool State) {
 
   */
   if (GrootToGo == true) {
-    String OutputTopic = "";
-     GPIOCHIPITYCHIPCHIP.digitalWrite(Number-1, State);
-      if (State == HIGH) {
-        LastZoneStartTime[Number-1] = millis();
-      }
-      if (LastMQTTZO1State != ReadOutput(1)) {
-
-        MQTTSend(OutputTopic, String(ReadOutput(Number-1)));
-      }
+    String OutputTopic = BaseMQTTTopicString + "ZoneOutput/" + String(Number + 1);
+    GPIOCHIPITYCHIPCHIP.digitalWrite(Number, State);
+    if (State == HIGH) {
+      LastZoneStartTime[Number] = millis();
+    }
+    if (LastMQTTState[x] != ReadOutput(x)) {
+      MQTTSend(OutputTopic, String(ReadOutput(Number+1)));
+    }
 
     SerialOutput("Zone:" + String(Number) + ":" + ReadOutput(Number), true);
   }
@@ -639,9 +645,17 @@ void MaxZoneTimeOnCheck() {
 String BoolToString(bool State) {
   String StringState = "off"; 
   if (State == true){
-    StringState = "on"
+    StringState = "on";l
   }
   return StringState;
+}
+
+bool MQTTtoBool(String State){
+  bool BoolState = false; 
+  if (State == "on"){
+    BoolState = true;
+  }
+  return BoolState;
 }
 
 void SerialOutput(String Data, bool CR) {
@@ -696,19 +710,11 @@ void reconnect() {
 
     if (mqttClient.connect(ID.c_str())) {
       SerialOutput("connected", true);
-      // sub to the Zone Output topics and pub the currect state
-      ZO1Topic =  "/" + Name + "/" + ID + "/ZoneOutput/1";
-      mqttClient.subscribe(ZO1Topic.c_str());
-      //mqttClient.publish(ZO1Topic.c_str(), String(ReadOutput(1)).c_str());
-      ZO2Topic =  "/" + Name + "/" + ID + "/ZoneOutput/2";
-      mqttClient.subscribe(ZO2Topic.c_str());
-      //mqttClient.publish(ZO2Topic.c_str(), String(ReadOutput(2)).c_str());
-      ZO3Topic =  "/" + Name + "/" + ID + "/ZoneOutput/3";
-      mqttClient.subscribe(ZO3Topic.c_str());
-      //mqttClient.publish(ZO3Topic.c_str(), String(ReadOutput(3)).c_str());
-      ZO4Topic =  "/" + Name + "/" + ID + "/ZoneOutput/4";
-      mqttClient.subscribe(ZO4Topic.c_str());
-      //mqttClient.publish(ZO4Topic.c_str(), String(ReadOutput(4)).c_str());
+
+      for (x = 0; x<=MAXOutputZones; x++;){
+        String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/"  + String(x+1);
+        mqttClient.subscribe(CurrentTopic.c_str());
+      }
     }
     else {
       SerialOutput("failed, rc=", false);
@@ -733,63 +739,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   SerialOutput(String(message), true);
 
-
-  //Zone 1
-  if (String((char*)topic) == ZO1Topic) {
-    CurrentOutputState = String(ReadOutput(1)).c_str();
-    LastMQTTZO1State = message;
-    if (message != CurrentOutputState) {
-      if (message == "on") {
-        SetOutput(1, true);
-      }
-      if (message == "off") {
-        SetOutput(1, false);
-      }
-    }
-  }
-
-  //Zone 2
-  if (String((char*)topic) == ZO2Topic) {
-    CurrentOutputState = String(ReadOutput(2)).c_str();
-    LastMQTTZO2State = message;
-    if (message != CurrentOutputState) {
-      if (message == "on") {
-        SetOutput(2, true);
-      }
-      if (message == "off") {
-        SetOutput(2, false);
+  for (x = 0; x<=MAXOutputZones; x++;){
+    String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/"  + String(x+1);
+    if (String((char*)topic) == CurrentTopic) {
+      CurrentOutputState = String(ReadOutput(x)).c_str();
+      LastMQTTZO1State = message;
+      if (message != CurrentOutputState) {
+        if (message == "on") {
+          SetOutput(1, true);
+        }
+        if (message == "off") {
+          SetOutput(1, false);
+        }
       }
     }
-  }
-
-  //Zone 3
-  if (String((char*)topic) == ZO3Topic) {
-    CurrentOutputState = String(ReadOutput(3)).c_str();
-    LastMQTTZO3State = message;
-    if (message != CurrentOutputState) {
-      if (message == "on") {
-        SetOutput(3, true);
-      }
-      if (message == "off") {
-        SetOutput(3, false);
-      }
-    }
-  }
-
-  //Zone 4
-  if (String((char*)topic) == ZO4Topic) {
-    CurrentOutputState = String(ReadOutput(4)).c_str();
-    LastMQTTZO4State = message;
-    if (message != CurrentOutputState) {
-      if (message == "on") {
-        SetOutput(4, true);
-      }
-      if (message == "off") {
-        SetOutput(4, false);
-      }
-    }
-  }
-
+  }\
 }
 
 void webserverAPI() {
