@@ -5869,7 +5869,7 @@
   (gr_text "ZONE 1" (at 71.00703 59.581504) (layer "F.SilkS") (tstamp 9bac5a37-2a55-41dd-96ea-ec02b69e3ef4)
     (effects (font (size 1.5 1.905) (thickness 0.3)))
   )
-  (gr_text "MakeItRain V1.3.2" (at 73.089135 126.050282) (layer "F.SilkS") (tstamp c860c4e9-3ddd-4065-857c-b9aedc01e6ad)
+  (gr_text "MakeItRain V1.3.3" (at 73.089135 126.050282) (layer "F.SilkS") (tstamp c860c4e9-3ddd-4065-857c-b9aedc01e6ad)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
   (gr_text "OUT" (at 71.00703 63.391504 90) (layer "F.SilkS") (tstamp d8932824-bdfc-4009-a7d0-6ff32efa7e1a)
