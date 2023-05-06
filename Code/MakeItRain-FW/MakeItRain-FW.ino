@@ -35,7 +35,7 @@ int NumberOfWifiReconntionFailures = 0;
 #define MaxAttempts 4
 int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
-long VoltageTimer, WifiTryAgainTimer, MinTimeOnTimer, BetweenWifiAttempts;
+long VoltageTimer, WifiTryAgainTimer, BetweenWifiAttempts;
 
 #define VSVoltagePin 33
 #define AUXVoltagePin 32
@@ -55,7 +55,6 @@ bool LastInputStates[4] = {0, 0, 0, 0};
 //Zone definitions
 Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
 bool GrootToGo = true;
-
 
 void setup() {
   Serial.begin(115200);
