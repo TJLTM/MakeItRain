@@ -8,7 +8,7 @@ Some basic documentation. Currently this is beta/dev FW and hardware that after 
 Build Documentation
 1. Look in the BOM folder for the list of recommended parts 
 2. Case that was designed for was a SERPAC - RB63 
-3. Power can be supplied by any 3.3v regulator as long as it can take your selected input voltage and can supply at least 3 amps of power. I have a Design that can be used and will fit at https://github.com/TJLTM/LM2670SX-3.3-Carrier
+3. Power can be supplied by any 3.3v regulator as long as it can take your selected input voltage and can supply at least 3 amps of power. I have a Design that can be used and will fit at https://github.com/TJLTM/LM2670SX-Carrier
 
 Hardware 
 1. ESP32 - https://www.amazon.com/gp/product/B07QCP2451/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
