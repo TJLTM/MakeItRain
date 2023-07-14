@@ -47,8 +47,9 @@ void loop() {
   //ButtonCheck();
   //ReadADCs();
   //ReadAllInputs();
+  ReadAllInputsIndivialDisplay();
   //OutputWalk();
-
+  
   /*
     OutputBlink(0,2000);
     OutputBlink(1,2000);
@@ -86,6 +87,23 @@ void ReadAllInputs() {
 
   Serial.print("Inputs:");
   Serial.println(Inputs);
+  delay(1000);
+}
+
+
+void ReadAllInputsIndivialDisplay() {
+  Serial.print("Input1:");
+  Serial.println(digitalRead(Zone1Input));
+
+  Serial.print("Input2:");
+  Serial.println(digitalRead(Zone2Input));
+
+  Serial.print("Input3:");
+  Serial.println(digitalRead(Zone3Input));
+
+  Serial.print("Input4:");
+  Serial.println(digitalRead(Zone4Input));
+  
   delay(1000);
 }
 
