@@ -47,7 +47,7 @@ void loop() {
   //ButtonCheck();
   //ReadADCs();
   //ReadAllInputs();
-  ReadAllInputsIndivialDisplay();
+  //ReadAllInputsIndivialDisplay();
   //OutputWalk();
   
   /*
@@ -72,8 +72,11 @@ void ButtonCheck() {
 void ReadADCs() {
   Serial.print("AUX Voltage:");
   Serial.println(analogRead(AUXVoltagePin));
-  Serial.print("VS Voltage:");
+  Serial.print("VS Voltage DN:");
   Serial.println(analogRead(VSVoltagePin));
+  float Voltage = (30.954 / 4095) * analogRead(VSVoltagePin);
+  Serial.print("VS Voltage Calc:");
+  Serial.println(Voltage);
   delay(2500);
 }
 
