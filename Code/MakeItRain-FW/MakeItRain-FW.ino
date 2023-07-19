@@ -25,8 +25,8 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.0.6";
-//Target HW Version for this code is v1.3.2
+String Version PROGMEM = "0.0.7";
+//Target HW Version for this code is v1.4.0 
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
@@ -510,10 +510,10 @@ void CheckIfInputsHaveChanged() {
 //-----------------------------------------------------------------------------------
 void LocalInputs(bool State) {
   if (State == true) {
-    attachInterrupt(digitalPinToInterrupt(Input1), LocalInput1, FALLING);
-    attachInterrupt(digitalPinToInterrupt(Input2), LocalInput2, FALLING);
-    attachInterrupt(digitalPinToInterrupt(Input3), LocalInput3, FALLING);
-    attachInterrupt(digitalPinToInterrupt(Input4), LocalInput4, FALLING);
+    attachInterrupt(digitalPinToInterrupt(Input1), LocalInput1, RISING);
+    attachInterrupt(digitalPinToInterrupt(Input2), LocalInput2, RISING);
+    attachInterrupt(digitalPinToInterrupt(Input3), LocalInput3, RISING);
+    attachInterrupt(digitalPinToInterrupt(Input4), LocalInput4, RISING);
     interrupts();
   }
   else {
