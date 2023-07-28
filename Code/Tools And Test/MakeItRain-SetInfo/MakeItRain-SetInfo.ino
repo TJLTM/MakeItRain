@@ -26,6 +26,10 @@ void setup() {
   preferences.putFloat("Z2_Max", 7.5);
   preferences.putFloat("Z3_Max", 7.5);
   preferences.putFloat("Z4_Max", 7.5);
+  preferences.putFloat("Z5_Max", 7.5);
+  preferences.putFloat("Z6_Max", 7.5);
+  preferences.putFloat("Z7_Max", 7.5);
+  preferences.putFloat("Z8_Max", 7.5);
   preferences.putString("ID", "");
   preferences.putBool("IDOverride", false);
   preferences.end();
