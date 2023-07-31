@@ -26,7 +26,7 @@ PubSubClient mqttClient(wifiClient);
 
 //System Level
 String Version PROGMEM = "0.0.7";
-//Target HW Version for this code is v1.4.0 
+//Target HW Version for this code is v1.4.0
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
@@ -51,6 +51,7 @@ long VoltageTimer, WifiTryAgainTimer, BetweenWifiAttempts;
 long LastZoneStartTime[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 float MaxZoneOnTime[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 bool LastInputStates[4] = {0, 0, 0, 0};
+bool LastMQTTZoneOutputState[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 //Zone definitions
 Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
@@ -61,12 +62,12 @@ void setup() {
   Serial.println("Starting to... MAKEITRAIN  Version: " + Version);
   CheckStoredData();
 
-  //Inputs 
+  //Inputs
   pinMode(Input1, INPUT);
   pinMode(Input2, INPUT);
   pinMode(Input3, INPUT);
   pinMode(Input4, INPUT);
-  
+
   //Outputs
   if (!GPIOCHIPITYCHIPCHIP.begin_I2C()) {
     GrootToGo = false;
@@ -404,7 +405,7 @@ void CheckStoredData() {
     preferences.putFloat("Z4_Max", 7.5);
   }
 
-    if (preferences.isKey("Z5_Max") == false) {
+  if (preferences.isKey("Z5_Max") == false) {
     preferences.putFloat("Z5_Max", 7.5);
   }
 
@@ -570,7 +571,9 @@ void SetOutput(int Number, bool State) {
     if (State == HIGH) {
       LastZoneStartTime[Number] = millis();
     }
-    MQTTSend(OutputTopic, String(ReadOutput(Number + 1)));
+    if (LastMQTTZoneOutputState[Number] == State) {
+      MQTTSend(OutputTopic, BoolToString(ReadOutput(Number + 1)));
+    }
   }
 }
 
@@ -670,7 +673,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int x = 0; x <= MAXOutputZones; x++) {
     String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/"  + String(x + 1);
     if (String((char*)topic) == CurrentTopic) {
-      SetOutput(x, MQTTtoBool(message));
+      if (MQTTtoBool(message) != ReadOutput(x + 1)) {
+        SetOutput(x, MQTTtoBool(message));
+        LastMQTTZoneOutputState[x] = MQTTtoBool(message);
+      }
       break;
     }
   }
