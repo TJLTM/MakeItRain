@@ -15,12 +15,12 @@ void setup() {
 
   preferences.begin("SystemSettings", false);
   preferences.putBool("LocalLockOut", true);
-  preferences.putBool("Battery", true);
+  preferences.putBool("Battery", false);
   preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
   preferences.putInt("MQTTPORT", 1883);
   preferences.putString("APMode_Password", "MUNAAAYE");
-  preferences.putBool("EnableMQTT", false);
-  preferences.putBool("EnableWIFI", false);
+  preferences.putBool("EnableMQTT", true);
+  preferences.putBool("EnableWIFI", true);
   preferences.putBool("APMode", true);
   preferences.putFloat("Z1_Max", 7.5);
   preferences.putFloat("Z2_Max", 7.5);
