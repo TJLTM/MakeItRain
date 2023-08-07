@@ -192,6 +192,9 @@ void loop() {
   if (EnableMQTT == true && WiFi.status() == WL_CONNECTED) {
     MqttConnectionCheck();
   }
+  else{
+    Serial.println("Can not Connect to MQTT: WIFI is not Connected");
+  }
 
   if (EnableWifi == false && APMode == false) {
     APMode = true;
