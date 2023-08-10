@@ -25,7 +25,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.0.7";
+String Version PROGMEM = "0.0.8";
 //Target HW Version for this code is v1.4.0 and greater
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
 String Name PROGMEM = "MakeItRain";
@@ -51,6 +51,7 @@ long VoltageTimer, WifiTryAgainTimer, BetweenWifiAttempts;
 long LastZoneStartTime[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 float MaxZoneOnTime[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 bool LastInputStates[4] = {0, 0, 0, 0};
+bool LastMQTTState[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 //Zone definitions
 Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
@@ -62,7 +63,7 @@ void setup() {
   Serial.println("Starting to... MAKEITRAIN  Version: " + Version);
   CheckStoredData();
 
-  //Inputs 
+  //Inputs
   pinMode(Input1, INPUT);
   pinMode(Input2, INPUT);
   pinMode(Input3, INPUT);
@@ -114,7 +115,7 @@ void setup() {
   EnableMQTT = preferences.getBool("EnableMQTT");
   APMode = preferences.getBool("APMode");
   Battery = preferences.getBool("Battery");
-  
+
   if (preferences.getBool("IDOverride") == false) {
     String MAC = WiFi.macAddress();
     for (int x = 9; x < 17; x++) {
@@ -127,13 +128,13 @@ void setup() {
     ID = preferences.getString("ID");
   }
   preferences.end();
-  
+
   Serial.println("Finished Loading system settings");
-  
+
   BaseMQTTTopicString = "/" + Name + "/" + ID + "/";
   Serial.print("Base MQTT Topic:");
   Serial.println(BaseMQTTTopicString);
-  
+
   if (EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(1, 60000);
   }
@@ -148,7 +149,7 @@ void setup() {
   }
 
   ReadVoltage();
-  
+
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
   }
@@ -156,7 +157,7 @@ void setup() {
     webserverAPI();
     server.begin();
   }
-  
+
 }
 
 void loop() {
@@ -192,9 +193,10 @@ void loop() {
   if (EnableMQTT == true && WiFi.status() == WL_CONNECTED) {
     MqttConnectionCheck();
   }
-  else{
-    Serial.println("Can not Connect to MQTT: WIFI is not Connected");
-  }
+//  else {
+//    
+//    Serial.println("Can not Connect to MQTT: WIFI is not Connected");
+//  }
 
   if (EnableWifi == false && APMode == false) {
     APMode = true;
@@ -255,12 +257,15 @@ void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
       if (WiFi.status() == WL_CONNECTED) {
         NumberOfWifiReconntionFailures = 0;
         WifiReattemptsBeforeAP = 0;
+        Serial.println("Connected to WIFI!");
       }
       else {
         NumberOfWifiReconntionFailures += 1;
+        Serial.print("Can not connect to WIFI! attempt:");
+        Serial.println(NumberOfWifiReconntionFailures);
       }
     }
-    else{
+    else {
       Serial.println("Max number of Wifi Re-attempts exceeded");
     }
   }
@@ -378,87 +383,79 @@ void CheckStoredData() {
 
   if (preferences.isKey("LocalLockOut") == false) {
     preferences.putBool("LocalLockOut", true);
-    Serial.println("");
+    Serial.println("LocalLockOut setting not found setting default");
   }
 
   if (preferences.isKey("Battery") == false) {
     preferences.putBool("Battery", false);
-    Serial.println("");
+    Serial.println("Battery setting not found setting default");
   }
 
   if (preferences.isKey("MQTTIP") == false) {
     preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
-    Serial.println("");
+    Serial.println("MQTTIP setting not found setting default");
   }
 
   if (preferences.isKey("MQTTPORT") == false) {
     preferences.putInt("MQTTPORT", 1883);
-    Serial.println("");
+    Serial.println("MQTTPORT setting not found setting default");
   }
 
   if (preferences.isKey("APMode_Password") == false) {
     preferences.putString("APMode_Password", "MUNAAAYE");
-    Serial.println("");
+    Serial.println("APMode_Password not found setting default");
   }
 
   if (preferences.isKey("EnableMQTT") == false) {
     preferences.putBool("EnableMQTT", false);
-    Serial.println("");
+    Serial.println("EnableMQTT not found setting default");
   }
 
   if (preferences.isKey("EnableWIFI") == false) {
     preferences.putBool("EnableWIFI", false);
-    Serial.println("");
+    Serial.println("EnableWifi not found setting default");
   }
 
   if (preferences.isKey("APMode") == false) {
     preferences.putBool("APMode", true);
-    Serial.println("");
+    Serial.println("APMode not found setting default");
   }
 
   if (preferences.isKey("Z1_Max") == false) {
     preferences.putFloat("Z1_Max", 7.5);
-    Serial.println("");
   }
 
   if (preferences.isKey("Z2_Max") == false) {
     preferences.putFloat("Z2_Max", 7.5);
-    Serial.println("");
+
   }
 
   if (preferences.isKey("Z3_Max") == false) {
     preferences.putFloat("Z3_Max", 7.5);
-    Serial.println("");
   }
 
   if (preferences.isKey("Z4_Max") == false) {
     preferences.putFloat("Z4_Max", 7.5);
-    Serial.println("");
   }
 
-    if (preferences.isKey("Z5_Max") == false) {
+  if (preferences.isKey("Z5_Max") == false) {
     preferences.putFloat("Z5_Max", 7.5);
-    Serial.println("");
   }
 
   if (preferences.isKey("Z6_Max") == false) {
     preferences.putFloat("Z6_Max", 7.5);
-    Serial.println("");
   }
 
   if (preferences.isKey("Z7_Max") == false) {
     preferences.putFloat("Z7_Max", 7.5);
-    Serial.println("");
   }
 
   if (preferences.isKey("Z8_Max") == false) {
     preferences.putFloat("Z8_Max", 7.5);
-    Serial.println("");
   }
 
   if (preferences.isKey("IDOverride") == false) {
     preferences.putBool("IDOverride", false);
-    Serial.println("");
   }
 
   preferences.end();
@@ -503,7 +500,7 @@ bool ReadOutput(int Number) {
 
   */
   bool ValueToReturn = false;
-  if (GPIOCHIPITYCHIPCHIP.digitalRead(Number - 1) == 1) {
+  if (GPIOCHIPITYCHIPCHIP.digitalRead(Number) == 1) {
     ValueToReturn = true;
   }
   return ValueToReturn;
@@ -562,11 +559,6 @@ void LocalInputs(bool State) {
   }
 }
 
-bool ReadMCP23008(int PortNumber) {
-  bool PortState = GPIOCHIPITYCHIPCHIP.digitalRead(PortNumber);
-  return PortState;
-}
-
 void TogglePort(int PortNumber) {
   if (GrootToGo == true) {
     if (GPIOCHIPITYCHIPCHIP.digitalRead(PortNumber) == LOW) {
@@ -603,11 +595,26 @@ void SetOutput(int Number, bool State) {
   */
   if (GrootToGo == true) {
     String OutputTopic = BaseMQTTTopicString + "ZoneOutput/" + String(Number + 1);
-    GPIOCHIPITYCHIPCHIP.digitalWrite(Number, State);
-    if (State == HIGH) {
-      LastZoneStartTime[Number] = millis();
+    bool CurrentPortState = ReadOutput(Number);
+    //Serial.print("SetOutput ");
+    //Serial.print(CurrentPortState);
+    //Serial.print("  ");
+    //Serial.print(State);
+    //Serial.print("   ");
+    if (CurrentPortState != State) {
+      if (State == HIGH) {
+        //Serial.print("Starting Zone Timer");
+        LastZoneStartTime[Number] = millis();
+      }
+      GPIOCHIPITYCHIPCHIP.digitalWrite(Number, State);
+      CurrentPortState = ReadOutput(Number);
+      //Serial.print(CurrentPortState);
+      //Serial.print("  ");
+      //Serial.println(LastMQTTState[Number]);
+      if (LastMQTTState[Number] != CurrentPortState) {
+        MQTTSend(OutputTopic, BoolToString(ReadOutput(Number)));
+      }
     }
-    MQTTSend(OutputTopic, String(ReadOutput(Number + 1)));
   }
 }
 
@@ -617,8 +624,12 @@ void SetOutput(int Number, bool State) {
 
 void MaxZoneTimeOnCheck() {
   long CurrentTime = millis();
-  for (int x = 0; x <= 4; x++) {
+  for (int x = 0; x <= MAXOutputZones; x++) {
     if (GPIOCHIPITYCHIPCHIP.digitalRead(x) == HIGH && abs(CurrentTime - LastZoneStartTime[x]) >= MaxZoneOnTime[x] * 60000) {
+      Serial.print("Zone Max time reached,");
+      Serial.print(MaxZoneOnTime[x] * 60000);
+      Serial.print(" Turning Off: ");
+      Serial.println(x+1);
       SetOutput(x, LOW);
     }
   }
@@ -704,7 +715,6 @@ void reconnect() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   String message;
-  String CurrentOutputState;
   for (int i = 0; i < length; i++) {
     message += (char)payload[i];
   }
@@ -716,6 +726,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int x = 0; x <= MAXOutputZones; x++) {
     String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/"  + String(x + 1);
     if (String((char*)topic) == CurrentTopic) {
+      LastMQTTState[x] = MQTTtoBool(message);
       SetOutput(x, MQTTtoBool(message));
       break;
     }
