@@ -212,7 +212,7 @@ void loop() {
     else {
       NumberOfWifiReconntionFailures = 0;
       WifiReattemptsBeforeAP = 0;
-      if (TurnOffAPModeWhenWifiIsBack == true && APMode = true) {
+      if (TurnOffAPModeWhenWifiIsBack == true && APMode == true) {
         APMode = false;
       }
     }
