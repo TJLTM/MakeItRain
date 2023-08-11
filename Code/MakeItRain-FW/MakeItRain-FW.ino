@@ -27,15 +27,15 @@ PubSubClient mqttClient(wifiClient);
 //System Level
 String Version PROGMEM = "0.0.8";
 //Target HW Version for this code is v1.4.0 and greater
-bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard = false;
+bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
 String BaseMQTTTopicString = "";
 int NumberOfWifiReconntionFailures = 0;
-#define MaxAttempts 4
+#define MaxAttempts 2 //4
 int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
-long VoltageTimer, WifiTryAgainTimer, BetweenWifiAttempts;
+long VoltageTimer, WifiTryAgainTimer, BetweenWifiAttempts, FiveSecondTimer;
 
 #define VSVoltagePin 33
 #define AUXVoltagePin 32
@@ -136,7 +136,7 @@ void setup() {
   Serial.println(BaseMQTTTopicString);
 
   if (EnableWifi == true) {
-    ConnectToDaWEEEEFEEEEEEEE(1, 60000);
+    ConnectToDaWEEEEFEEEEEEEE(10000);
   }
 
   if (EnableMQTT == true) {
@@ -163,41 +163,75 @@ void setup() {
 void loop() {
   long CurrentTime = millis();
 
-  if (WiFi.status() != WL_CONNECTED && EnableWifi == true) {
+    if (abs(FiveSecondTimer - CurrentTime) > 5000) {
+      Serial.print("EnableWifi:");
+      Serial.println(EnableWifi);
+      FiveSecondTimer = CurrentTime;
+    }
+
+  if (EnableWifi == true) {
     /*
        basic workflow for wifi connection management
-       if disconnected from wifi it will attempt to connect with 2 min inbetween
-       after MaxAttempts is exhausted it will space trying to connect to 15 min
+       if disconnected from wifi it will attempt to connect with 30 seconds inbetween
+       after MaxAttempts is exhausted it will space trying to connect to 7.5 min
        intervals. If APmode is off it will turn on AP mode to allow for debugging
        and control. If APmode is disabled when the wifi reconnects that will be
        turned back off.
     */
-    if (WifiReattemptsBeforeAP < MaxAttempts && abs(BetweenWifiAttempts - CurrentTime) > 1200000) {
-      ConnectToDaWEEEEFEEEEEEEE(MaxAttempts, 60000);
-      BetweenWifiAttempts = millis();
-    }
-
     if (WiFi.status() != WL_CONNECTED) {
-      WifiReattemptsBeforeAP += 1;
-    }
+      if (firstRun == false) {
+        if (EnableMQTT == true) {
+          mqttClient.disconnect();
+          IsMQTTSetup = false;
+        }
+      }
 
-    if (WifiReattemptsBeforeAP >= MaxAttempts) {
-      APMode = true;
-      if (abs(WifiTryAgainTimer - CurrentTime) > 900000) {
-        NumberOfWifiReconntionFailures = 0;
-        WifiTryAgainTimer = millis();
+      if (WifiReattemptsBeforeAP <= MaxAttempts) {
+        if (abs(BetweenWifiAttempts - CurrentTime) > 30000 || firstRun == false) {
+          ConnectToDaWEEEEFEEEEEEEE(5000);
+          BetweenWifiAttempts = millis();
+          WifiReattemptsBeforeAP += 1;
+          firstRun = true;
+          WifiTryAgainTimer = millis();
+        }
+      }
+      else {
+        firstRun = false;
+      }
+
+      if (WifiReattemptsBeforeAP >= MaxAttempts) {
+        if (APMode != true) {
+          TurnOffAPModeWhenWifiIsBack = true;
+          APMode = true;
+        }
+        if (abs(WifiTryAgainTimer - CurrentTime) > 450000) {
+          NumberOfWifiReconntionFailures = 0;
+        }
+      }
+    }
+    else {
+      NumberOfWifiReconntionFailures = 0;
+      WifiReattemptsBeforeAP = 0;
+      if (TurnOffAPModeWhenWifiIsBack == true && APMode = true) {
+        APMode = false;
       }
     }
   }
 
+  /*
+     Handle MQTT Connection
+  */
+
   if (EnableMQTT == true && WiFi.status() == WL_CONNECTED) {
     MqttConnectionCheck();
   }
-//  else {
-//    
-//    Serial.println("Can not Connect to MQTT: WIFI is not Connected");
-//  }
 
+
+  /*
+     Handle AP mode
+     handles the cases of turning it on and off
+     and turning it on if Wifi is turned off and APmode is also off
+  */
   if (EnableWifi == false && APMode == false) {
     APMode = true;
   }
@@ -239,34 +273,25 @@ void loop() {
 //-----------------------------------------------------------------------------------
 //Wifi, AP and BLE
 //-----------------------------------------------------------------------------------
-void ConnectToDaWEEEEFEEEEEEEE(int Attempts, int Timeout) {
+void ConnectToDaWEEEEFEEEEEEEE(int Timeout) {
   preferences.begin("credentials", false);
   if (preferences.getString("ssid") != "") {
-    if (NumberOfWifiReconntionFailures < Attempts) {
-      WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("ssid_password").c_str());
-      Serial.print("Connecting to WIFI ssid:");
-      Serial.println(preferences.getString("ssid"));
-      int StartTime = millis();
-      int CurrentTime = millis();
-      while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
-        delay(500);
-        CurrentTime = millis();
-        Serial.print(".");
-      }
-      Serial.println("");
-      if (WiFi.status() == WL_CONNECTED) {
-        NumberOfWifiReconntionFailures = 0;
-        WifiReattemptsBeforeAP = 0;
-        Serial.println("Connected to WIFI!");
-      }
-      else {
-        NumberOfWifiReconntionFailures += 1;
-        Serial.print("Can not connect to WIFI! attempt:");
-        Serial.println(NumberOfWifiReconntionFailures);
-      }
+    WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("ssid_password").c_str());
+    Serial.print("Connecting to WIFI ssid:");
+    Serial.println(preferences.getString("ssid"));
+    int StartTime = millis();
+    int CurrentTime = millis();
+    while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
+      delay(500);
+      CurrentTime = millis();
+      Serial.print(".");
+    }
+    Serial.println("");
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.println("WIFI IS CONNECTED!");
     }
     else {
-      Serial.println("Max number of Wifi Re-attempts exceeded");
+      Serial.println("WIFI CONNECTion FAILED!");
     }
   }
   else {
@@ -490,6 +515,8 @@ void CheckStoredData() {
 //-----------------------------------------------------------------------------------
 void ReadVoltage() {
   float LastVSVoltage = (32.5 / 4095) * analogRead(VSVoltagePin);
+  Serial.print("Voltage: ");
+  Serial.println(LastVSVoltage);
 
   String VTopic = BaseMQTTTopicString + "Voltage/";
   MQTTSend(VTopic, String(LastVSVoltage));
@@ -629,7 +656,7 @@ void MaxZoneTimeOnCheck() {
       Serial.print("Zone Max time reached,");
       Serial.print(MaxZoneOnTime[x] * 60000);
       Serial.print(" Turning Off: ");
-      Serial.println(x+1);
+      Serial.println(x + 1);
       SetOutput(x, LOW);
     }
   }
@@ -670,10 +697,14 @@ void SetupMQTT() {
   mqttServer = &Target[0];
   mqttClient.setServer(mqttServer, preferences.getInt("MQTTPORT"));
   mqttClient.setCallback(callback);
+  IsMQTTSetup = true;
   preferences.end();
 }
 
 void MqttConnectionCheck() {
+  if (IsMQTTSetup == false) {
+    SetupMQTT();
+  }
   if (!mqttClient.connected()) {
     reconnect();
   }
