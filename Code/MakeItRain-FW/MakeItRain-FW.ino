@@ -32,7 +32,7 @@ String Name PROGMEM = "MakeItRain";
 String ID;
 String BaseMQTTTopicString = "";
 int NumberOfWifiReconntionFailures = 0;
-#define MaxAttempts 2 //4
+#define MaxAttempts 4
 int WifiReattemptsBeforeAP = 0;
 Preferences preferences;
 long VoltageTimer, WifiTryAgainTimer, BetweenWifiAttempts, FiveSecondTimer;
