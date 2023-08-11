@@ -1,0 +1,1543 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid ea446fb0-dee3-4ee7-bae8-4a819871c87b)
+
+  (paper "A4")
+
+  (lib_symbols
+    (symbol "Connector_Generic:Conn_01x03" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
+      (property "Reference" "J" (at 0 5.08 0)
+        (effects (font (size 1.27 1.27)))
+      )
+      (property "Value" "Conn_01x03" (at 0 -5.08 0)
+        (effects (font (size 1.27 1.27)))
+      )
+      (property "Footprint" "" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "Datasheet" "~" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_keywords" "connector" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_fp_filters" "Connector*:*_1x??_*" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (symbol "Conn_01x03_1_1"
+        (rectangle (start -1.27 -2.413) (end 0 -2.667)
+          (stroke (width 0.1524) (type default))
+          (fill (type none))
+        )
+        (rectangle (start -1.27 0.127) (end 0 -0.127)
+          (stroke (width 0.1524) (type default))
+          (fill (type none))
+        )
+        (rectangle (start -1.27 2.667) (end 0 2.413)
+          (stroke (width 0.1524) (type default))
+          (fill (type none))
+        )
+        (rectangle (start -1.27 3.81) (end 1.27 -3.81)
+          (stroke (width 0.254) (type default))
+          (fill (type background))
+        )
+        (pin passive line (at -5.08 2.54 0) (length 3.81)
+          (name "Pin_1" (effects (font (size 1.27 1.27))))
+          (number "1" (effects (font (size 1.27 1.27))))
+        )
+        (pin passive line (at -5.08 0 0) (length 3.81)
+          (name "Pin_2" (effects (font (size 1.27 1.27))))
+          (number "2" (effects (font (size 1.27 1.27))))
+        )
+        (pin passive line (at -5.08 -2.54 0) (length 3.81)
+          (name "Pin_3" (effects (font (size 1.27 1.27))))
+          (number "3" (effects (font (size 1.27 1.27))))
+        )
+      )
+    )
+    (symbol "Device:R" (pin_numbers hide) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+      (property "Reference" "R" (at 2.032 0 90)
+        (effects (font (size 1.27 1.27)))
+      )
+      (property "Value" "R" (at 0 0 90)
+        (effects (font (size 1.27 1.27)))
+      )
+      (property "Footprint" "" (at -1.778 0 90)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "Datasheet" "~" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_keywords" "R res resistor" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_description" "Resistor" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_fp_filters" "R_*" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (symbol "R_0_1"
+        (rectangle (start -1.016 -2.54) (end 1.016 2.54)
+          (stroke (width 0.254) (type default))
+          (fill (type none))
+        )
+      )
+      (symbol "R_1_1"
+        (pin passive line (at 0 3.81 270) (length 1.27)
+          (name "~" (effects (font (size 1.27 1.27))))
+          (number "1" (effects (font (size 1.27 1.27))))
+        )
+        (pin passive line (at 0 -3.81 90) (length 1.27)
+          (name "~" (effects (font (size 1.27 1.27))))
+          (number "2" (effects (font (size 1.27 1.27))))
+        )
+      )
+    )
+    (symbol "Transistor_FET:2N7000" (pin_names hide) (in_bom yes) (on_board yes)
+      (property "Reference" "Q" (at 5.08 1.905 0)
+        (effects (font (size 1.27 1.27)) (justify left))
+      )
+      (property "Value" "2N7000" (at 5.08 0 0)
+        (effects (font (size 1.27 1.27)) (justify left))
+      )
+      (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 5.08 -1.905 0)
+        (effects (font (size 1.27 1.27) italic) (justify left) hide)
+      )
+      (property "Datasheet" "https://www.onsemi.com/pub/Collateral/NDS7002A-D.PDF" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) (justify left) hide)
+      )
+      (property "ki_keywords" "N-Channel MOSFET Logic-Level" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_description" "0.2A Id, 200V Vds, N-Channel MOSFET, 2.6V Logic Level, TO-92" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_fp_filters" "TO?92*" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (symbol "2N7000_0_1"
+        (polyline
+          (pts
+            (xy 0.254 0)
+            (xy -2.54 0)
+          )
+          (stroke (width 0) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 0.254 1.905)
+            (xy 0.254 -1.905)
+          )
+          (stroke (width 0.254) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 0.762 -1.27)
+            (xy 0.762 -2.286)
+          )
+          (stroke (width 0.254) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 0.762 0.508)
+            (xy 0.762 -0.508)
+          )
+          (stroke (width 0.254) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 0.762 2.286)
+            (xy 0.762 1.27)
+          )
+          (stroke (width 0.254) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 2.54 2.54)
+            (xy 2.54 1.778)
+          )
+          (stroke (width 0) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 2.54 -2.54)
+            (xy 2.54 0)
+            (xy 0.762 0)
+          )
+          (stroke (width 0) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 0.762 -1.778)
+            (xy 3.302 -1.778)
+            (xy 3.302 1.778)
+            (xy 0.762 1.778)
+          )
+          (stroke (width 0) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 1.016 0)
+            (xy 2.032 0.381)
+            (xy 2.032 -0.381)
+            (xy 1.016 0)
+          )
+          (stroke (width 0) (type default))
+          (fill (type outline))
+        )
+        (polyline
+          (pts
+            (xy 2.794 0.508)
+            (xy 2.921 0.381)
+            (xy 3.683 0.381)
+            (xy 3.81 0.254)
+          )
+          (stroke (width 0) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 3.302 0.381)
+            (xy 2.921 -0.254)
+            (xy 3.683 -0.254)
+            (xy 3.302 0.381)
+          )
+          (stroke (width 0) (type default))
+          (fill (type none))
+        )
+        (circle (center 1.651 0) (radius 2.794)
+          (stroke (width 0.254) (type default))
+          (fill (type none))
+        )
+        (circle (center 2.54 -1.778) (radius 0.254)
+          (stroke (width 0) (type default))
+          (fill (type outline))
+        )
+        (circle (center 2.54 1.778) (radius 0.254)
+          (stroke (width 0) (type default))
+          (fill (type outline))
+        )
+      )
+      (symbol "2N7000_1_1"
+        (pin passive line (at 2.54 -5.08 90) (length 2.54)
+          (name "S" (effects (font (size 1.27 1.27))))
+          (number "1" (effects (font (size 1.27 1.27))))
+        )
+        (pin input line (at -5.08 0 0) (length 2.54)
+          (name "G" (effects (font (size 1.27 1.27))))
+          (number "2" (effects (font (size 1.27 1.27))))
+        )
+        (pin passive line (at 2.54 5.08 270) (length 2.54)
+          (name "D" (effects (font (size 1.27 1.27))))
+          (number "3" (effects (font (size 1.27 1.27))))
+        )
+      )
+    )
+  )
+
+  (junction (at 146.05 118.11) (diameter 0) (color 0 0 0 0)
+    (uuid 4e4a21e2-cc83-4807-b3ba-7511420e203f)
+  )
+  (junction (at 110.49 118.11) (diameter 0) (color 0 0 0 0)
+    (uuid 711524b6-f110-4049-bca2-d30f5a687acc)
+  )
+  (junction (at 138.43 101.6) (diameter 0) (color 0 0 0 0)
+    (uuid 760cad35-fe01-4885-9526-86540593f7b0)
+  )
+  (junction (at 102.87 101.6) (diameter 0) (color 0 0 0 0)
+    (uuid 9463953d-2bcb-4d57-900d-b4a6a39b3098)
+  )
+  (junction (at 77.47 118.11) (diameter 0) (color 0 0 0 0)
+    (uuid 9b88030e-3497-4187-bb49-5cac6a1dee4c)
+  )
+  (junction (at 173.99 101.6) (diameter 0) (color 0 0 0 0)
+    (uuid b4a2813d-5e83-460b-a2dc-04e1750380cf)
+  )
+  (junction (at 181.61 118.11) (diameter 0) (color 0 0 0 0)
+    (uuid f2d9b41b-e091-45d0-a792-13182687f603)
+  )
+  (junction (at 69.85 101.6) (diameter 0) (color 0 0 0 0)
+    (uuid fa6e6e7f-f58b-4aca-8e6f-c57bd731ea16)
+  )
+
+  (wire (pts (xy 138.43 105.41) (xy 138.43 101.6))
+    (stroke (width 0) (type default))
+    (uuid 0900c022-0d56-42e4-b999-6d1c9f8cb316)
+  )
+  (wire (pts (xy 60.96 92.71) (xy 60.96 101.6))
+    (stroke (width 0) (type default))
+    (uuid 0d7189ea-c502-481f-aaa8-0fcf89f2d6ea)
+  )
+  (wire (pts (xy 101.6 92.71) (xy 93.98 92.71))
+    (stroke (width 0) (type default))
+    (uuid 13a58b87-658d-4a4d-a9cc-e80084887515)
+  )
+  (wire (pts (xy 68.58 92.71) (xy 60.96 92.71))
+    (stroke (width 0) (type default))
+    (uuid 15e03695-c83a-4b7e-8e3c-e5a551fc1317)
+  )
+  (wire (pts (xy 71.12 96.52) (xy 77.47 96.52))
+    (stroke (width 0) (type default))
+    (uuid 1e703315-d14b-4a72-b7e9-d7378de4ba9c)
+  )
+  (wire (pts (xy 102.87 118.11) (xy 110.49 118.11))
+    (stroke (width 0) (type default))
+    (uuid 272eda5e-16f2-4e67-9ff6-fbdbc8f12635)
+  )
+  (wire (pts (xy 138.43 118.11) (xy 146.05 118.11))
+    (stroke (width 0) (type default))
+    (uuid 345df447-04e9-489f-9305-a4911266e169)
+  )
+  (wire (pts (xy 177.8 87.63) (xy 193.04 87.63))
+    (stroke (width 0) (type default))
+    (uuid 35574a0f-040d-4f99-8b8e-598a6cafc125)
+  )
+  (wire (pts (xy 110.49 106.68) (xy 110.49 118.11))
+    (stroke (width 0) (type default))
+    (uuid 3749de80-f293-4fb0-9574-1bad84187f0d)
+  )
+  (wire (pts (xy 71.12 87.63) (xy 71.12 88.9))
+    (stroke (width 0) (type default))
+    (uuid 3e6e989e-e69b-4342-bd2d-34beaae4f35c)
+  )
+  (wire (pts (xy 137.16 92.71) (xy 129.54 92.71))
+    (stroke (width 0) (type default))
+    (uuid 42070ce5-6a03-4836-9f39-6dc6ea1d2fb5)
+  )
+  (wire (pts (xy 138.43 113.03) (xy 138.43 118.11))
+    (stroke (width 0) (type default))
+    (uuid 4974b0a0-4912-4e00-9a11-55fb688df709)
+  )
+  (wire (pts (xy 104.14 96.52) (xy 110.49 96.52))
+    (stroke (width 0) (type default))
+    (uuid 4d60fa5e-4346-4e9a-b59f-c72e26c75962)
+  )
+  (wire (pts (xy 69.85 113.03) (xy 69.85 118.11))
+    (stroke (width 0) (type default))
+    (uuid 4e758d5b-20ce-4b65-819c-14b7b609a946)
+  )
+  (wire (pts (xy 101.6 101.6) (xy 102.87 101.6))
+    (stroke (width 0) (type default))
+    (uuid 4f970d57-3bb7-461f-bb56-de74b988a835)
+  )
+  (wire (pts (xy 106.68 87.63) (xy 121.92 87.63))
+    (stroke (width 0) (type default))
+    (uuid 5c8b453b-d4c5-44b3-a50d-0fba411de1d4)
+  )
+  (wire (pts (xy 88.9 87.63) (xy 88.9 118.11))
+    (stroke (width 0) (type default))
+    (uuid 69a851d7-10a4-429d-af35-9a4a9b54ec3a)
+  )
+  (wire (pts (xy 172.72 87.63) (xy 172.72 92.71))
+    (stroke (width 0) (type default))
+    (uuid 6faacb14-efe1-4c90-a8ca-d0276068b6f8)
+  )
+  (wire (pts (xy 137.16 101.6) (xy 138.43 101.6))
+    (stroke (width 0) (type default))
+    (uuid 7263cd1a-bb7a-4d04-aa78-9d53955ea991)
+  )
+  (wire (pts (xy 139.7 96.52) (xy 146.05 96.52))
+    (stroke (width 0) (type default))
+    (uuid 77499841-d94d-4583-b184-1e3a72f0a959)
+  )
+  (wire (pts (xy 139.7 87.63) (xy 139.7 88.9))
+    (stroke (width 0) (type default))
+    (uuid 79a87fbc-5309-457f-ba06-8d6c1025f9d9)
+  )
+  (wire (pts (xy 175.26 87.63) (xy 175.26 88.9))
+    (stroke (width 0) (type default))
+    (uuid 82f92e43-9268-4396-8956-9052caa2554e)
+  )
+  (wire (pts (xy 69.85 118.11) (xy 77.47 118.11))
+    (stroke (width 0) (type default))
+    (uuid 8361acbc-3a46-4cbb-9c13-79c976f1a218)
+  )
+  (wire (pts (xy 101.6 87.63) (xy 101.6 92.71))
+    (stroke (width 0) (type default))
+    (uuid 86f6f4cb-ae21-4deb-b1b1-4f3426faa015)
+  )
+  (wire (pts (xy 172.72 101.6) (xy 173.99 101.6))
+    (stroke (width 0) (type default))
+    (uuid 8a18b8ed-15ac-46b8-91b1-81d85a78d997)
+  )
+  (wire (pts (xy 181.61 106.68) (xy 181.61 118.11))
+    (stroke (width 0) (type default))
+    (uuid 8b04e62d-1ecc-46ad-ab7f-3ff568cfb79d)
+  )
+  (wire (pts (xy 77.47 106.68) (xy 77.47 118.11))
+    (stroke (width 0) (type default))
+    (uuid 90eec46d-cf9b-4b0c-a2e8-ef03dc17b34d)
+  )
+  (wire (pts (xy 93.98 92.71) (xy 93.98 101.6))
+    (stroke (width 0) (type default))
+    (uuid 938adf4c-f650-4f10-aea0-56cf28474c6e)
+  )
+  (wire (pts (xy 146.05 106.68) (xy 146.05 118.11))
+    (stroke (width 0) (type default))
+    (uuid a9eb605c-2429-4176-a870-2ba74fb4ab17)
+  )
+  (wire (pts (xy 172.72 92.71) (xy 165.1 92.71))
+    (stroke (width 0) (type default))
+    (uuid a9ee638a-0814-4a8a-b7d3-72f18b709e5c)
+  )
+  (wire (pts (xy 173.99 105.41) (xy 173.99 101.6))
+    (stroke (width 0) (type default))
+    (uuid ab0d1e45-f3fa-464e-948d-f11573b2aef1)
+  )
+  (wire (pts (xy 121.92 118.11) (xy 110.49 118.11))
+    (stroke (width 0) (type default))
+    (uuid ad2d00de-3e21-4bc8-a99c-23194a35cafa)
+  )
+  (wire (pts (xy 121.92 87.63) (xy 121.92 118.11))
+    (stroke (width 0) (type default))
+    (uuid b0900763-92d0-43b9-b115-652958fdc7b0)
+  )
+  (wire (pts (xy 104.14 87.63) (xy 104.14 88.9))
+    (stroke (width 0) (type default))
+    (uuid b19d442f-761c-46a9-85a5-e5558689913c)
+  )
+  (wire (pts (xy 68.58 87.63) (xy 68.58 92.71))
+    (stroke (width 0) (type default))
+    (uuid b8179e7c-9dfa-468d-9f68-219c0d87fd05)
+  )
+  (wire (pts (xy 88.9 118.11) (xy 77.47 118.11))
+    (stroke (width 0) (type default))
+    (uuid bdd862b9-f3ef-47be-9e37-1d5b0245bd12)
+  )
+  (wire (pts (xy 157.48 118.11) (xy 146.05 118.11))
+    (stroke (width 0) (type default))
+    (uuid beecf1b8-9205-4325-b012-a0692aee5163)
+  )
+  (wire (pts (xy 68.58 101.6) (xy 69.85 101.6))
+    (stroke (width 0) (type default))
+    (uuid c3ad3ca7-a8ef-49ab-8b80-dc0b9674f00a)
+  )
+  (wire (pts (xy 137.16 87.63) (xy 137.16 92.71))
+    (stroke (width 0) (type default))
+    (uuid c9692076-e944-4999-ae9c-929ec419b64c)
+  )
+  (wire (pts (xy 142.24 87.63) (xy 157.48 87.63))
+    (stroke (width 0) (type default))
+    (uuid c9d607eb-d970-4b6e-800c-74a153874fe4)
+  )
+  (wire (pts (xy 165.1 92.71) (xy 165.1 101.6))
+    (stroke (width 0) (type default))
+    (uuid cba8694d-0f3f-42b1-88f7-216fd7408f1e)
+  )
+  (wire (pts (xy 173.99 118.11) (xy 181.61 118.11))
+    (stroke (width 0) (type default))
+    (uuid cd0e0d5b-79ec-48ec-bace-fd91095a4c92)
+  )
+  (wire (pts (xy 173.99 113.03) (xy 173.99 118.11))
+    (stroke (width 0) (type default))
+    (uuid d090bd86-9358-4d3f-b127-b3984f0b9e52)
+  )
+  (wire (pts (xy 193.04 118.11) (xy 181.61 118.11))
+    (stroke (width 0) (type default))
+    (uuid d5fc0260-ac41-4397-8367-110833ee0e76)
+  )
+  (wire (pts (xy 129.54 92.71) (xy 129.54 101.6))
+    (stroke (width 0) (type default))
+    (uuid d72a4b44-b06c-4f57-91fc-0c995c6aba53)
+  )
+  (wire (pts (xy 193.04 87.63) (xy 193.04 118.11))
+    (stroke (width 0) (type default))
+    (uuid e4802f77-3542-4a0f-a111-25b3ffcfe9bd)
+  )
+  (wire (pts (xy 102.87 105.41) (xy 102.87 101.6))
+    (stroke (width 0) (type default))
+    (uuid e4b0a5c4-04ca-4759-800e-3b9446d74318)
+  )
+  (wire (pts (xy 175.26 96.52) (xy 181.61 96.52))
+    (stroke (width 0) (type default))
+    (uuid ead1eed8-ee24-4e15-aee1-78c39c777a7c)
+  )
+  (wire (pts (xy 157.48 87.63) (xy 157.48 118.11))
+    (stroke (width 0) (type default))
+    (uuid ebb8ab07-a45f-4fe0-b1e9-e04d05759f8b)
+  )
+  (wire (pts (xy 73.66 87.63) (xy 88.9 87.63))
+    (stroke (width 0) (type default))
+    (uuid f335fb5e-e9d8-4fb0-b470-9d874e930358)
+  )
+  (wire (pts (xy 69.85 105.41) (xy 69.85 101.6))
+    (stroke (width 0) (type default))
+    (uuid f35b449e-5604-4211-8cf3-7e1e0cf9bb0d)
+  )
+  (wire (pts (xy 102.87 113.03) (xy 102.87 118.11))
+    (stroke (width 0) (type default))
+    (uuid fbf6961e-4330-416d-b916-86db31cde5b1)
+  )
+
+  (symbol (lib_id "Device:R") (at 133.35 101.6 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 00ab2760-b7d8-4df5-aa4b-5f5eda54cd9f)
+    (property "Reference" "R1" (at 132.1816 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "470" (at 134.493 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 133.35 103.378 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 133.35 101.6 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 317e2d65-860c-42c3-8b80-0f6c31ecc9b2))
+    (pin "2" (uuid 4aba1254-b06c-440b-8900-b955769a7712))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R2") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R22") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R35") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R6") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R5") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R7") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 64.77 101.6 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 0168807a-0a8f-47a4-beae-9ea03fc3552d)
+    (property "Reference" "R1" (at 63.6016 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "470" (at 65.913 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 64.77 103.378 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 64.77 101.6 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid e6635cad-875d-495d-9576-645798286598))
+    (pin "2" (uuid 1f05be2b-34dd-49b9-846a-940fa7a4e8e0))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R2") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R22") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R35") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R6") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R5") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 104.14 92.71 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 0544870b-0c18-4d86-8733-5354bc1ee33c)
+    (property "Reference" "R5" (at 105.918 91.5416 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "1k" (at 105.918 93.853 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 102.362 92.71 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 104.14 92.71 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 08fea959-9913-4491-9265-718adca4ce06))
+    (pin "2" (uuid 7008f475-cb22-4773-a115-bcdffb8c82de))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R6") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 104.14 82.55 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
+    (uuid 065cbb2a-fc30-4c13-b880-83c91bf9c3fd)
+    (property "Reference" "J2" (at 109.22 81.915 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Value" "Conn_01x03" (at 109.22 84.455 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical" (at 104.14 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 104.14 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 3b4fed49-e240-47e6-b158-d8cd7a2a734a))
+    (pin "2" (uuid a7d71156-c17d-497d-a67c-db5fcf5231c5))
+    (pin "3" (uuid b72f1ebc-a03a-4d48-a68f-0df67e2e0d0f))
+    (instances
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "J2") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 71.12 82.55 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
+    (uuid 0bf9a97b-c59c-4afc-8bd8-20cc54e89fd8)
+    (property "Reference" "J1" (at 76.2 81.915 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Value" "Conn_01x03" (at 76.2 84.455 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical" (at 71.12 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 71.12 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 1f169e16-3039-4db4-b693-c922b27b5c49))
+    (pin "2" (uuid 3291f732-3de2-4115-aedc-f79ec9b96d65))
+    (pin "3" (uuid d9288594-df70-4eb3-a1cb-804dc90fe3f2))
+    (instances
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "J1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 175.26 82.55 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
+    (uuid 433b17aa-213c-4c7f-a455-d0f3fa14665e)
+    (property "Reference" "J4" (at 180.34 81.915 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Value" "Conn_01x03" (at 180.34 84.455 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical" (at 175.26 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 175.26 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid d0dffb1e-458a-4515-ad39-8787269803ed))
+    (pin "2" (uuid 92cd292d-83f4-44fe-9bab-07a9d22155b8))
+    (pin "3" (uuid 6100be78-0c96-413a-9968-1168fa13d900))
+    (instances
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "J4") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Transistor_FET:2N7000") (at 107.95 101.6 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 4a20408b-fb7c-4d49-8b68-f6ea49c4f879)
+    (property "Reference" "Q1" (at 113.1316 100.4316 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "2N7000" (at 113.1316 102.743 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 113.03 103.505 0)
+      (effects (font (size 1.27 1.27) italic) (justify left) hide)
+    )
+    (property "Datasheet" "https://www.onsemi.com/pub/Collateral/NDS7002A-D.PDF" (at 107.95 101.6 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (pin "1" (uuid e769459e-4215-4bd3-ab1b-8eeaa76ba4c7))
+    (pin "2" (uuid 06be6810-7f64-48dd-a979-666b48ec6f71))
+    (pin "3" (uuid 8385e40c-0ea2-4b35-9043-5844121c0a5a))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "Q1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "Q4") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "Q7") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "Q10") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "Q4") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "Q5") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "Q1") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "Q2") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Transistor_FET:2N7000") (at 74.93 101.6 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 74bd4e13-9e8d-41bd-ba4c-4fce6a762180)
+    (property "Reference" "Q1" (at 80.1116 100.4316 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "2N7000" (at 80.1116 102.743 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 80.01 103.505 0)
+      (effects (font (size 1.27 1.27) italic) (justify left) hide)
+    )
+    (property "Datasheet" "https://www.onsemi.com/pub/Collateral/NDS7002A-D.PDF" (at 74.93 101.6 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (pin "1" (uuid 8671c9cb-7c03-4e3e-83ae-affc6be2a527))
+    (pin "2" (uuid 9865ccf8-6d82-4752-9d93-34a8fd4b4059))
+    (pin "3" (uuid 2ea8ee4a-7679-42c8-9063-c23c8021792d))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "Q1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "Q4") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "Q7") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "Q10") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "Q4") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "Q5") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "Q1") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "Q1") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 71.12 92.71 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 7cd8493e-fd21-4545-b210-76aacef143df)
+    (property "Reference" "R5" (at 72.898 91.5416 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "1k" (at 72.898 93.853 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 69.342 92.71 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 71.12 92.71 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 2c0a4a08-3f46-454c-84ee-2cf9d8bbc489))
+    (pin "2" (uuid 68ebc42f-4283-4f49-b303-6ab320826c09))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R3") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 175.26 92.71 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 8994efd5-2bb0-4d83-8310-94661fb4080c)
+    (property "Reference" "R5" (at 177.038 91.5416 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "1k" (at 177.038 93.853 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 173.482 92.71 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 175.26 92.71 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 1c40f167-14f8-4ba3-9f2d-fa4e84dbba1f))
+    (pin "2" (uuid b0b5766e-eed6-435a-a428-db523e077b1e))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R12") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 138.43 109.22 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 8fdcce03-d5a3-4773-936d-d3909098ea92)
+    (property "Reference" "R5" (at 140.208 108.0516 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "5k" (at 140.208 110.363 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 136.652 109.22 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 138.43 109.22 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 670d600e-3ab1-45ff-9103-5bbd91455387))
+    (pin "2" (uuid 9138a835-1abb-43ad-a36c-ca7de817622d))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R8") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 139.7 92.71 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid a552be71-d423-42f2-93f3-f868542c68c7)
+    (property "Reference" "R5" (at 141.478 91.5416 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "1k" (at 141.478 93.853 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 137.922 92.71 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 139.7 92.71 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 82bd91fa-ceac-476c-90fa-52461b070147))
+    (pin "2" (uuid c7d719af-fb79-473d-9c12-774acf4cc155))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R9") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 102.87 109.22 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b8651756-ab99-4a6b-82fb-8b51bd3e5c7a)
+    (property "Reference" "R5" (at 104.648 108.0516 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "5k" (at 104.648 110.363 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 101.092 109.22 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 102.87 109.22 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 9db4e589-7a98-485a-bd5d-104a0ce8ce62))
+    (pin "2" (uuid d1a81192-9489-4b97-b3fa-556fe0eafa3e))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R5") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 139.7 82.55 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
+    (uuid b950cc26-fb91-4778-a0ce-b99effd40269)
+    (property "Reference" "J3" (at 144.78 81.915 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Value" "Conn_01x03" (at 144.78 84.455 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical" (at 139.7 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 139.7 82.55 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 61cb5c0f-058d-413f-b1aa-4d3fe7919259))
+    (pin "2" (uuid 15b48a3f-496c-4e6b-b40c-a209e6019e38))
+    (pin "3" (uuid 1e6d1674-adf3-46ce-8461-df826c7c34d1))
+    (instances
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "J3") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Transistor_FET:2N7000") (at 143.51 101.6 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid ba887795-4792-4976-9096-29dae7e917c7)
+    (property "Reference" "Q1" (at 148.6916 100.4316 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "2N7000" (at 148.6916 102.743 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 148.59 103.505 0)
+      (effects (font (size 1.27 1.27) italic) (justify left) hide)
+    )
+    (property "Datasheet" "https://www.onsemi.com/pub/Collateral/NDS7002A-D.PDF" (at 143.51 101.6 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (pin "1" (uuid 2cb1a796-7279-45eb-9736-3560557a9c77))
+    (pin "2" (uuid 83cffb81-f795-4220-a17f-6ffc898ca288))
+    (pin "3" (uuid bbfbec2f-1fa1-4054-9dfd-4bc4a3c18f40))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "Q1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "Q4") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "Q7") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "Q10") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "Q4") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "Q5") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "Q1") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "Q3") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 69.85 109.22 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid bf53fccc-0ba6-4dec-919d-ec1e7ef0d27a)
+    (property "Reference" "R5" (at 71.628 108.0516 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "5k" (at 71.628 110.363 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 68.072 109.22 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 69.85 109.22 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 0382d0aa-8dec-4c32-890c-75989f786b0e))
+    (pin "2" (uuid 53cee7b1-d818-43ac-8a4c-5985168fe8e7))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R2") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 97.79 101.6 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid c33ba824-fcc1-4f5e-b68e-fd7af2801f96)
+    (property "Reference" "R1" (at 96.6216 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "470" (at 98.933 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 97.79 103.378 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 97.79 101.6 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid bfda78b7-eb47-44bc-8833-8721177e5fa2))
+    (pin "2" (uuid 93b3605e-c4fb-4d44-a7e6-63ac545c3c18))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R2") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R22") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R35") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R6") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R5") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R4") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 173.99 109.22 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid f08c9655-5a2f-4467-8107-94b1e157a2da)
+    (property "Reference" "R5" (at 175.768 108.0516 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "5k" (at 175.768 110.363 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 172.212 109.22 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 173.99 109.22 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 0daf49b5-31f7-41ef-9a12-cfd792fdb5c2))
+    (pin "2" (uuid 7db79831-ba71-4b24-88f7-3e44cb278431))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R5") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R9") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R13") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R17") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R5") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R2") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R7") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R9") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R11") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Transistor_FET:2N7000") (at 179.07 101.6 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid f8ed009c-8f13-4a82-9f43-f21eb598e0be)
+    (property "Reference" "Q1" (at 184.2516 100.4316 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "2N7000" (at 184.2516 102.743 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 184.15 103.505 0)
+      (effects (font (size 1.27 1.27) italic) (justify left) hide)
+    )
+    (property "Datasheet" "https://www.onsemi.com/pub/Collateral/NDS7002A-D.PDF" (at 179.07 101.6 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (pin "1" (uuid 31c44cdd-49c7-4655-b66f-8fd6ac117b4f))
+    (pin "2" (uuid 9c5b1c02-9c0f-4c11-a574-dbae4880e7c7))
+    (pin "3" (uuid 37e3f4ee-43a9-42a4-aa16-bf3f0a9ebead))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "Q1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "Q4") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "Q7") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "Q10") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "Q1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "Q4") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "Q5") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "Q1") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "Q4") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Device:R") (at 168.91 101.6 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid ffff6796-9da6-40bb-95a1-3e714b0d258b)
+    (property "Reference" "R1" (at 167.7416 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "470" (at 170.053 99.822 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" (at 168.91 103.378 90)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 168.91 101.6 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 3e41dec3-ce0d-4f0d-addd-2139d916f9a2))
+    (pin "2" (uuid 30a44112-f59f-4c1d-91a7-8d45c44c0598))
+    (instances
+      (project "MakeItRain"
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-000061506093"
+          (reference "R1") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b349"
+          (reference "R2") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b83d"
+          (reference "R22") (unit 1)
+        )
+        (path "/6e68f0cd-800e-4167-9553-71fc59da1eeb/00000000-0000-0000-0000-00006158b957"
+          (reference "R35") (unit 1)
+        )
+      )
+      (project "BasicBitch328pThingy"
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b6d832cc-b841-498f-af6c-e64facc632e2"
+          (reference "R1") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/7c65907d-646a-4e87-868a-85fa6d9a2680"
+          (reference "R6") (unit 1)
+        )
+        (path "/76196dfb-f920-48e5-a1dc-ea507c9de24d/b1235f7a-5be8-4677-a4f7-0b33643cca33"
+          (reference "R8") (unit 1)
+        )
+      )
+      (project "AMS-Mega2560-Base"
+        (path "/7d0dab95-9e7a-486e-a1d7-fc48860fd57d/00000000-0000-0000-0000-0000623d3962"
+          (reference "R5") (unit 1)
+        )
+      )
+      (project "MIR-InputMod"
+        (path "/ea446fb0-dee3-4ee7-bae8-4a819871c87b"
+          (reference "R10") (unit 1)
+        )
+      )
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
