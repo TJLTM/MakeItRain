@@ -25,9 +25,9 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.0.8";
+String Version PROGMEM = "0.1.0";
 //Target HW Version for this code is v1.4.0 and greater
-bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlLockOut, APEnabled, LastLocalControlLockOut, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
+bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
 String BaseMQTTTopicString = "";
@@ -100,7 +100,7 @@ void setup() {
   Serial.println("Loading System Settings");
   preferences.begin("SystemSettings", true);
   //setup other System Level settings
-  LocalControlLockOut = preferences.getBool("LocalLockOut");
+  LocalControlToggle = preferences.getBool("LocalControlToggle");
 
   MaxZoneOnTime[0] = preferences.getFloat("Z1_Max");
   MaxZoneOnTime[1] = preferences.getFloat("Z2_Max");
@@ -163,11 +163,11 @@ void setup() {
 void loop() {
   long CurrentTime = millis();
 
-    if (abs(FiveSecondTimer - CurrentTime) > 5000) {
-      Serial.print("EnableWifi:");
-      Serial.println(EnableWifi);
-      FiveSecondTimer = CurrentTime;
-    }
+  if (abs(FiveSecondTimer - CurrentTime) > 5000) {
+    Serial.print("EnableWifi:");
+    Serial.println(EnableWifi);
+    FiveSecondTimer = CurrentTime;
+  }
 
   if (EnableWifi == true) {
     /*
@@ -249,13 +249,18 @@ void loop() {
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
   */
-  if (LocalControlLockOut != LastLocalControlLockOut) {
-    LocalInputs(LocalControlLockOut);
-    LastLocalControlLockOut = LocalControlLockOut;
+  if (LocalControlToggle != LastLocalControlToggle) {
+    LocalInputs(LocalControlToggle);
+    LastLocalControlToggle = LocalControlToggle;
+  }
+
+  if (LocalControlToggle == false) {
+    CheckIfInputsHaveChanged();
   }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
+    ReadAUXVoltage();
     VoltageTimer = millis();
   }
 
@@ -406,9 +411,9 @@ void CheckStoredData() {
   preferences.end();
   preferences.begin("SystemSettings", false);
 
-  if (preferences.isKey("LocalLockOut") == false) {
-    preferences.putBool("LocalLockOut", true);
-    Serial.println("LocalLockOut setting not found setting default");
+  if (preferences.isKey("LocalControlToggle") == false) {
+    preferences.putBool("LocalControlToggle", true);
+    Serial.println("LocalControlToggle setting not found setting default");
   }
 
   if (preferences.isKey("Battery") == false) {
@@ -518,8 +523,22 @@ void ReadVoltage() {
   Serial.print("Voltage: ");
   Serial.println(LastVSVoltage);
 
-  String VTopic = BaseMQTTTopicString + "Voltage/";
+  String VTopic = BaseMQTTTopicString + "Voltage";
   MQTTSend(VTopic, String(LastVSVoltage));
+}
+
+void ReadAUXVoltage() {
+  /*
+     AUX Voltage is limited to a range of 0-3.3v. If you need to scale that to other
+     Volatage ranges then use onboard pot RV1 to scale it apporpreatly. RV1 = 500k
+     Multiturn linear pot
+  */
+  float LastAuxVoltage = (3.3 / 4095) * analogRead(AUXVoltagePin);
+  Serial.print("AUX Voltage: ");
+  Serial.println(LastAuxVoltage);
+
+  String VTopic = BaseMQTTTopicString + "AUXVoltage";
+  MQTTSend(VTopic, String(LastAuxVoltage));
 }
 
 bool ReadOutput(int Number) {
