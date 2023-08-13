@@ -25,7 +25,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.1.0";
+String Version PROGMEM = "0.1.1";
 //Target HW Version for this code is v1.4.0 and greater
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
@@ -249,14 +249,14 @@ void loop() {
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
   */
-  if (LocalControlToggle != LastLocalControlToggle) {
-    LocalInputs(LocalControlToggle);
-    LastLocalControlToggle = LocalControlToggle;
-  }
-
-  if (LocalControlToggle == false) {
-    CheckIfInputsHaveChanged();
-  }
+//  if (LocalControlToggle != LastLocalControlToggle) {
+//    LocalInputs(LocalControlToggle);
+//    LastLocalControlToggle = LocalControlToggle;
+//  }
+//
+//  if (LocalControlToggle == false) {
+//    CheckIfInputsHaveChanged();
+//  }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
