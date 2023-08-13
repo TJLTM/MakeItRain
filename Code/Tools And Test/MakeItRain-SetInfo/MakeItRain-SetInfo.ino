@@ -14,8 +14,8 @@ void setup() {
   preferences.end();
 
   preferences.begin("SystemSettings", false);
-  preferences.putBool("LocalLockOut", true);
-  preferences.putBool("Battery", true);
+  preferences.putBool("LocalControlToggle", true);
+  preferences.putBool("Battery", false);
   preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
   preferences.putInt("MQTTPORT", 1883);
   preferences.putString("APMode_Password", "MUNAAAYE");
@@ -26,8 +26,12 @@ void setup() {
   preferences.putFloat("Z2_Max", 7.5);
   preferences.putFloat("Z3_Max", 7.5);
   preferences.putFloat("Z4_Max", 7.5);
-  //preferences.putString("ID", "");
-  //preferences.putBool("IDOverride", true);
+  preferences.putFloat("Z5_Max", 7.5);
+  preferences.putFloat("Z6_Max", 7.5);
+  preferences.putFloat("Z7_Max", 7.5);
+  preferences.putFloat("Z8_Max", 7.5);
+  preferences.putString("ID", "");
+  preferences.putBool("IDOverride", false);
   preferences.end();
 
   preferences.begin("Network_Settings", false);
