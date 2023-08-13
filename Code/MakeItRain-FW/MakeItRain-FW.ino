@@ -282,6 +282,8 @@ void ConnectToDaWEEEEFEEEEEEEE(int Timeout) {
   preferences.begin("credentials", false);
   if (preferences.getString("ssid") != "") {
     WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("ssid_password").c_str());
+    String hostname = Name + ID;
+    WiFi.setHostname(hostname.c_str());
     Serial.print("Connecting to WIFI ssid:");
     Serial.println(preferences.getString("ssid"));
     int StartTime = millis();
@@ -294,6 +296,8 @@ void ConnectToDaWEEEEFEEEEEEEE(int Timeout) {
     Serial.println("");
     if (WiFi.status() == WL_CONNECTED) {
       Serial.println("WIFI IS CONNECTED!");
+      Serial.print("IP Assigned: ");
+      Serial.println(WiFi.localIP());
     }
     else {
       Serial.println("WIFI CONNECTion FAILED!");
