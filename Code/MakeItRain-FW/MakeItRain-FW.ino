@@ -258,7 +258,7 @@ void loop() {
 //    CheckIfInputsHaveChanged();
 //  }
 
-  if (abs(VoltageTimer - CurrentTime) > 120000) {
+  if (abs(VoltageTimer - CurrentTime) > 60000) {
     ReadVoltage();
     ReadAUXVoltage();
     VoltageTimer = millis();
