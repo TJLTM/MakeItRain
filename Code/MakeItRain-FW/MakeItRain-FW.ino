@@ -137,6 +137,7 @@ void setup() {
 
   if (EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(10000);
+    SetupNTP();
   }
 
   if (EnableMQTT == true) {
@@ -249,14 +250,14 @@ void loop() {
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
   */
-//  if (LocalControlToggle != LastLocalControlToggle) {
-//    LocalInputs(LocalControlToggle);
-//    LastLocalControlToggle = LocalControlToggle;
-//  }
-//
-//  if (LocalControlToggle == false) {
-//    CheckIfInputsHaveChanged();
-//  }
+  //  if (LocalControlToggle != LastLocalControlToggle) {
+  //    LocalInputs(LocalControlToggle);
+  //    LastLocalControlToggle = LocalControlToggle;
+  //  }
+  //
+  //  if (LocalControlToggle == false) {
+  //    CheckIfInputsHaveChanged();
+  //  }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
@@ -331,6 +332,35 @@ void SetupBT() {
 
 void DisableBT() {
 
+}
+
+//-----------------------------------------------------------------------------------
+//Time related functions
+//-----------------------------------------------------------------------------------
+
+void SetupNTP() {
+sntp_set_time_sync_notification_cb( timeavailable );
+configTime(gmtOffset_sec, daylightOffset_sec, ntpServer1, ntpServer2);
+}
+
+void SetupRTC() {
+  ESP32Time rtc(); //need to put in tz offset
+}
+
+void SyncRTCandNTP(struct timeval *t) {
+Serial.println("Got time adjustment from NTP!");
+  printLocalTime();
+}
+
+
+void printLocalTime()
+{
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("No time available (yet)");
+    return;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
 }
 
 //-----------------------------------------------------------------------------------
@@ -507,8 +537,11 @@ void CheckStoredData() {
   if (preferences.isKey("Subnet") == false) {
     preferences.putString("Subnet", "");
   }
-  if (preferences.isKey("NTP") == false) {
-    preferences.putString("NTP", "");
+  if (preferences.isKey("NTP1") == false) {
+    preferences.putString("NTP", "pool.ntp.org");
+  }
+  if (preferences.isKey("NTP2") == false) {
+    preferences.putString("NTP", "time.nist.gov");
   }
 
   preferences.end();
