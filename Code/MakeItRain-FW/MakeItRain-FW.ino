@@ -298,6 +298,8 @@ void ConnectToDaWEEEEFEEEEEEEE(int Timeout) {
       Serial.println("WIFI IS CONNECTED!");
       Serial.print("IP Assigned: ");
       Serial.println(WiFi.localIP());
+      Serial.print("Hostname: ");
+      Serial.println(WiFi.getHostname());
     }
     else {
       Serial.println("WIFI CONNECTion FAILED!");
