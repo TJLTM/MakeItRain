@@ -10,6 +10,7 @@
 
 //NTP
 #include "time.h"
+#include "sntp.h"
 //Internal RTC
 #include <ESP32Time.h>
 
@@ -25,7 +26,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.1.1";
+String Version PROGMEM = "0.2.1";
 //Target HW Version for this code is v1.4.0 and greater
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
@@ -137,7 +138,9 @@ void setup() {
 
   if (EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(10000);
-    SetupNTP();
+    if (EnableNTP == true) {
+      SetupNTP();
+    }
   }
 
   if (EnableMQTT == true) {
@@ -339,8 +342,10 @@ void DisableBT() {
 //-----------------------------------------------------------------------------------
 
 void SetupNTP() {
-sntp_set_time_sync_notification_cb( timeavailable );
-configTime(gmtOffset_sec, daylightOffset_sec, ntpServer1, ntpServer2);
+  preferences.begin("NTP_Settings", true);
+  sntp_set_time_sync_notification_cb( SyncRTCandNTP );
+  configTime(preferences.getInt("GMTOffset_Sec")gmtOffset_sec, preferences.getInt("DSTOffset_sec"), preferences.getString("NTP_Server1"),  preferences.getString("NTP_Server2"));
+  preferences.end();
 }
 
 void SetupRTC() {
@@ -348,7 +353,7 @@ void SetupRTC() {
 }
 
 void SyncRTCandNTP(struct timeval *t) {
-Serial.println("Got time adjustment from NTP!");
+  Serial.println("Got time adjustment from NTP!");
   printLocalTime();
 }
 
@@ -356,7 +361,7 @@ Serial.println("Got time adjustment from NTP!");
 void printLocalTime()
 {
   struct tm timeinfo;
-  if(!getLocalTime(&timeinfo)){
+  if (!getLocalTime(&timeinfo)) {
     Serial.println("No time available (yet)");
     return;
   }
