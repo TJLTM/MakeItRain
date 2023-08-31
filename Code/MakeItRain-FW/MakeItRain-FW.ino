@@ -25,7 +25,7 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.1.1";
+String Version PROGMEM = "0.1.2";
 //Target HW Version for this code is v1.4.0 and greater
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
@@ -249,14 +249,14 @@ void loop() {
   /* Enable/Disable the local input Interrupts
       If they are disabled they will be polled and pushed to MQTT for state
   */
-//  if (LocalControlToggle != LastLocalControlToggle) {
-//    LocalInputs(LocalControlToggle);
-//    LastLocalControlToggle = LocalControlToggle;
-//  }
-//
-//  if (LocalControlToggle == false) {
-//    CheckIfInputsHaveChanged();
-//  }
+  //  if (LocalControlToggle != LastLocalControlToggle) {
+  //    LocalInputs(LocalControlToggle);
+  //    LastLocalControlToggle = LocalControlToggle;
+  //  }
+  //
+  //  if (LocalControlToggle == false) {
+  //    CheckIfInputsHaveChanged();
+  //  }
 
   if (abs(VoltageTimer - CurrentTime) > 120000) {
     ReadVoltage();
@@ -281,33 +281,40 @@ void loop() {
 void ConnectToDaWEEEEFEEEEEEEE(int Timeout) {
   preferences.begin("credentials", false);
   if (preferences.getString("ssid") != "") {
-    WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("ssid_password").c_str());
-    String hostname = Name + ID;
-    WiFi.setHostname(hostname.c_str());
-    Serial.print("Connecting to WIFI ssid:");
-    Serial.println(preferences.getString("ssid"));
-    int StartTime = millis();
-    int CurrentTime = millis();
-    while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
-      delay(500);
-      CurrentTime = millis();
-      Serial.print(".");
-    }
-    Serial.println("");
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("WIFI IS CONNECTED!");
-      Serial.print("IP Assigned: ");
-      Serial.println(WiFi.localIP());
-      Serial.print("Hostname: ");
-      Serial.println(WiFi.getHostname());
+    if (preferences.getString("ssid_password") != "") {
+      WiFi.begin(preferences.getString("ssid").c_str(), preferences.getString("ssid_password"));
+      String hostname = "MIR" + ID;
+      WiFi.setHostname(hostname.c_str());
+      Serial.print("Connecting to WIFI ssid:");
+      Serial.println(preferences.getString("ssid"));
+      int StartTime = millis();
+      int CurrentTime = millis();
+      while (WiFi.status() != WL_CONNECTED && abs(StartTime - CurrentTime) < Timeout) {
+        delay(500);
+        CurrentTime = millis();
+        Serial.print(".");
+      }
+      Serial.println("");
+      if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("WIFI IS CONNECTED!");
+        Serial.print("IP Assigned: ");
+        Serial.println(WiFi.localIP());
+        Serial.print("Hostname: ");
+        Serial.println(WiFi.getHostname());
+      }
+      else {
+        Serial.println("WIFI CONNECTION FAILED!");
+      }
     }
     else {
-      Serial.println("WIFI CONNECTion FAILED!");
+      //no ssid turn on AP Mode
+      Serial.println("No SSID Password stored");
+      APMode = true;
     }
   }
   else {
     //no ssid turn on AP Mode
-    Serial.println("No SSID stored turning on AP");
+    Serial.println("No SSID stored");
     APMode = true;
   }
 
@@ -675,14 +682,16 @@ void SetOutput(int Number, bool State) {
 //-----------------------------------------------------------------------------------
 
 void MaxZoneTimeOnCheck() {
-  long CurrentTime = millis();
-  for (int x = 0; x <= MAXOutputZones; x++) {
-    if (GPIOCHIPITYCHIPCHIP.digitalRead(x) == HIGH && abs(CurrentTime - LastZoneStartTime[x]) >= MaxZoneOnTime[x] * 60000) {
-      Serial.print("Zone Max time reached,");
-      Serial.print(MaxZoneOnTime[x] * 60000);
-      Serial.print(" Turning Off: ");
-      Serial.println(x + 1);
-      SetOutput(x, LOW);
+  if (GrootToGo == true) {
+    long CurrentTime = millis();
+    for (int x = 0; x < MAXOutputZones; x++) {
+      if (ReadOutput(x) == HIGH && abs(CurrentTime - LastZoneStartTime[x]) >= MaxZoneOnTime[x] * 60000) {
+        Serial.print("Zone Max time reached,");
+        Serial.print(MaxZoneOnTime[x] * 60000);
+        Serial.print(" Turning Off: ");
+        Serial.println(x + 1);
+        SetOutput(x, LOW);
+      }
     }
   }
 }
