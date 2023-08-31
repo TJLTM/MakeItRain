@@ -14,6 +14,7 @@ void setup() {
   preferences.end();
 
   preferences.begin("SystemSettings", false);
+  preferences.clear();
   preferences.putBool("LocalControlToggle", true);
   preferences.putBool("Battery", false);
   preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
@@ -35,14 +36,24 @@ void setup() {
   preferences.end();
 
   preferences.begin("Network_Settings", false);
+  preferences.clear();
   preferences.putBool("DHCP", true);
   preferences.putString("GATEWAY", "");
   preferences.putString("IP", "");
   preferences.putString("DNS", "");
   preferences.putString("Subnet", "");
-  preferences.putString("NTP", "");
   preferences.end();
 
+  preferences.begin("NTP_Settings", false);
+  preferences.clear();
+  preferences.putBool("NTP_Enable", true);
+  preferences.putString("NTP_Server1", "time.nist.gov");
+  preferences.putString("NTP_Server2", "pool.ntp.org");
+  preferences.putInt("GMTOffset_Sec", 0);
+  preferences.putInt("DSTOffset_sec", 0);
+  preferences.putString("TZ", "");
+  preferences.end();
+  
   Serial.println("Done");
 
 }
