@@ -50,8 +50,8 @@ void setup() {
   preferences.putString("NTP_Server1", "time.nist.gov");
   preferences.putString("NTP_Server2", "pool.ntp.org");
   preferences.putInt("GMTOffset_Sec", 0);
-  preferences.putInt("DSTOffset_sec", 0);
-  preferences.putString("TZ", "");
+  preferences.putInt("DSTOffset_sec", 3600);
+  preferences.putString("TZ", "PST8PDT,M3.2.0,M11.1.0");
   preferences.end();
   
   Serial.println("Done");

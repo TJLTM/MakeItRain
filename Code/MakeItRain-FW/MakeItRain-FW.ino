@@ -28,7 +28,7 @@ PubSubClient mqttClient(wifiClient);
 //System Level
 String Version PROGMEM = "0.2.1";
 //Target HW Version for this code is v1.4.0 and greater
-bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
+bool EnableNTP, EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
 String BaseMQTTTopicString = "";
@@ -138,9 +138,7 @@ void setup() {
 
   if (EnableWifi == true) {
     ConnectToDaWEEEEFEEEEEEEE(10000);
-    if (EnableNTP == true) {
-      SetupNTP();
-    }
+    SetupNTP();
   }
 
   if (EnableMQTT == true) {
@@ -276,6 +274,9 @@ void loop() {
     // Do a last min read of Voltage and any other status that needs to get posted
     // Set RTC to Sleep for 30 Mins
   }
+
+  TimerCheck();
+  
 }
 
 
@@ -353,11 +354,14 @@ void DisableBT() {
 //-----------------------------------------------------------------------------------
 //Time related functions
 //-----------------------------------------------------------------------------------
-
 void SetupNTP() {
   preferences.begin("NTP_Settings", true);
-  sntp_set_time_sync_notification_cb( SyncRTCandNTP );
-  configTime(preferences.getInt("GMTOffset_Sec")gmtOffset_sec, preferences.getInt("DSTOffset_sec"), preferences.getString("NTP_Server1"),  preferences.getString("NTP_Server2"));
+  EnableNTP = preferences.getBool("NTP_Enable");
+  if (EnableNTP == true) {
+    sntp_set_time_sync_notification_cb( SyncRTCandNTP );
+    configTime(preferences.getInt("GMTOffset_Sec"), preferences.getInt("DSTOffset_sec"), preferences.getString("NTP_Server1").c_str(),  preferences.getString("NTP_Server2").c_str());
+    setTimezone(preferences.getString("TZ"));
+  }
   preferences.end();
 }
 
@@ -366,10 +370,15 @@ void SetupRTC() {
 }
 
 void SyncRTCandNTP(struct timeval *t) {
-  Serial.println("Got time adjustment from NTP!");
+  Serial.println("NTP time adjustment");
   printLocalTime();
 }
 
+void setTimezone(String timezone) {
+  Serial.printf("  Setting Timezone to %s\n", timezone.c_str());
+  setenv("TZ", timezone.c_str(), 1); //  Now adjust the TZ.  Clock settings are adjusted to show the new local time
+  tzset();
+}
 
 void printLocalTime()
 {
@@ -379,6 +388,11 @@ void printLocalTime()
     return;
   }
   Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  Serial.println(&timeinfo);
+}
+
+void TimerCheck(){
+  
 }
 
 //-----------------------------------------------------------------------------------
