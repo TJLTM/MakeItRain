@@ -53,6 +53,29 @@ void setup() {
   preferences.putInt("DSTOffset_sec", 3600);
   preferences.putString("TZ", "PST8PDT,M3.2.0,M11.1.0");
   preferences.end();
+
+
+  preferences.begin("Schedule_Settings", false);
+  preferences.clear();
+  preferences.putBool("Schedule_Enable", true);
+  preferences.putString("S1_Zones", ""); // 1 2 3 4 5 6 7 8
+  preferences.putString("S1_Days", ""); // M Tu W Th F Sa Su
+  preferences.putString("S1_Duration", ""); //Seconds
+  
+  preferences.putString("S2_Zones", "");
+  preferences.putString("S2_Days", "");
+  preferences.putString("S2_Duration", "");
+  
+  preferences.putString("S3_Zones", "");
+  preferences.putString("S3_Days", "");
+  preferences.putString("S3_Duration", "");
+
+
+  
+  
+  preferences.end();
+
+  
   
   Serial.println("Done");
 

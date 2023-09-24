@@ -28,7 +28,7 @@ PubSubClient mqttClient(wifiClient);
 //System Level
 String Version PROGMEM = "0.2.1";
 //Target HW Version for this code is v1.4.0 and greater
-bool EnableNTP, EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
+bool EnableSchedule, EnableNTP, EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
 String BaseMQTTTopicString = "";
@@ -131,6 +131,8 @@ void setup() {
   preferences.end();
 
   Serial.println("Finished Loading system settings");
+
+  SetupSchedule();
 
   BaseMQTTTopicString = "/" + Name + "/" + ID + "/";
   Serial.print("Base MQTT Topic:");
@@ -276,7 +278,7 @@ void loop() {
   }
 
   TimerCheck();
-  
+
 }
 
 
@@ -391,8 +393,14 @@ void printLocalTime()
   Serial.println(&timeinfo);
 }
 
-void TimerCheck(){
-  
+void TimerCheck() {
+
+}
+
+void SetupSchedule() {
+  preferences.begin("Schedule_Settings", true);
+  EnableSchedule = preferences.getBool("Schedule_Enable");
+  preferences.end();
 }
 
 //-----------------------------------------------------------------------------------
