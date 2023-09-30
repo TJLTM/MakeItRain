@@ -32,6 +32,7 @@ void setup() {
   preferences.putFloat("Z8_Max", 7.5);
   preferences.putString("ID", "");
   preferences.putBool("IDOverride", false);
+  preferences.putBool("Reboot_If_Wifi_Disconnected", false);
   preferences.end();
 
   preferences.begin("Network_Settings", false);

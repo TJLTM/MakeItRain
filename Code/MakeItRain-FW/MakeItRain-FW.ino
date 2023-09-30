@@ -25,9 +25,9 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.1.2";
+String Version PROGMEM = "0.2.0";
 //Target HW Version for this code is v1.4.0 and greater
-bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
+bool EnableMQTT, Reboot_If_Wifi_Disconnected, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
 String BaseMQTTTopicString = "";
@@ -115,6 +115,7 @@ void setup() {
   EnableMQTT = preferences.getBool("EnableMQTT");
   APMode = preferences.getBool("APMode");
   Battery = preferences.getBool("Battery");
+  Reboot_If_Wifi_Disconnected = preferences.getBool("Reboot_If_Wifi_Disconnected");
 
   if (preferences.getBool("IDOverride") == false) {
     String MAC = WiFi.macAddress();
@@ -127,6 +128,7 @@ void setup() {
   else {
     ID = preferences.getString("ID");
   }
+
   preferences.end();
 
   Serial.println("Finished Loading system settings");
@@ -177,6 +179,8 @@ void loop() {
        intervals. If APmode is off it will turn on AP mode to allow for debugging
        and control. If APmode is disabled when the wifi reconnects that will be
        turned back off.
+       
+       Reboot_If_Wifi_Disconnected if enabled 
     */
     if (WiFi.status() != WL_CONNECTED) {
       if (firstRun == false) {
