@@ -277,7 +277,9 @@ void loop() {
     // Set RTC to Sleep for 30 Mins
   }
 
-  TimerCheck();
+  if (EnableSchedule == true) {
+    TimerCheck();
+  }
 
 }
 
@@ -394,13 +396,30 @@ void printLocalTime()
 }
 
 void TimerCheck() {
-
+  preferences.begin("Schedule_Settings", true);
+  for (int x = 1; x <= 3; x++) {
+    String TempName = "S" + String(x);
+    String Days = preferences.getString(TempName + "_Zones");
+    if (Days) != ""){
+        int Duration = preferences.getString(TempName + "_Duration");
+        int Days = preferences.getString(TempName + "_Duration");
+        
+    }
+  }
+  preferences.end();
 }
 
 void SetupSchedule() {
   preferences.begin("Schedule_Settings", true);
   EnableSchedule = preferences.getBool("Schedule_Enable");
   preferences.end();
+  if (EnableSchedule == true && EnableNTP == false){
+    EnableNTP = true;
+    preferences.begin("NTP_Settings", true);
+    preferences.putBool("NTP_Enable") = true;
+    preferences.end();
+    SetupNTP(); 
+  }
 }
 
 //-----------------------------------------------------------------------------------
