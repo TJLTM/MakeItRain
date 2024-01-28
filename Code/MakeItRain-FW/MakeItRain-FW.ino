@@ -211,6 +211,12 @@ void loop() {
         if (abs(WifiTryAgainTimer - CurrentTime) > 450000) {
           NumberOfWifiReconntionFailures = 0;
         }
+        if (Reboot_If_Wifi_Disconnected == true){
+          WifiReattemptsBeforeAP += 1;
+          if (WifiReattemptsBeforeAP >= (2*MaxAttempts)){
+            ESP.restart();
+          }
+        }
       }
     }
     else {
