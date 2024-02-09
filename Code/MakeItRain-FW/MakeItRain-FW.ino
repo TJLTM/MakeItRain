@@ -1,5 +1,4 @@
 #include <Adafruit_MCP23X08.h>
-
 #include <PubSubClient.h>
 #include <WiFi.h>
 #include <Preferences.h>
@@ -13,19 +12,12 @@
 //Internal RTC
 #include <ESP32Time.h>
 
-// Needed webserver files
-#include "ESPAsyncWebServer.h"
-#include "SPIFFS.h"
-
-//Create server on port 80
-AsyncWebServer server(80);
-
 // MQTT client
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.1.2";
+String Version PROGMEM = "0.2.0";
 //Target HW Version for this code is v1.4.0 and greater
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
@@ -149,14 +141,6 @@ void setup() {
   }
 
   ReadVoltage();
-
-  if (!SPIFFS.begin(true)) {
-    Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
-  }
-  else {
-    webserverAPI();
-    server.begin();
-  }
 
 }
 
@@ -715,12 +699,6 @@ bool MQTTtoBool(String State) {
   return BoolState;
 }
 
-String processor(const String& var) {
-  // Place holder
-  Serial.println(var);
-  return String();
-}
-
 void SetupMQTT() {
   preferences.begin("SystemSettings", true);
   //set up the MQTT
@@ -796,33 +774,4 @@ void callback(char* topic, byte* payload, unsigned int length) {
       break;
     }
   }
-}
-
-void webserverAPI() {
-
-  // Route for root / web page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/index.html", String(), false, processor);
-  });
-
-  server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/styles.css", "text/css");
-  });
-
-  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/main.js", "text/javascript");
-  });
-
-  server.on("/polyfills.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/polyfills.js", "text/javascript");
-  });
-
-  server.on("/runtime.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/runtime.js", "text/javascript");
-  });
-
-  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/favicon.ico", "image/x-icon");
-  });
-
 }
