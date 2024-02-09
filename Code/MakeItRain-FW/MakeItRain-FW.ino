@@ -1,4 +1,5 @@
 #include <Adafruit_MCP23X08.h>
+
 #include <PubSubClient.h>
 #include <WiFi.h>
 #include <Preferences.h>
@@ -12,12 +13,19 @@
 //Internal RTC
 #include <ESP32Time.h>
 
+// Needed webserver files
+#include "ESPAsyncWebServer.h"
+#include "SPIFFS.h"
+
+//Create server on port 80
+AsyncWebServer server(80);
+
 // MQTT client
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 //System Level
-String Version PROGMEM = "0.2.0";
+String Version PROGMEM = "0.1.2";
 //Target HW Version for this code is v1.4.0 and greater
 bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
@@ -141,6 +149,14 @@ void setup() {
   }
 
   ReadVoltage();
+
+  if (!SPIFFS.begin(true)) {
+    Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
+  }
+  else {
+    webserverAPI();
+    server.begin();
+  }
 
 }
 
@@ -699,6 +715,12 @@ bool MQTTtoBool(String State) {
   return BoolState;
 }
 
+String processor(const String& var) {
+  // Place holder
+  Serial.println(var);
+  return String();
+}
+
 void SetupMQTT() {
   preferences.begin("SystemSettings", true);
   //set up the MQTT
@@ -774,4 +796,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
       break;
     }
   }
+}
+
+void webserverAPI() {
+
+
 }
