@@ -810,29 +810,5 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void webserverAPI() {
 
-  // Route for root / web page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/index.html", String(), false, processor);
-  });
-
-  server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/styles.css", "text/css");
-  });
-
-  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/main.js", "text/javascript");
-  });
-
-  server.on("/polyfills.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/polyfills.js", "text/javascript");
-  });
-
-  server.on("/runtime.js", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/runtime.js", "text/javascript");
-  });
-
-  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/favicon.ico", "image/x-icon");
-  });
 
 }
