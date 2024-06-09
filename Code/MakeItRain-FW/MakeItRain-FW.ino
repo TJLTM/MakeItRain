@@ -10,6 +10,10 @@
 
 //NTP
 #include "time.h"
+//External RTC
+#include "RTClib.h"
+PROGMEM const char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+RTC_DS3231 rtc;
 //Internal RTC
 #include <ESP32Time.h>
 
@@ -27,7 +31,7 @@ PubSubClient mqttClient(wifiClient);
 //System Level
 String Version PROGMEM = "0.1.2";
 //Target HW Version for this code is v1.4.0 and greater
-bool EnableMQTT, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
+bool EnableMQTT, RTCSense, APMode, EnableWifi, Battery, LocalControlToggle, APEnabled, LastLocalControlToggle, ZoneExpansionDaughterboard, firstRun, IsMQTTSetup, TurnOffAPModeWhenWifiIsBack = false;
 String Name PROGMEM = "MakeItRain";
 String ID;
 String BaseMQTTTopicString = "";
@@ -48,10 +52,10 @@ long VoltageTimer, WifiTryAgainTimer, BetweenWifiAttempts, FiveSecondTimer;
 #define Input4 39
 
 #define MAXOutputZones 4
-long LastZoneStartTime[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-float MaxZoneOnTime[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-bool LastInputStates[4] = {0, 0, 0, 0};
-bool LastMQTTState[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+long LastZoneStartTime[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+float MaxZoneOnTime[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+bool LastInputStates[4] = { 0, 0, 0, 0 };
+bool LastMQTTState[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 //Zone definitions
 Adafruit_MCP23X08 GPIOCHIPITYCHIPCHIP;
@@ -73,29 +77,33 @@ void setup() {
   if (!GPIOCHIPITYCHIPCHIP.begin_I2C()) {
     GrootToGo = false;
     Serial.println("Can Not Communicate with MCP23008");
-  }
-  else {
-    GPIOCHIPITYCHIPCHIP.pinMode(0, OUTPUT); //Zone 1
-    GPIOCHIPITYCHIPCHIP.pinMode(1, OUTPUT); //Zone 2
-    GPIOCHIPITYCHIPCHIP.pinMode(2, OUTPUT); //Zone 3
-    GPIOCHIPITYCHIPCHIP.pinMode(3, OUTPUT); //Zone 4
+  } else {
+    GPIOCHIPITYCHIPCHIP.pinMode(0, OUTPUT);  //Zone 1
+    GPIOCHIPITYCHIPCHIP.pinMode(1, OUTPUT);  //Zone 2
+    GPIOCHIPITYCHIPCHIP.pinMode(2, OUTPUT);  //Zone 3
+    GPIOCHIPITYCHIPCHIP.pinMode(3, OUTPUT);  //Zone 4
 
-    GPIOCHIPITYCHIPCHIP.digitalWrite(0, 0); //Zone 1 Turnning off
-    GPIOCHIPITYCHIPCHIP.digitalWrite(1, 0); //Zone 2 Turnning off
-    GPIOCHIPITYCHIPCHIP.digitalWrite(2, 0); //Zone 3 Turnning off
-    GPIOCHIPITYCHIPCHIP.digitalWrite(3, 0); //Zone 4 Turnning off
+    GPIOCHIPITYCHIPCHIP.digitalWrite(0, 0);  //Zone 1 Turnning off
+    GPIOCHIPITYCHIPCHIP.digitalWrite(1, 0);  //Zone 2 Turnning off
+    GPIOCHIPITYCHIPCHIP.digitalWrite(2, 0);  //Zone 3 Turnning off
+    GPIOCHIPITYCHIPCHIP.digitalWrite(3, 0);  //Zone 4 Turnning off
 
     //turning off the remaining IO on the MCP chip after setting them to output mode
-    GPIOCHIPITYCHIPCHIP.pinMode(4, OUTPUT); //Z5
-    GPIOCHIPITYCHIPCHIP.digitalWrite(4, 0); //Z5 Turnning off
-    GPIOCHIPITYCHIPCHIP.pinMode(5, OUTPUT); //Z6
-    GPIOCHIPITYCHIPCHIP.digitalWrite(5, 0); //Z6 Turnning off
-    GPIOCHIPITYCHIPCHIP.pinMode(6, OUTPUT); //Z7
-    GPIOCHIPITYCHIPCHIP.digitalWrite(6, 0); //Z7 Turnning off
-    GPIOCHIPITYCHIPCHIP.pinMode(7, OUTPUT); //Z8
-    GPIOCHIPITYCHIPCHIP.digitalWrite(7, 0); //Z8 Turnning off
+    GPIOCHIPITYCHIPCHIP.pinMode(4, OUTPUT);  //Z5
+    GPIOCHIPITYCHIPCHIP.digitalWrite(4, 0);  //Z5 Turnning off
+    GPIOCHIPITYCHIPCHIP.pinMode(5, OUTPUT);  //Z6
+    GPIOCHIPITYCHIPCHIP.digitalWrite(5, 0);  //Z6 Turnning off
+    GPIOCHIPITYCHIPCHIP.pinMode(6, OUTPUT);  //Z7
+    GPIOCHIPITYCHIPCHIP.digitalWrite(6, 0);  //Z7 Turnning off
+    GPIOCHIPITYCHIPCHIP.pinMode(7, OUTPUT);  //Z8
+    GPIOCHIPITYCHIPCHIP.digitalWrite(7, 0);  //Z8 Turnning off
     Serial.println("Finished setting up GPIO");
   }
+
+  if (rtc.begin()) {
+    RTCSense = true;
+  }
+
 
   Serial.println("Loading System Settings");
   preferences.begin("SystemSettings", true);
@@ -123,8 +131,7 @@ void setup() {
         ID.concat(MAC.charAt(x));
       }
     }
-  }
-  else {
+  } else {
     ID = preferences.getString("ID");
   }
   preferences.end();
@@ -152,12 +159,10 @@ void setup() {
 
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occured while mounting SPIFFS. Can not start WebServer");
-  }
-  else {
+  } else {
     webserverAPI();
     server.begin();
   }
-
 }
 
 void loop() {
@@ -194,8 +199,7 @@ void loop() {
           firstRun = true;
           WifiTryAgainTimer = millis();
         }
-      }
-      else {
+      } else {
         firstRun = false;
       }
 
@@ -208,8 +212,7 @@ void loop() {
           NumberOfWifiReconntionFailures = 0;
         }
       }
-    }
-    else {
+    } else {
       NumberOfWifiReconntionFailures = 0;
       WifiReattemptsBeforeAP = 0;
       if (TurnOffAPModeWhenWifiIsBack == true && APMode == true) {
@@ -301,18 +304,15 @@ void ConnectToDaWEEEEFEEEEEEEE(int Timeout) {
         Serial.println(WiFi.localIP());
         Serial.print("Hostname: ");
         Serial.println(WiFi.getHostname());
-      }
-      else {
+      } else {
         Serial.println("WIFI CONNECTION FAILED!");
       }
-    }
-    else {
+    } else {
       //no ssid turn on AP Mode
       Serial.println("No SSID Password stored");
       APMode = true;
     }
-  }
-  else {
+  } else {
     //no ssid turn on AP Mode
     Serial.println("No SSID stored");
     APMode = true;
@@ -339,11 +339,9 @@ void DisableAP() {
 }
 
 void SetupBT() {
-
 }
 
 void DisableBT() {
-
 }
 
 //-----------------------------------------------------------------------------------
@@ -355,8 +353,8 @@ void RESETEVERYTHING() {
 }
 
 void FlushMemoryCompletely() {
-  nvs_flash_erase(); // erase the NVS partition and...
-  nvs_flash_init(); // initialize the NVS partition.
+  nvs_flash_erase();  // erase the NVS partition and...
+  nvs_flash_init();   // initialize the NVS partition.
 }
 
 //-----------------------------------------------------------------------------------
@@ -375,19 +373,15 @@ void PutAPPassword() {
 }
 
 void PutWifiSSID() {
-
 }
 
 void PutAdminPassword() {
-
 }
 
 void PutMQTTIP() {
-
 }
 
 void PutMQTTPort() {
-
 }
 
 void PutZoneMaxTimeOn(int Zone, float Mins) {
@@ -435,7 +429,7 @@ void CheckStoredData() {
   }
 
   if (preferences.isKey("MQTTIP") == false) {
-    preferences.putString("MQTTIP", ""); //Tested with IP not hostnames
+    preferences.putString("MQTTIP", "");  //Tested with IP not hostnames
     Serial.println("MQTTIP setting not found setting default");
   }
 
@@ -470,7 +464,6 @@ void CheckStoredData() {
 
   if (preferences.isKey("Z2_Max") == false) {
     preferences.putFloat("Z2_Max", 7.5);
-
   }
 
   if (preferences.isKey("Z3_Max") == false) {
@@ -525,7 +518,6 @@ void CheckStoredData() {
   }
 
   preferences.end();
-
 }
 
 //-----------------------------------------------------------------------------------
@@ -608,8 +600,7 @@ void LocalInputs(bool State) {
     attachInterrupt(digitalPinToInterrupt(Input3), LocalInput3, RISING);
     attachInterrupt(digitalPinToInterrupt(Input4), LocalInput4, RISING);
     interrupts();
-  }
-  else {
+  } else {
     detachInterrupt(digitalPinToInterrupt(Input1));
     detachInterrupt(digitalPinToInterrupt(Input2));
     detachInterrupt(digitalPinToInterrupt(Input3));
@@ -622,8 +613,7 @@ void TogglePort(int PortNumber) {
   if (GrootToGo == true) {
     if (GPIOCHIPITYCHIPCHIP.digitalRead(PortNumber) == LOW) {
       SetOutput(PortNumber, HIGH);
-    }
-    else {
+    } else {
       SetOutput(PortNumber, LOW);
     }
   }
@@ -727,7 +717,7 @@ void SetupMQTT() {
   String TargetFromMem = preferences.getString("MQTTIP");
   char Target[TargetFromMem.length()];
   TargetFromMem.toCharArray(Target, TargetFromMem.length() + 1);
-  char *mqttServer;
+  char* mqttServer;
   mqttServer = &Target[0];
   mqttClient.setServer(mqttServer, preferences.getInt("MQTTPORT"));
   mqttClient.setCallback(callback);
@@ -765,11 +755,10 @@ void reconnect() {
 
     if (mqttClient.connect(ID.c_str())) {
       for (int x = 0; x <= MAXOutputZones; x++) {
-        String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/"  + String(x + 1);
+        String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/" + String(x + 1);
         mqttClient.subscribe(CurrentTopic.c_str());
       }
-    }
-    else {
+    } else {
       // Wait 5 seconds before retrying
       delay(5000);
       //This may have to be changed to be non-blocking
@@ -789,7 +778,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(message);
 
   for (int x = 0; x <= MAXOutputZones; x++) {
-    String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/"  + String(x + 1);
+    String CurrentTopic = BaseMQTTTopicString + "ZoneOutput/" + String(x + 1);
     if (String((char*)topic) == CurrentTopic) {
       LastMQTTState[x] = MQTTtoBool(message);
       SetOutput(x, MQTTtoBool(message));
@@ -799,6 +788,4 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 void webserverAPI() {
-
-
 }
